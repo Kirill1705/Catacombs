@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="Catacombs:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/Catacombs_jar</output-path>
+    <root id="archive" name="Catacombs.jar">
+      <element id="module-output" name="Catacombs" />
+    </root>
+  </artifact>
+</component>

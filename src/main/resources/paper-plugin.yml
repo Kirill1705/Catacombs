@@ -1,0 +1,23 @@
+name: Catacombs
+version: '${project.version}'
+main: thor.catacombs.Catacombs
+api-version: '1.21'
+dependencies:
+  bootstrap:
+    CustomFeatures:
+      load: BEFORE
+      required: true
+      join-classpath: true
+    Lobby:
+      load: BEFORE
+      required: true
+      join-classpath: true
+  server:
+    CustomFeatures:
+      load: BEFORE
+      required: true
+      join-classpath: true
+    Lobby:
+      load: BEFORE
+      required: true
+      join-classpath: true
