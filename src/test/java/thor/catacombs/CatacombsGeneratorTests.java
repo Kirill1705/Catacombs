@@ -54,12 +54,12 @@ class CatacombsGeneratorTests {
         BlockPosition size = new Point(9, 9, 9);
         AttributeRegistry registry = new AttributeRegistry.Builder().build();
         RoomInfo roomInfo = new TestRoomInfo(size, List.of(), List.of(), List.of(
-                new ExitInfo(new YamlConfiguration(), Material.STONE_BRICK_STAIRS, new Point(4, 1, 0), size, registry),
-                new ExitInfo(new YamlConfiguration(), Material.STONE_BRICK_STAIRS, new Point(0, 1, 4), size, registry),
-                new ExitInfo(new YamlConfiguration(), Material.STONE_BRICK_STAIRS, new Point(4, 1, size.z() - 1), size, registry),
-                new ExitInfo(new YamlConfiguration(), Material.STONE_BRICK_STAIRS, new Point(size.x() - 1, 1, 4), size, registry),
-                new ExitInfo(new YamlConfiguration(), Material.STONE_BRICK_STAIRS, new Point(4, 0, 4), size, registry),
-                new ExitInfo(new YamlConfiguration(), Material.STONE_BRICK_STAIRS, new Point(4, size.y() - 1, 4), size, registry)
+                new ExitInfo(new YamlConfiguration(), Material.STONE_BRICK_STAIRS, new Point(4, 1, 0), size, registry, List.of()),
+                new ExitInfo(new YamlConfiguration(), Material.STONE_BRICK_STAIRS, new Point(0, 1, 4), size, registry, List.of()),
+                new ExitInfo(new YamlConfiguration(), Material.STONE_BRICK_STAIRS, new Point(4, 1, size.z() - 1), size, registry, List.of()),
+                new ExitInfo(new YamlConfiguration(), Material.STONE_BRICK_STAIRS, new Point(size.x() - 1, 1, 4), size, registry, List.of()),
+                new ExitInfo(new YamlConfiguration(), Material.STONE_BRICK_STAIRS, new Point(4, 0, 4), size, registry, List.of()),
+                new ExitInfo(new YamlConfiguration(), Material.STONE_BRICK_STAIRS, new Point(4, size.y() - 1, 4), size, registry, List.of())
         ));
         //GameRoomCreator creator = new GameRoomCreator(new ItemInfoGenerator(getTestResourcesFolder(), Map.of(FeelType.CHEST, "chests.yml", FeelType.BARREL, "barrels.yml")));
         GameRoomCreator creator = new GameRoomCreator(null);
@@ -129,12 +129,12 @@ class CatacombsGeneratorTests {
         BlockPosition size = new Point(9, 9, 9);
         AttributeRegistry registry = new AttributeRegistry.Builder().build();
         RoomInfo roomInfo = new TestRoomInfo(size, List.of(), List.of(), List.of(
-                new ExitInfo(new YamlConfiguration(), Material.STONE_BRICK_STAIRS, new Point(4, 1, 0), size, registry),
-                new ExitInfo(new YamlConfiguration(), Material.STONE_BRICK_STAIRS, new Point(0, 1, 4), size, registry),
-                new ExitInfo(new YamlConfiguration(), Material.STONE_BRICK_STAIRS, new Point(4, 1, size.z() - 1), size, registry),
-                new ExitInfo(new YamlConfiguration(), Material.STONE_BRICK_STAIRS, new Point(size.x() - 1, 1, 4), size, registry),
-                new ExitInfo(new YamlConfiguration(), Material.STONE_BRICK_STAIRS, new Point(4, 0, 4), size, registry),
-                new ExitInfo(new YamlConfiguration(), Material.STONE_BRICK_STAIRS, new Point(4, size.y() - 1, 4), size, registry)
+                new ExitInfo(new YamlConfiguration(), Material.STONE_BRICK_STAIRS, new Point(4, 1, 0), size, registry, List.of()),
+                new ExitInfo(new YamlConfiguration(), Material.STONE_BRICK_STAIRS, new Point(0, 1, 4), size, registry, List.of()),
+                new ExitInfo(new YamlConfiguration(), Material.STONE_BRICK_STAIRS, new Point(4, 1, size.z() - 1), size, registry, List.of()),
+                new ExitInfo(new YamlConfiguration(), Material.STONE_BRICK_STAIRS, new Point(size.x() - 1, 1, 4), size, registry, List.of()),
+                new ExitInfo(new YamlConfiguration(), Material.STONE_BRICK_STAIRS, new Point(4, 0, 4), size, registry, List.of()),
+                new ExitInfo(new YamlConfiguration(), Material.STONE_BRICK_STAIRS, new Point(4, size.y() - 1, 4), size, registry, List.of())
         ));
         //GameRoomCreator creator = new GameRoomCreator(new ItemInfoGenerator(getTestResourcesFolder(), Map.of(FeelType.CHEST, "chests.yml", FeelType.BARREL, "barrels.yml")));
         GameRoomCreator creator = new GameRoomCreator(null);

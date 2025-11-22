@@ -32,8 +32,13 @@ public record AttributeRegistry(Map<AttributeHolderType, Collection<ConfigAttrib
     }
 
     public <T> boolean containsValue(AttributeHolderType holderType, AttributeType type, YamlConfiguration configuration) {
-        ConfigAttribute<T> attribute = getAttribute(holderType, type);
-        return attribute.containsValue(configuration);
+        try {
+            ConfigAttribute<T> attribute = getAttribute(holderType, type);
+            return attribute.containsValue(configuration);
+        }
+        catch (Exception e) {
+            return false;
+        }
     }
 
     private <T> ConfigAttribute<T> getAttribute(AttributeHolderType holderType, AttributeType type) {
