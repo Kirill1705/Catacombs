@@ -4,13 +4,16 @@ import io.papermc.paper.command.brigadier.BasicCommand;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.NamespacedKey;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.structure.Structure;
 import org.bukkit.util.StringUtil;
 import org.jetbrains.annotations.NotNull;
+import thor.catacombs.application.commands.GameCommandRegister;
 import thor.catacombs.commands.MarkupAxable;
 import thor.catacombs.info.structure.interfaces.Nameable;
 import thor.catacombs.info.structure.interfaces.RoomInfo;
@@ -19,7 +22,9 @@ import thor.usefulUtils.utils.StructureUtils;
 import thor.usefulUtils.utils.dataStructures.BlockLocation;
 import thor.usefulUtils.utils.dataStructures.ImmutableBox;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 public class StructureLoader extends MarkupAxable implements BasicCommand {
     private final StructureHolder<RoomInfo> rooms;
@@ -29,6 +34,7 @@ public class StructureLoader extends MarkupAxable implements BasicCommand {
         super(plugin);
         this.rooms = rooms;
         this.tunnels = tunnels;
+        GameCommandRegister.INSTANCE.register(this, "rooms", "Create structures for catacombs", plugin);
     }
 
     private boolean tryToLoadStructure(String type, Structure structure) {

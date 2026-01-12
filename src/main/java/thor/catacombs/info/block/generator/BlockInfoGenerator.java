@@ -5,10 +5,10 @@ import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.TextDisplay;
-import thor.usefulUtils.utils.dataStructures.BlockLocation;
-import thor.usefulUtils.utils.dataStructures.BlockPosition;
 import thor.catacombs.info.block.BlockInfo;
 import thor.catacombs.info.block.creators.BlockInfoCreator;
+import thor.usefulUtils.utils.dataStructures.BlockLocation;
+import thor.usefulUtils.utils.dataStructures.BlockPosition;
 import thor.usefulUtils.utils.dataStructures.ImmutableBox;
 
 import java.util.*;

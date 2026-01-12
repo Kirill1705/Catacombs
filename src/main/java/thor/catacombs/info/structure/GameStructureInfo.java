@@ -3,15 +3,16 @@ package thor.catacombs.info.structure;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.TextDisplay;
 import org.bukkit.structure.Structure;
-import thor.usefulUtils.utils.dataStructures.BlockPosition;
 import thor.catacombs.info.block.ChestInfo;
 import thor.catacombs.info.block.generator.BlockInfoGenerator;
 import thor.catacombs.info.structure.extra.ChestLoader;
 import thor.catacombs.info.structure.interfaces.StructureInfo;
 import thor.usefulUtils.utils.StructureUtils;
+import thor.usefulUtils.utils.dataStructures.BlockPosition;
 import thor.usefulUtils.utils.dataStructures.ImmutableBox;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.List;
 
 public class GameStructureInfo implements StructureInfo {
     private final BlockPosition size;

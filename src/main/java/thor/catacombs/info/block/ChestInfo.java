@@ -1,15 +1,13 @@
 package thor.catacombs.info.block;
 
 import org.bukkit.Material;
-import org.bukkit.Tag;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.InventoryHolder;
-import thor.usefulUtils.utils.dataStructures.BlockPosition;
 import thor.catacombs.info.attributes.AttributeHolderType;
 import thor.catacombs.info.attributes.AttributeRegistry;
 import thor.catacombs.info.attributes.AttributeType;
+import thor.usefulUtils.utils.dataStructures.BlockPosition;
 
 public class ChestInfo extends BlockInfo{
     public static final AttributeHolderType TYPE = AttributeHolderType.CHEST;

@@ -1,9 +1,10 @@
 package thor.catacombs.generator;
 
 import com.google.common.base.Preconditions;
-import net.kyori.adventure.text.event.ClickEvent;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.TreeMap;
 
 public class ChanceGenerator<T extends Weightable> implements RandomGenerator<T> {
     private final TreeMap<Long, T> chanceMap = new TreeMap<>();

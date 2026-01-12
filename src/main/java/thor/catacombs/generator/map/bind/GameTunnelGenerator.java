@@ -8,7 +8,10 @@ import thor.catacombs.generator.structures.Room;
 import thor.catacombs.generator.structures.TunnelPart;
 
 import javax.annotation.Nullable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 public class GameTunnelGenerator implements TunnelGenerator {
     private final TunnelMaker tunnelMaker;

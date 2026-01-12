@@ -1,13 +1,12 @@
 package thor.catacombs.generator.map;
 
 import org.bukkit.Material;
-import org.bukkit.World;
 import org.bukkit.entity.Player;
-import thor.catacombs.game.PlayerData;
 import thor.catacombs.generator.PlayerSpawnNode;
 import thor.catacombs.generator.structures.PlayerSpawnable;
 import thor.catacombs.generator.structures.Structure;
 import thor.catacombs.generator.structures.TunnelPart;
+import thor.catacombs.generator.structures.utils.GameWorldAccessor;
 import thor.catacombs.info.structure.TunnelType;
 import thor.usefulUtils.utils.OtherUtils;
 import thor.usefulUtils.utils.dataStructures.BlockLocation;
@@ -20,11 +19,11 @@ import java.util.stream.Collectors;
 
 public class GameMap {
     private final RoomGraph graph;
-    private final BlockLocation location;
+    private final GameWorldAccessor accessor;
 
     public GameMap(RoomGraph graph, BlockLocation location) {
         this.graph = graph;
-        this.location = location;
+        this.accessor = new GameWorldAccessor(new ImmutableBox(location, location.add(graph.getMapSize()).subtract(new Point(1, 1, 1))));
     }
 
     public void placeBedrock() {
@@ -43,13 +42,13 @@ public class GameMap {
         List<Structure> structures = graph.getAllStructures();
         structures.stream()
                 .filter(this::isVertical)
-                .forEach(structure -> structure.place(location));
+                .forEach(structure -> structure.place(accessor));
         structures.stream()
                 .filter(structure -> !isVertical(structure))
-                .forEach(structure -> structure.place(location));
+                .forEach(structure -> structure.place(accessor));
         structures.stream()
                 .filter(structure -> structure instanceof AfterPlacing)
-                .forEach(structure -> ((AfterPlacing) structure).afterPlace(location));
+                .forEach(structure -> ((AfterPlacing) structure).afterPlace(accessor));
     }
 
     private boolean isVertical(Structure structure) {
@@ -60,30 +59,34 @@ public class GameMap {
         return graph.getAllStructures().stream()
                 .filter(structure -> structure instanceof PlayerSpawnable)
                 .map(structure -> (PlayerSpawnable)structure)
-                .flatMap(playerSpawnable -> playerSpawnable.getPlayerSpawnPlaces().stream()) // "разворачиваем" коллекции
+                .flatMap(playerSpawnable -> playerSpawnable.getPlayerSpawnPlaces().stream())
                 .collect(Collectors.toList());
     }
 
-    public void spawnPlayers(Iterable<Player> players) {
+    public boolean spawnPlayers(Iterable<Player> players) {
         List<PlayerSpawnNode> playerSpawnNodes = getPlayerSpawnPlaces();
+        if (playerSpawnNodes.isEmpty())
+            return false;
         for (Player player : players) {
             int beginIdx = (int) (Math.random()*playerSpawnNodes.size());
             boolean isSpawned = false;
             for (int i = 0; i < playerSpawnNodes.size(); i++) {
                 int idx = (beginIdx+i)%playerSpawnNodes.size();
                 if (!playerSpawnNodes.get(idx).isClosed()) {
-                    playerSpawnNodes.get(idx).spawnPlayer(location, player);
+                    playerSpawnNodes.get(idx).spawnPlayer(accessor, player);
                     isSpawned = true;
                     break;
                 }
             }
             if (!isSpawned) {
-                playerSpawnNodes.getFirst().spawnPlayer(location, player);
+                playerSpawnNodes.getFirst().spawnPlayer(accessor, player);
             }
         }
+        return true;
     }
 
     private ImmutableBox createBox(int x1, int y1, int z1, int x2, int y2, int z2) {
+        BlockLocation location = accessor.begin();
         return new ImmutableBox(location.add(new Point(x1, y1, z1)), location.add(new Point(x2, y2, z2)));
     }
 }

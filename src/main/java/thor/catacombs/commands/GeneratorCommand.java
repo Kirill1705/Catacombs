@@ -8,6 +8,7 @@ import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
+import thor.catacombs.application.commands.GameCommandRegister;
 import thor.catacombs.commands.structureHolder.StructureLoaderFacade;
 import thor.catacombs.generator.map.CatacombsGeneratorCreator;
 import thor.catacombs.generator.map.GameMap;
@@ -22,6 +23,7 @@ public class GeneratorCommand extends MarkupAxable implements BasicCommand {
         super(plugin);
         this.holder = holder;
         this.creator = creator;
+        GameCommandRegister.INSTANCE.register(this, "generator", "Manage and test map generator", plugin);
     }
 
     @Override

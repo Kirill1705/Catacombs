@@ -9,10 +9,8 @@ import org.bukkit.util.BlockVector;
 import thor.catacombs.info.attributes.AttributeRegistry;
 import thor.catacombs.info.structure.TunnelType;
 import thor.catacombs.info.structure.interfaces.TunnelInfo;
-import thor.usefulUtils.utils.StructureUtils;
 import thor.usefulUtils.utils.dataStructures.BlockLocation;
 import thor.usefulUtils.utils.dataStructures.BlockPosition;
-import thor.usefulUtils.utils.dataStructures.ImmutableBox;
 import thor.usefulUtils.utils.dataStructures.Point;
 
 import java.util.Random;

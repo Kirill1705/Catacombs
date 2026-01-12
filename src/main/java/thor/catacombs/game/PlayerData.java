@@ -4,7 +4,6 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.title.TitlePart;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.scoreboard.*;
 import thor.usefulUtils.utils.OtherUtils;
 
 public class PlayerData {
@@ -22,7 +21,10 @@ public class PlayerData {
         player.sendTitlePart(TitlePart.TITLE, Component.text("Игра началась!"));
         player.sendActionBar(Component.text("Лутайте сундуки и выживите последним!"));
     }
-    public void removePlayer() {
+    public void removePlayer(boolean emergency) {
+        if (emergency) {
+            player.sendMessage(Component.text("The game has finished because of error, please try to start game again"));
+        }
         OtherUtils.resetPlayer(player);
         player.setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
     }

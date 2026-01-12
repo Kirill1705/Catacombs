@@ -1,11 +1,10 @@
 package thor.catacombs.info.structure;
 
-import thor.catacombs.info.structure.extra.GameChestLoader;
-import thor.usefulUtils.utils.dataStructures.BlockPosition;
 import thor.catacombs.info.attributes.AttributeRegistry;
 import thor.catacombs.info.block.generator.BlockInfoGenerator;
-import thor.catacombs.info.structure.extra.ChestLoader;
+import thor.catacombs.info.structure.extra.GameChestLoader;
 import thor.catacombs.info.structure.interfaces.PartTunnelInfo;
+import thor.usefulUtils.utils.dataStructures.BlockPosition;
 import thor.usefulUtils.utils.dataStructures.ImmutableBox;
 import thor.usefulUtils.utils.dataStructures.OffsetBox;
 

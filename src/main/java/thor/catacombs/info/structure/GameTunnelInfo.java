@@ -9,7 +9,9 @@ import thor.catacombs.info.block.creators.MainCreator;
 import thor.catacombs.info.block.generator.BlockInfoGenerator;
 import thor.catacombs.info.structure.interfaces.PartTunnelInfo;
 import thor.catacombs.info.structure.interfaces.TunnelInfo;
-import thor.usefulUtils.utils.dataStructures.*;
+import thor.usefulUtils.utils.dataStructures.BlockLocation;
+import thor.usefulUtils.utils.dataStructures.ImmutableBox;
+import thor.usefulUtils.utils.dataStructures.OffsetBox;
 
 import java.util.*;
 

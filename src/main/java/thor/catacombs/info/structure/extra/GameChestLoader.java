@@ -1,14 +1,13 @@
 package thor.catacombs.info.structure.extra;
 
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.file.YamlConfiguration;
-import thor.catacombs.info.block.generator.BlockInfoGenerator;
 import thor.catacombs.info.attributes.AttributeHolderType;
 import thor.catacombs.info.attributes.AttributeRegistry;
 import thor.catacombs.info.block.ChestInfo;
 import thor.catacombs.info.block.creators.ChestCreator;
+import thor.catacombs.info.block.generator.BlockInfoGenerator;
 import thor.usefulUtils.utils.dataStructures.BlockLocation;
 
 import java.util.ArrayList;

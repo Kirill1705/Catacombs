@@ -1,7 +1,6 @@
 package thor.catacombs.info.structure;
 
 import org.bukkit.block.Block;
-import thor.usefulUtils.utils.dataStructures.BlockPosition;
 import org.jetbrains.annotations.NotNull;
 import thor.usefulUtils.utils.dataStructures.ImmutableBox;
 

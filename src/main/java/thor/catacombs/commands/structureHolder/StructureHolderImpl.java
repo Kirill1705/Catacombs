@@ -1,6 +1,9 @@
 package thor.catacombs.commands.structureHolder;
 
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
+import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.structure.Structure;
@@ -8,11 +11,13 @@ import thor.catacombs.info.attributes.AttributeRegistry;
 import thor.catacombs.info.structure.interfaces.Nameable;
 import thor.usefulUtils.utils.OtherUtils;
 import thor.usefulUtils.utils.StructureUtils;
-import thor.usefulUtils.utils.dataStructures.*;
+import thor.usefulUtils.utils.dataStructures.BlockLocation;
+import thor.usefulUtils.utils.dataStructures.BlockPosition;
+import thor.usefulUtils.utils.dataStructures.ImmutableBox;
+import thor.usefulUtils.utils.dataStructures.Point;
 
 import javax.annotation.Nullable;
 import java.util.*;
-import java.util.function.BiConsumer;
 
 public abstract class StructureHolderImpl<T extends Nameable> implements StructureHolder<T>{
     private final String namespace;
@@ -58,6 +63,7 @@ public abstract class StructureHolderImpl<T extends Nameable> implements Structu
             }
             StructureUtils.save(structure, new NamespacedKey(namespace, info.getName()));
             structures.add(info);
+            fillAir(box);
             return info;
         } catch (Exception e) {
             e.printStackTrace();

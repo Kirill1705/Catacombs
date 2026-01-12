@@ -5,11 +5,11 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.structure.Structure;
-import thor.usefulUtils.utils.dataStructures.BlockLocation;
-import thor.usefulUtils.utils.dataStructures.BlockPosition;
 import thor.emptyMiniGame.MiniGameEnvironment;
 import thor.usefulUtils.utils.OtherUtils;
 import thor.usefulUtils.utils.StructureUtils;
+import thor.usefulUtils.utils.dataStructures.BlockLocation;
+import thor.usefulUtils.utils.dataStructures.BlockPosition;
 import thor.usefulUtils.utils.dataStructures.ImmutableBox;
 import thor.usefulUtils.utils.dataStructures.Point;
 
@@ -27,7 +27,7 @@ public class GameLobbyConfigurator implements LobbyConfigurator {
     }
 
     private final Structure lobby;
-    private Point lobbySpawnOffset = new Point(2, 2, 2);
+    private Point lobbySpawnOffset = new Point(3, 3, 3);
 
     public GameLobbyConfigurator(MiniGameEnvironment loader, FileConfiguration config, Plugin plugin) {
         BlockLocation zero = new BlockLocation(0, 0, 0, loader.getWorld());

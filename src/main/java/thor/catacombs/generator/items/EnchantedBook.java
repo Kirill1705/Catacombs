@@ -17,6 +17,7 @@ public class EnchantedBook implements Item {
         Enchantment enchantment = RegistryAccess.registryAccess().getRegistry(RegistryKey.ENCHANTMENT).get(NamespacedKey.minecraft(name));
         if (enchantment==null) throw new RuntimeException("invalid enchantment name "+name);
         meta.addStoredEnchant(enchantment, level, true);
+        itemStack.setItemMeta(meta);
         item = new GameItem(1, 1, new ExtendedItemStack(itemStack), weight);
     }
 

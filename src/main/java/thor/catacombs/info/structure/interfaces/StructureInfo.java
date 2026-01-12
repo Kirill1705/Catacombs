@@ -1,8 +1,8 @@
 package thor.catacombs.info.structure.interfaces;
 
 import org.bukkit.structure.Structure;
-import thor.usefulUtils.utils.dataStructures.BlockPosition;
 import thor.catacombs.info.block.ChestInfo;
+import thor.usefulUtils.utils.dataStructures.BlockPosition;
 
 import java.util.List;
 

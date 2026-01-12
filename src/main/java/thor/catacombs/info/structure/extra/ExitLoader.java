@@ -1,23 +1,20 @@
 package thor.catacombs.info.structure.extra;
 
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.NotNull;
-import thor.catacombs.info.block.ExitPosition;
-import thor.usefulUtils.utils.dataStructures.BlockLocation;
-import thor.usefulUtils.utils.dataStructures.BlockPosition;
 import thor.catacombs.info.attributes.AttributeRegistry;
 import thor.catacombs.info.block.ExitInfo;
+import thor.catacombs.info.block.ExitPosition;
 import thor.catacombs.info.structure.interfaces.ExitableStructureInfo;
 import thor.usefulUtils.utils.OtherUtils;
+import thor.usefulUtils.utils.dataStructures.BlockLocation;
+import thor.usefulUtils.utils.dataStructures.BlockPosition;
 import thor.usefulUtils.utils.dataStructures.ImmutableBox;
 import thor.usefulUtils.utils.dataStructures.Point;
 
-import javax.annotation.Nullable;
 import java.util.*;
-import java.util.function.Function;
 
 public class ExitLoader implements ExitableStructureInfo {
     private final List<ExitInfo> exits = new ArrayList<>();
@@ -33,7 +30,7 @@ public class ExitLoader implements ExitableStructureInfo {
         BlockLocation current = atPoint;
         boolean success = true;
         while (blocks.contains(current)) {
-            current.add(new Point(0, 1, 0));
+            current = current.add(new Point(0, -1, 0));
             if (current.toLocation().getBlock().getType() == Material.AIR) {
                 success = false;
                 break;
@@ -42,7 +39,10 @@ public class ExitLoader implements ExitableStructureInfo {
         if (!success) {
             current = atPoint.add(new Point(1, 0, 0));
         }
-        return current.toLocation().getBlock().getType();
+        Material result = current.toLocation().getBlock().getType();
+        if (result == Material.AIR)
+            return Material.GLASS;
+        return result;
     }
 
     private FindExitStatsResult getExitStats(Set<BlockLocation> blocks) {
@@ -59,7 +59,11 @@ public class ExitLoader implements ExitableStructureInfo {
         if (ExitInfo.isCollidable(first.toLocation().getBlock())) {
             return Set.of();
         }
-        TreeSet<BlockLocation> result = new TreeSet<>(Comparator.comparingInt(BlockLocation::y));
+        TreeSet<BlockLocation> result = new TreeSet<>(
+                Comparator.comparingInt(BlockLocation::y)
+                        .thenComparingInt(BlockLocation::z)
+                        .thenComparingInt(BlockLocation::x)
+        );
         result.add(first);
         OtherUtils.bfsBlocks(first, location -> {
             visited.add(location);

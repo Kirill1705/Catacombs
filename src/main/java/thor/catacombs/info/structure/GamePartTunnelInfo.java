@@ -1,11 +1,11 @@
 package thor.catacombs.info.structure;
 
-import thor.usefulUtils.utils.dataStructures.BlockPosition;
 import thor.catacombs.info.block.PlayerSpawnInfo;
 import thor.catacombs.info.block.generator.BlockInfoGenerator;
 import thor.catacombs.info.structure.extra.ChestLoader;
 import thor.catacombs.info.structure.interfaces.PartTunnelInfo;
 import thor.catacombs.info.structure.interfaces.PlayerSpawnableStructureInfo;
+import thor.usefulUtils.utils.dataStructures.BlockPosition;
 
 import java.util.List;
 

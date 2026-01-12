@@ -5,24 +5,24 @@ import org.bukkit.block.Block;
 import org.bukkit.block.Container;
 import org.bukkit.inventory.Inventory;
 import thor.catacombs.generator.items.Item;
-import thor.usefulUtils.utils.dataStructures.BlockLocation;
-import thor.usefulUtils.utils.dataStructures.BlockPosition;
+import thor.catacombs.generator.structures.utils.GameWorldAccessor;
+import thor.catacombs.generator.structures.utils.StructureLocation;
 import thor.catacombs.info.block.ChestInfo;
 
 public class Chest {
-    final BlockPosition position;
+    final StructureLocation position;
     final ChestInfo info;
     private final Item[] items;
-    public Chest(BlockPosition position, ChestInfo info, RandomGenerator<Item> generator) {
+    public Chest(StructureLocation position, ChestInfo info, RandomGenerator<Item> generator) {
         this.info=info;
-        this.position=position.add(info.getPosition());
+        this.position=position;
         items = new Item[info.getSize()];
         for (int i = 0; i < info.getSize(); i++) {
             items[i]=generator.getRandom(info.getQuality());
         }
     }
-    public void feelOrDeleteBlock(BlockLocation location) {
-        Block block = location.add(position).toLocation().getBlock();
+    public void feelOrDeleteBlock(GameWorldAccessor accessor) {
+        Block block = accessor.getBlockAt(position, info.getPosition());
         if (!info.canPlace()) {
             block.setType(Material.AIR);
             return;

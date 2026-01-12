@@ -1,7 +1,7 @@
 package thor.catacombs.info.structure.interfaces;
 
 import thor.catacombs.generator.Weightable;
-import thor.catacombs.info.structure.*;
+import thor.catacombs.info.structure.TunnelType;
 
 public interface TunnelInfo extends Nameable, Weightable {
     TunnelType getType();

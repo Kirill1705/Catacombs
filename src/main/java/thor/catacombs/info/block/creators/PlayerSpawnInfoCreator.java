@@ -1,9 +1,9 @@
 package thor.catacombs.info.block.creators;
 
 import org.bukkit.configuration.file.YamlConfiguration;
+import thor.catacombs.info.block.PlayerSpawnInfo;
 import thor.usefulUtils.utils.dataStructures.BlockLocation;
 import thor.usefulUtils.utils.dataStructures.BlockPosition;
-import thor.catacombs.info.block.PlayerSpawnInfo;
 
 public record PlayerSpawnInfoCreator() implements BlockInfoCreator<PlayerSpawnInfo> {
     @Override

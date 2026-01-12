@@ -1,14 +1,14 @@
 package thor.catacombs.generator.map;
 
-import thor.usefulUtils.utils.dataStructures.BlockPosition;
 import org.bukkit.util.BoundingBox;
 import thor.catacombs.generator.Tunnel;
 import thor.catacombs.generator.structures.Room;
 import thor.catacombs.generator.structures.Structure;
+import thor.usefulUtils.utils.dataStructures.BlockPosition;
 
 import java.util.*;
 
-public class RoomGraph implements ImmutableGraph{
+public class RoomGraph implements ImmutableGraph {
     private final Map<Room, ArrayList<Edge>> rooms = new LinkedHashMap<>();
     private final boolean[][][] map;
     private final BlockPosition size;

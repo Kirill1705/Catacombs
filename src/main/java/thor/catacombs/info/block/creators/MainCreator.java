@@ -1,11 +1,10 @@
 package thor.catacombs.info.block.creators;
 
-import org.bukkit.Location;
 import org.bukkit.configuration.file.YamlConfiguration;
-import thor.usefulUtils.utils.dataStructures.BlockLocation;
-import thor.usefulUtils.utils.dataStructures.BlockPosition;
 import thor.catacombs.info.attributes.AttributeRegistry;
 import thor.catacombs.info.block.MainInfo;
+import thor.usefulUtils.utils.dataStructures.BlockLocation;
+import thor.usefulUtils.utils.dataStructures.BlockPosition;
 
 public record MainCreator(AttributeRegistry registry) implements BlockInfoCreator<MainInfo>  {
     @Override

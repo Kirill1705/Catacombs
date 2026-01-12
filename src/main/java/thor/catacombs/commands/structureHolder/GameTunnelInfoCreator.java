@@ -4,7 +4,6 @@ import thor.catacombs.info.attributes.AttributeRegistry;
 import thor.catacombs.info.block.generator.BlockInfoGenerator;
 import thor.catacombs.info.structure.GameTunnelInfo;
 import thor.catacombs.info.structure.interfaces.TunnelInfo;
-import thor.usefulUtils.utils.dataStructures.BlockLocation;
 import thor.usefulUtils.utils.dataStructures.ImmutableBox;
 
 public class GameTunnelInfoCreator implements InfoCreator<TunnelInfo> {

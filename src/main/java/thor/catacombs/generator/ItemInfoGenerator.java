@@ -60,6 +60,10 @@ public class ItemInfoGenerator implements ItemGeneratorHolder{
         return new ChanceGenerator<>(items);
     }
     public ItemInfoGenerator(File folder, Map<FeelType, String> fileNames) {
+        update(folder, fileNames);
+    }
+
+    public void update(File folder, Map<FeelType, String> fileNames) {
         for (var entry: fileNames.entrySet()) {
             generators.put(entry.getKey(), setupItemGenerator(entry.getValue(), folder));
         }

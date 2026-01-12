@@ -1,6 +1,5 @@
 package thor.catacombs.generator.map;
 
-import thor.catacombs.game.Game;
 import thor.usefulUtils.utils.dataStructures.BlockLocation;
 import thor.usefulUtils.utils.dataStructures.BlockPosition;
 

@@ -4,7 +4,9 @@ import io.papermc.paper.command.brigadier.BasicCommand;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import org.bukkit.*;
+import org.bukkit.Color;
+import org.bukkit.GameMode;
+import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Entity;
@@ -13,13 +15,11 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.TextDisplay;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.util.StringUtil;
-import thor.catacombs.game.Game;
+import thor.catacombs.application.commands.GameCommandRegister;
 import thor.catacombs.info.attributes.AttributeRegistry;
 import thor.catacombs.info.attributes.ConfigAttribute;
 import thor.emptyMiniGame.MiniGameEnvironment;
-import thor.emptyMiniGame.MiniGameLoader;
 import thor.usefulUtils.dataStructures.Pair;
-import thor.usefulUtils.utils.dataStructures.BlockLocation;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -47,6 +47,7 @@ public class MarkupCommand extends MarkupAxable implements BasicCommand {
         builder.deleteCharAt(builder.length()-1).append(" [value]\n");
         builder.append("/remove ");
         usage = Component.text(builder.toString()).color(NamedTextColor.YELLOW);
+        GameCommandRegister.INSTANCE.register(this, "catacombs", "Markup structures for catacombs minigame", plugin);
     }
     @Override
     public void execute(CommandSourceStack commandSourceStack, String[] args) {

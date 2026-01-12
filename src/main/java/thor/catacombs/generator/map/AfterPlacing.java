@@ -1,7 +1,7 @@
 package thor.catacombs.generator.map;
 
-import thor.usefulUtils.utils.dataStructures.BlockLocation;
+import thor.catacombs.generator.structures.utils.GameWorldAccessor;
 
 public interface AfterPlacing {
-    void afterPlace(BlockLocation location);
+    void afterPlace(GameWorldAccessor accessor);
 }

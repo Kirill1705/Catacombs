@@ -1,7 +1,7 @@
 package thor.catacombs.generator.items;
 
-import thor.usefulUtils.dataStructures.Pair;
 import thor.customFeatures.items.ExtendedItemStack;
+import thor.usefulUtils.dataStructures.Pair;
 
 public class GameItem implements Item {
     private final int weight;

@@ -5,7 +5,6 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.structure.Structure;
 import thor.catacombs.info.attributes.AttributeRegistry;
 import thor.catacombs.info.structure.interfaces.RoomInfo;
-import thor.usefulUtils.utils.StructureUtils;
 
 public class RoomHolder extends StructureHolderImpl<RoomInfo> {
     public RoomHolder(Plugin plugin, World world, AttributeRegistry registry, InfoCreator<RoomInfo> creator) {

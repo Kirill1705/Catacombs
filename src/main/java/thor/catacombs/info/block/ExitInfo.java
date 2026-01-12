@@ -4,10 +4,10 @@ import org.bukkit.Material;
 import org.bukkit.Tag;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.file.YamlConfiguration;
-import thor.usefulUtils.utils.dataStructures.BlockPosition;
 import thor.catacombs.info.attributes.AttributeHolderType;
 import thor.catacombs.info.attributes.AttributeRegistry;
 import thor.catacombs.info.attributes.AttributeType;
+import thor.usefulUtils.utils.dataStructures.BlockPosition;
 import thor.usefulUtils.utils.dataStructures.Point;
 
 import java.util.Collection;

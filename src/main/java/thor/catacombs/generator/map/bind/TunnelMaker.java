@@ -1,7 +1,6 @@
 package thor.catacombs.generator.map.bind;
 
 import thor.catacombs.generator.Exit;
-import thor.catacombs.generator.Tunnel;
 import thor.catacombs.generator.map.ImmutableGraph;
 import thor.catacombs.generator.structures.TunnelPart;
 

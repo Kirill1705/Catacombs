@@ -1,9 +1,9 @@
 package thor.catacombs.info.structure;
 
-import thor.catacombs.info.block.generator.BlockInfoGenerator;
 import thor.catacombs.info.attributes.AttributeHolderType;
 import thor.catacombs.info.block.PlayerSpawnInfo;
 import thor.catacombs.info.block.creators.PlayerSpawnInfoCreator;
+import thor.catacombs.info.block.generator.BlockInfoGenerator;
 import thor.catacombs.info.structure.interfaces.PlayerSpawnableStructureInfo;
 
 import java.util.List;

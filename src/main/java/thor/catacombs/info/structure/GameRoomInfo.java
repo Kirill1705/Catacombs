@@ -11,11 +11,11 @@ import thor.catacombs.info.block.creators.MainCreator;
 import thor.catacombs.info.block.generator.BlockInfoGenerator;
 import thor.catacombs.info.structure.extra.ChestLoader;
 import thor.catacombs.info.structure.extra.ExitLoader;
-import thor.catacombs.info.structure.interfaces.ExitableStructureInfo;
 import thor.catacombs.info.structure.interfaces.PlayerSpawnableStructureInfo;
 import thor.catacombs.info.structure.interfaces.RoomInfo;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.List;
 
 public class GameRoomInfo extends GameStructureInfo implements RoomInfo {
     @Override

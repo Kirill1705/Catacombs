@@ -1,11 +1,10 @@
 package thor.catacombs.info.block;
 
 import org.bukkit.configuration.file.YamlConfiguration;
-import thor.usefulUtils.utils.dataStructures.BlockPosition;
-import thor.catacombs.game.Game;
 import thor.catacombs.info.attributes.AttributeHolderType;
 import thor.catacombs.info.attributes.AttributeRegistry;
 import thor.catacombs.info.attributes.AttributeType;
+import thor.usefulUtils.utils.dataStructures.BlockPosition;
 
 public class MainInfo extends BlockInfo {
     public static final AttributeHolderType TYPE = AttributeHolderType.MAIN;

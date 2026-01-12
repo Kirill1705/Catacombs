@@ -2,6 +2,8 @@ package thor.catacombs;
 
 import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
+import thor.catacombs.generator.map.ImmutableGraph;
+import thor.catacombs.generator.map.MapGenerator;
 import thor.catacombs.generator.map.*;
 import thor.catacombs.generator.map.bind.GameTunnelGenerator;
 import thor.catacombs.generator.map.bind.GameTunnelMaker;

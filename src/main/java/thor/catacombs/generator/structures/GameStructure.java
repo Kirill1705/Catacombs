@@ -1,21 +1,23 @@
 package thor.catacombs.generator.structures;
 
-import org.bukkit.Location;
-import thor.usefulUtils.utils.dataStructures.BlockLocation;
-import thor.usefulUtils.utils.dataStructures.BlockPosition;
 import thor.catacombs.generator.Chest;
 import thor.catacombs.generator.ItemGeneratorHolder;
+import thor.catacombs.generator.structures.utils.GameWorldAccessor;
+import thor.catacombs.generator.structures.utils.StructureLocation;
 import thor.catacombs.info.block.ChestInfo;
 import thor.catacombs.info.structure.interfaces.StructureInfo;
 import thor.usefulUtils.utils.StructureUtils;
+import thor.usefulUtils.utils.dataStructures.BlockPosition;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 public class GameStructure implements Structure {
     final StructureInfo info;
-    final BlockPosition position;
+    final StructureLocation position;
     private final List<Chest> chests = new ArrayList<>();
-    public GameStructure(StructureInfo info, BlockPosition position, ItemGeneratorHolder generator) {
+    public GameStructure(StructureInfo info, StructureLocation position, ItemGeneratorHolder generator) {
         this.info = info;
         this.position = position;
         for (ChestInfo chestInfo: info.getChestsInfo()) {
@@ -23,21 +25,16 @@ public class GameStructure implements Structure {
         }
     }
     @Override
-    public void place(BlockLocation location) {
-        StructureUtils.place(info.getStructure(), getLocation(location).toLocation());
+    public void place(GameWorldAccessor accessor) {
+        StructureUtils.place(info.getStructure(), accessor.begin(position).toLocation());
         for (Chest chest: chests) {
-            chest.feelOrDeleteBlock(location);
+            chest.feelOrDeleteBlock(accessor);
         }
     }
 
     @Override
     public BlockPosition getPosition() {
-        return position;
-    }
-
-    @Override
-    public BlockLocation getLocation(BlockLocation begin) {
-        return begin.add(position);
+        return position.begin();
     }
 
     @Override

@@ -7,7 +7,8 @@ public enum AttributeType {
     QUALITY,
     PROBABILITY,
     FILL_TYPE,
-    MATERIAL;
+    MATERIAL,
+    PRIORITY;
     public String getName() {
         return this.toString().toLowerCase();
     }
