@@ -1,0 +1,11 @@
+{
+  "id": "vertical_example",
+  "size": [3, 1, 3],
+  "type": "vertical",
+  "weight": 20,
+  "neutral": true,
+  "parts": [{
+    "size": [3, 1, 3],
+    "attachment_point": [1, 0, 1]
+  }]
+}

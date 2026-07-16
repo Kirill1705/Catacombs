@@ -1,0 +1,9 @@
+rooms_path: rooms
+tunnels_path: tunnels
+
+structures_path: structures
+
+chest_path: chest.yml
+barrel_path: barrel.yml
+books_path: books.yml
+map_config_path: map.yml

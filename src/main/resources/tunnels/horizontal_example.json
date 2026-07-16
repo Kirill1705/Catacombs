@@ -1,0 +1,11 @@
+{
+  "id": "horizontal_example",
+  "size": [1, 5, 5],
+  "type": "horizontal",
+  "weight": 20,
+  "neutral": true,
+  "parts": [{
+    "size": [1, 5, 5],
+    "attachment_point": [0, 1, 2]
+  }]
+}
