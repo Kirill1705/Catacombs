@@ -1,0 +1,67 @@
+items:
+  - {id: iron_chestplate, weight: 36}
+  - {id: iron_leggings, weight: 36}
+  - {id: iron_helmet, weight: 40}
+  - {id: iron_boots, weight: 40}
+  - {id: stone_sword, weight: 100}
+  - {id: chainmail_chestplate, weight: 100}
+  - {id: chainmail_leggings, weight: 100}
+  - {id: chainmail_helmet, weight: 100}
+  - {id: chainmail_boots, weight: 100}
+  - {id: iron_sword, weight: 40}
+  - {id: diamond_sword, weight: 10}
+  - {id: totem_of_undying, weight: 4}
+  - {id: diamond_chestplate, weight: 10}
+  - {id: diamond_helmet, weight: 10}
+  - {id: diamond_leggings, weight: 10}
+  - {id: diamond_boots, weight: 10}
+  - {id: blue_wool, weight: 100, min: 10, max: 30}
+  - {id: obsidian, weight: 6}
+  - {id: diamond_block, weight: 4}
+  - {id: iron_block, weight: 30}
+  - {id: enchanted_golden_apple, weight: 1}
+  - {id: golden_apple, weight: 10}
+  - {id: bow, weight: 40}
+  - {id: arrow, weight: 80, min: 6, max: 36}
+  - {id: trident, weight: 8}
+  - {id: book, weight: 10, min: 4, max: 8}
+  - {id: elytra, weight: 2}
+  - {id: ender_pearl, weight: 12}
+  - {id: glass, weight: 40, min: 9, max: 27}
+  - {id: water_bucket, weight: 40}
+  - {id: lava_bucket, weight: 10}
+  - {id: crossbow, weight: 50}
+  - {id: netherite_upgrade_smithing_template, weight: 10}
+  - {id: experience_bottle, weight: 100, min: 10, max: 63}
+  - {id: flint_and_steel, weight: 40}
+  - {id: tnt, weight: 10}
+  - {id: netherite_ingot, weight: 10}
+  - {id: wooden_pickaxe, weight: 50}
+  - {id: stone_pickaxe, weight: 30}
+  - {id: iron_pickaxe, weight: 10}
+  - {id: netherite_pickaxe, weight: 2}
+  - {id: shears, weight: 20}
+  - {id: end_crystal, weight: 6}
+  - {id: acacia_planks, weight: 80, min: 12, max: 36}
+  - {id: golden_helmet, weight: 4}
+  - {id: golden_chestplate, weight: 4}
+  - {id: golden_leggings, weight: 4}
+  - {id: golden_boots, weight: 4}
+  - {id: bucket, weight: 40}
+  - {id: gold_block, weight: 10}
+  - {id: gold_ingot, weight: 20, min: 2, max: 15}
+  - {id: anvil, weight: 10}
+  - {id: mace, weight: 4}
+  - {id: lingering_potion, weight: 6}
+  - {id: fireball_wand, weight: 4}
+  - {id: dragon_wand, weight: 1}
+  - {id: wither_wand, weight: 2}
+  - {id: graveyard_spell, weight: 5}
+  - {id: monk_ability, weight: 7}
+  - {id: mjolnir, weight: 1}
+  - {id: little_prince_crossbow, weight: 4}
+  - {id: lightsaber, weight: 1}
+  - {id: teleport, weight: 7}
+  - {id: bomber, weight: 7}
+  - {id: ghast_heal, weight: 7}
+  - {id: evo_witch, weight: 1}

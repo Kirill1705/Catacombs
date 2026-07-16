@@ -1,4 +1,0 @@
-name: Catacombs
-version: '${project.version}'
-main: thor.catacombs.Catacombs
-api-version: '1.21'

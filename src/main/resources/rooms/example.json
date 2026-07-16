@@ -1,0 +1,39 @@
+{
+  "id": "example",
+  "weight": 20,
+  "size": [5, 5, 5],
+  "chests": [{
+    "position": [2, 1, 2],
+    "material": "chest",
+    "fill_type": "chest"
+  }],
+  "exits": [{
+    "position": [0, 1, 2],
+    "material": "glass",
+    "blocks": [[0, 2, 2]]
+  },
+  {
+    "position": [2, 1, 0],
+    "material": "glass",
+    "blocks": [[2, 2, 0]]
+  },
+    {
+      "position": [4, 1, 2],
+      "material": "glass",
+      "blocks": [[4, 2, 2]]
+    },
+    {
+      "position": [2, 1, 4],
+      "material": "glass",
+      "blocks": [[2, 2, 4]]
+    },
+    {
+      "position": [1, 0, 3],
+      "material": "glass"
+    },
+    {
+      "position": [3, 4, 1],
+      "material": "glass"
+    }
+  ]
+}

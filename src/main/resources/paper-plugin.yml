@@ -1,0 +1,6 @@
+name: CatacombsGenerator
+version: '1.0.0'
+main: thor.MainPluginClass
+api-version: '1.21'
+description: Catacombs map generator
+authors: [ Thor ]
