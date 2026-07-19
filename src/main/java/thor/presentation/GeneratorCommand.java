@@ -13,7 +13,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import thor.core.port.input.LocationDto;
 import thor.core.port.input.MapService;
-import thor.core.service.MapServiceImpl;
+import thor.core.port.mapping.dto.map.MapDto;
 
 @RequiredArgsConstructor
 public class GeneratorCommand implements CustomCommand{
@@ -37,7 +37,8 @@ public class GeneratorCommand implements CustomCommand{
         CommandSourceStack sourceStack = context.getSource();
         try {
             BlockPosition position = positionResolver.resolve(sourceStack);
-            service.generateMap(new LocationDto(sourceStack.getLocation().getWorld().getName(), position.blockX(), position.blockY(), position.blockZ()), placeBedrock, fillStone);
+            MapDto mapDto = service.generateMap();
+            service.placeMap(new LocationDto(sourceStack.getLocation().getWorld().getName(), position.blockX(), position.blockY(), position.blockZ()), placeBedrock, fillStone, mapDto.id());
             return 1;
         } catch (CommandSyntaxException e) {
             e.printStackTrace();

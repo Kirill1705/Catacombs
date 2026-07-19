@@ -4,6 +4,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
 import thor.core.port.input.MapService;
+import thor.core.port.output.repository.MapRepository;
 import thor.core.service.MapServiceImpl;
 import thor.core.port.output.WorldAccessor;
 import thor.core.port.output.repository.InfoRepository;
@@ -13,6 +14,7 @@ import thor.infrastructure.WorldAccessorImpl;
 import thor.infrastructure.repositories.InfoRepositoryImpl;
 import thor.infrastructure.repositories.ItemRepositoryImpl;
 import thor.infrastructure.repositories.MapConfigHolderImpl;
+import thor.infrastructure.repositories.MapRepositoryImpl;
 import thor.presentation.CustomCommand;
 import thor.presentation.GeneratorCommand;
 import thor.presentation.MainCommand;
@@ -32,7 +34,8 @@ public class MainPluginClass extends JavaPlugin {
         ItemRepository itemRepository = itemRepository(config);
         MapConfigHolder mapConfigHolder = mapConfigHolder(config);
         WorldAccessor gameWorldAccessor = gameWorldAccessor(config);
-        MapServiceImpl mapService = new MapServiceImpl(infoRepository, mapConfigHolder, itemRepository, gameWorldAccessor);
+        MapRepository mapRepository = mapRepository(config);
+        MapServiceImpl mapService = new MapServiceImpl(infoRepository, mapConfigHolder, itemRepository, gameWorldAccessor, mapRepository);
         MainCommand mainCommand = new MainCommand(commands(config, mapService), this);
         mainCommand.registerCommands(this);
         registerServices(mapService);
@@ -68,6 +71,10 @@ public class MainPluginClass extends JavaPlugin {
         return new ItemRepositoryImpl(booksPath, Map.of("chest", chestsPath, "barrel", barrelsPath));
     }
 
+    private MapRepository mapRepository(FileConfiguration config) {
+        return new MapRepositoryImpl();
+    }
+
     private MapConfigHolder mapConfigHolder(FileConfiguration config) {
         return new MapConfigHolderImpl(toPath(config.getString("map_config_path", "map.yml")));
     }
@@ -83,7 +90,6 @@ public class MainPluginClass extends JavaPlugin {
     }
 
     private void registerServices(MapService mapService) {
-        getServer().getServicesManager();
         getServer().getServicesManager().register(
                 MapService.class,
                 mapService,

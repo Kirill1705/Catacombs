@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/CatacombsGenerator.iml" filepath="$PROJECT_DIR$/CatacombsGenerator.iml" />
       <module fileurl="file://$PROJECT_DIR$/Survival.iml" filepath="$PROJECT_DIR$/Survival.iml" />
     </modules>
   </component>

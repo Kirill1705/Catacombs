@@ -15,9 +15,12 @@ import thor.core.port.input.MapService;
 import thor.core.port.mapping.ItemMapper;
 import thor.core.port.mapping.StructureInfoMapper;
 import thor.core.port.mapping.dto.MapConfig;
+import thor.core.port.mapping.dto.MapMapper;
 import thor.core.port.mapping.dto.RoomInfoDto;
 import thor.core.port.mapping.dto.TunnelInfoDto;
+import thor.core.port.mapping.dto.map.MapDto;
 import thor.core.port.output.WorldAccessor;
+import thor.core.port.output.repository.MapRepository;
 import thor.core.port.output.repository.InfoRepository;
 import thor.core.port.output.repository.ItemRepository;
 import thor.core.port.output.repository.MapConfigHolder;
@@ -26,9 +29,7 @@ import thor.core.structure.create.PartTunnelCreatorImpl;
 import thor.core.structure.create.SimpleRoomCreator;
 import thor.core.world.MapPlacer;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 @AllArgsConstructor
 @Slf4j
@@ -37,17 +38,29 @@ public class MapServiceImpl implements MapService {
     private final MapConfigHolder mapConfigHolder;
     private final ItemRepository itemRepository;
     private final WorldAccessor accessor;
+    private final MapRepository mapRepository;
 
-    public void generateMap(LocationDto location, boolean placeBedrock, boolean fillStone) {
+    @Override
+    public void placeMap(LocationDto location, boolean placeBedrock, boolean fillStone, UUID mapId) {
+        Optional<GameMap> gameMap = mapRepository.findById(mapId);
+        if (gameMap.isEmpty()) {
+            throw new IllegalArgumentException();
+        }
+        MapPlacer mapPlacer = new MapPlacer(gameMap.get(), accessor);
+        mapPlacer.place(location, placeBedrock, fillStone);
+        log.info("Map generated successfully");
+    }
+
+    @Override
+    public MapDto generateMap() {
         MapConfig mapConfig = mapConfigHolder.getConfig();
         ItemCreator itemCreator = new ItemCreator(getItems());
         RoomGenerator roomGenerator = new GroundRoomGenerator(infoRepository.getRooms().stream().map(StructureInfoMapper::fromDto).toList(), mapConfig.mapSize(), mapConfig.roomsQuantity(), new SimpleRoomCreator(itemCreator));
         GameMap gameMap = roomGenerator.generate();
         TunnelGenerator tunnelGenerator = new GroundTunnelGenerator(infoRepository.getTunnels().stream().map(StructureInfoMapper::fromDto).toList(), new TunnelPartsDispenserImpl(0.3), new PartTunnelCreatorImpl(itemCreator));
         tunnelGenerator.generateTunnels(gameMap);
-        MapPlacer mapPlacer = new MapPlacer(gameMap, accessor);
-        mapPlacer.place(location, placeBedrock, fillStone);
-        log.info("Map generated successfully");
+        mapRepository.addMap(gameMap);
+        return MapMapper.toDto(gameMap);
     }
 
     public boolean addRoom(RoomInfoDto dto, boolean force) {
