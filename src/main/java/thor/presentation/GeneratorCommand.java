@@ -12,8 +12,12 @@ import io.papermc.paper.math.BlockPosition;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import thor.core.port.input.LocationDto;
+import thor.core.port.input.MapEngineService;
+import thor.core.port.input.MapPlaceOptions;
 import thor.core.port.input.MapService;
-import thor.core.port.mapping.dto.map.MapDto;
+import thor.core.port.mapping.dto.map.PlacedMapDto;
+
+import java.util.UUID;
 
 @RequiredArgsConstructor
 public class GeneratorCommand implements CustomCommand{
@@ -21,6 +25,7 @@ public class GeneratorCommand implements CustomCommand{
     private final String name = "generate";
 
     private final MapService service;
+    private final MapEngineService engineService;
 
     @Override
     public void build(LiteralArgumentBuilder<CommandSourceStack> builder) {
@@ -37,8 +42,11 @@ public class GeneratorCommand implements CustomCommand{
         CommandSourceStack sourceStack = context.getSource();
         try {
             BlockPosition position = positionResolver.resolve(sourceStack);
-            MapDto mapDto = service.generateMap();
-            service.placeMap(new LocationDto(sourceStack.getLocation().getWorld().getName(), position.blockX(), position.blockY(), position.blockZ()), placeBedrock, fillStone, mapDto.id());
+            UUID uuid = service.generateMap();
+            MapPlaceOptions options = new MapPlaceOptions();
+            options.setFillBedrock(placeBedrock);
+            options.setFillStone(fillStone);
+            engineService.placeMap(new LocationDto(sourceStack.getLocation().getWorld().getName(), position.blockX(), position.blockY(), position.blockZ()), uuid, options);
             return 1;
         } catch (CommandSyntaxException e) {
             e.printStackTrace();

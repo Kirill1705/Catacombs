@@ -20,4 +20,9 @@ public class MapRepositoryImpl implements MapRepository {
     public Optional<GameMap> findById(UUID mapId) {
         return Optional.ofNullable(data.getOrDefault(mapId, null));
     }
+
+    @Override
+    public void delete(UUID mapId) {
+        data.remove(mapId);
+    }
 }

@@ -9,4 +9,6 @@ public interface MapRepository {
     void addMap(GameMap map);
 
     Optional<GameMap> findById(UUID mapId);
+
+    void delete(UUID mapId);
 }
