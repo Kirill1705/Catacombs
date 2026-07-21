@@ -47,6 +47,7 @@ public class MainPluginClass extends JavaPlugin {
         saveResource("barrel.yml", false);
         saveResource("books.yml", false);
         saveResource("chest.yml", false);
+        saveResource("arena.nbt", false);
         File file = new File(getDataFolder(), "rooms");
         if (!file.exists()) {
             saveResource("rooms/example.json", false);
