@@ -3,16 +3,16 @@ package thor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
+import thor.core.port.input.MapEngineService;
 import thor.core.port.input.MapService;
+import thor.core.port.output.ArenaManager;
+import thor.core.port.output.repository.*;
+import thor.core.service.MapEngineServiceImpl;
 import thor.core.service.MapServiceImpl;
 import thor.core.port.output.WorldAccessor;
-import thor.core.port.output.repository.InfoRepository;
-import thor.core.port.output.repository.ItemRepository;
-import thor.core.port.output.repository.MapConfigHolder;
+import thor.infrastructure.ArenaManagerImpl;
 import thor.infrastructure.WorldAccessorImpl;
-import thor.infrastructure.repositories.InfoRepositoryImpl;
-import thor.infrastructure.repositories.ItemRepositoryImpl;
-import thor.infrastructure.repositories.MapConfigHolderImpl;
+import thor.infrastructure.repositories.*;
 import thor.presentation.CustomCommand;
 import thor.presentation.GeneratorCommand;
 import thor.presentation.MainCommand;
@@ -32,16 +32,22 @@ public class MainPluginClass extends JavaPlugin {
         ItemRepository itemRepository = itemRepository(config);
         MapConfigHolder mapConfigHolder = mapConfigHolder(config);
         WorldAccessor gameWorldAccessor = gameWorldAccessor(config);
-        MapServiceImpl mapService = new MapServiceImpl(infoRepository, mapConfigHolder, itemRepository, gameWorldAccessor);
-        MainCommand mainCommand = new MainCommand(commands(config, mapService), this);
+        MapRepository mapRepository = mapRepository(config);
+        PlacedMapRepository placedMapRepository = placedMapRepository(config);
+        ArenaManager arenaManager = arenaManager(config);
+        MapServiceImpl mapService = new MapServiceImpl(infoRepository, mapConfigHolder, itemRepository, mapRepository);
+        MapEngineService mapEngineService = new MapEngineServiceImpl(mapRepository, gameWorldAccessor, arenaManager, placedMapRepository);
+        MainCommand mainCommand = new MainCommand(commands(config, mapService, mapEngineService), this);
         mainCommand.registerCommands(this);
-        registerServices(mapService);
+        registerServices(MapService.class, mapService);
+        registerServices(MapEngineService.class, mapEngineService);
     }
 
     private void saveResources() {
         saveResource("barrel.yml", false);
         saveResource("books.yml", false);
         saveResource("chest.yml", false);
+        saveResource("arena.nbt", false);
         File file = new File(getDataFolder(), "rooms");
         if (!file.exists()) {
             saveResource("rooms/example.json", false);
@@ -68,6 +74,18 @@ public class MainPluginClass extends JavaPlugin {
         return new ItemRepositoryImpl(booksPath, Map.of("chest", chestsPath, "barrel", barrelsPath));
     }
 
+    private PlacedMapRepository placedMapRepository(FileConfiguration config) {
+        return new PlacedMapRepositoryImpl();
+    }
+
+    private ArenaManager arenaManager(FileConfiguration config) {
+        return new ArenaManagerImpl(toPath(config.getString("arena", "arena.nbt")));
+    }
+
+    private MapRepository mapRepository(FileConfiguration config) {
+        return new MapRepositoryImpl();
+    }
+
     private MapConfigHolder mapConfigHolder(FileConfiguration config) {
         return new MapConfigHolderImpl(toPath(config.getString("map_config_path", "map.yml")));
     }
@@ -76,17 +94,16 @@ public class MainPluginClass extends JavaPlugin {
         return new WorldAccessorImpl(this, toPath(config.getString("structures_path", "structures")));
     }
 
-    private List<CustomCommand> commands(FileConfiguration config, MapService mapService) {
+    private List<CustomCommand> commands(FileConfiguration config, MapService mapService, MapEngineService engineService) {
         return List.of(
-                new GeneratorCommand(mapService)
+                new GeneratorCommand(mapService, engineService)
         );
     }
 
-    private void registerServices(MapService mapService) {
-        getServer().getServicesManager();
+    private <T> void registerServices(Class<T> clazz, T service) {
         getServer().getServicesManager().register(
-                MapService.class,
-                mapService,
+                clazz,
+                service,
                 this,
                 ServicePriority.Normal
         );

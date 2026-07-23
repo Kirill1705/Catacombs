@@ -7,6 +7,7 @@ import thor.core.structure.Structure;
 import thor.usefulUtils.utils.dataStructures.ImmutableOffsetBox;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class MapGraph {
     private final Map<Room, List<Edge>> rooms = new LinkedHashMap<>();
@@ -14,6 +15,10 @@ public class MapGraph {
     public void addEdge(Room from, Room to, Collection<PartTunnel> tunnel) {
         rooms.get(from).add(new Edge(from, to, tunnel));
         rooms.get(to).add(new Edge(to, from, tunnel));
+    }
+
+    public Set<Edge> getEdges() {
+        return rooms.values().stream().flatMap(Collection::stream).collect(Collectors.toSet());
     }
 
     public void addRoom(Room room) {

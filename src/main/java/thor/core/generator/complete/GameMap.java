@@ -2,21 +2,29 @@ package thor.core.generator.complete;
 
 import lombok.Getter;
 import thor.core.structure.PartTunnel;
+import thor.core.structure.PlayerSpawnNode;
 import thor.core.structure.Room;
 import thor.usefulUtils.utils.dataStructures.BlockPosition;
 import thor.usefulUtils.utils.dataStructures.Point;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Stream;
 
 public class GameMap {
     @Getter
     private final MapField field;
     @Getter
     private final MapGraph graph;
+    @Getter
+    private final UUID uuid;
 
     public GameMap(BlockPosition size) {
         graph = new MapGraph();
         field = new MapField(size);
+        uuid = UUID.randomUUID();
     }
 
     public boolean addRoom(Room room) {
@@ -33,5 +41,18 @@ public class GameMap {
         for (PartTunnel partTunnel: tunnel) {
             field.feelMap(partTunnel);
         }
+    }
+
+    public List<PlayerSpawnNode> getPlayerSpawnPlaces() {
+        List<PlayerSpawnNode> roomNodes = graph.getRooms().stream()
+                .flatMap(room -> room.getPlayerSpawnPlaces().stream())
+                .toList();
+        List<PlayerSpawnNode> tunnelNodes = graph.getAllTunnels().stream()
+                .flatMap(partTunnel -> partTunnel.getPlayerSpawnPlaces().stream())
+                .toList();
+        List<PlayerSpawnNode> result = new ArrayList<>();
+        result.addAll(roomNodes);
+        result.addAll(tunnelNodes);
+        return result;
     }
 }

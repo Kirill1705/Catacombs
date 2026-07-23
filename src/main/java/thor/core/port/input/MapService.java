@@ -3,13 +3,15 @@ package thor.core.port.input;
 import thor.core.port.mapping.dto.RoomInfoDto;
 import thor.core.port.mapping.dto.TunnelInfoDto;
 
+import java.util.UUID;
+
 public interface MapService {
+    void removeMap(UUID mapId);
     /**
-     * @param location location to place map
-     * @param placeBedrock should place bedrock box
-     * @param fillStone should fill bedrock box stone
+     * Generates new random game map
+     * @return map UUID
      */
-    void generateMap(LocationDto location, boolean placeBedrock, boolean fillStone);
+    UUID generateMap();
 
     /**
      * @param dto room to add

@@ -35,6 +35,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.UUID;
 
 @RequiredArgsConstructor
 public class WorldAccessorImpl implements WorldAccessor {
@@ -86,9 +87,15 @@ public class WorldAccessorImpl implements WorldAccessor {
 
     @Override
     public void fill(int x0, int y0, int z0, int x, int y, int z, Material material) {
-        BlockLocation corner1 = new BlockLocation(createLocation(this.location.add(new Point(x0, y0, z0))));
-        BlockLocation corner2 = new BlockLocation(createLocation(this.location.add(new Point(x, y, z))));
+        BlockLocation corner1 = new BlockLocation(createLocation(new Point(x0, y0, z0)));
+        BlockLocation corner2 = new BlockLocation(createLocation(new Point(x, y, z)));
         OtherUtils.fill(new ImmutableBox(corner1, corner2), material, false);
+    }
+
+    @Override
+    public LocationDto getPlayerLocation(UUID playerID) {
+        Location loc = Bukkit.getPlayer(playerID).getLocation();
+        return new LocationDto(loc.getWorld().getName(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
     }
 
     private List<ItemStack> getItems(List<Item> items, List<Book> books) {
