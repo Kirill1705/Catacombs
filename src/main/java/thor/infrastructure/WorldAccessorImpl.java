@@ -87,8 +87,8 @@ public class WorldAccessorImpl implements WorldAccessor {
 
     @Override
     public void fill(int x0, int y0, int z0, int x, int y, int z, Material material) {
-        BlockLocation corner1 = new BlockLocation(createLocation(this.location.add(new Point(x0, y0, z0))));
-        BlockLocation corner2 = new BlockLocation(createLocation(this.location.add(new Point(x, y, z))));
+        BlockLocation corner1 = new BlockLocation(createLocation(new Point(x0, y0, z0)));
+        BlockLocation corner2 = new BlockLocation(createLocation(new Point(x, y, z)));
         OtherUtils.fill(new ImmutableBox(corner1, corner2), material, false);
     }
 

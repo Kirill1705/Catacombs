@@ -16,7 +16,7 @@ public class StructuresMapper {
 
     public static PlayerSpawnPlaceDto toDto(PartTunnel partTunnel, BlockPosition mapPosition) {
         return new PlayerSpawnPlaceDto(
-                PositionMapper.toPositionDto(partTunnel.getPosition().add(mapPosition)),
+                PositionMapper.toPositionDto(partTunnel.getAttachmentPoint().add(mapPosition)),
                 PlayerSpawnPriority.lowest().getValue()
         );
     }

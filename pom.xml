@@ -49,7 +49,7 @@
                             <goal>copy-resources</goal>
                         </goals>
                         <configuration>
-                            <outputDirectory>/home/kirill/servers/catacombs_test/plugins</outputDirectory> <!-- Новый путь -->
+                            <outputDirectory>/home/kirill/servers/catacombs_test/plugins</outputDirectory>
                             <resources>
                                 <resource>
                                     <directory>${project.build.directory}</directory>
