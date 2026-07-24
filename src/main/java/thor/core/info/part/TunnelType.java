@@ -1,12 +1,11 @@
 package thor.core.info.part;
 
-import thor.usefulUtils.utils.dataStructures.BlockPosition;
 import thor.usefulUtils.utils.dataStructures.Point;
 
 public enum TunnelType {
     HORIZONTAL,
     VERTICAL;
-    public static TunnelType fromOffset(BlockPosition offset) {
+    public static TunnelType fromOffset(Point offset) {
         if (offset.abs().equals(new Point(0, 1, 0))) {
             return TunnelType.VERTICAL;
         }

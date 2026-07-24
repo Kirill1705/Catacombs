@@ -16,18 +16,15 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.structure.Structure;
-import org.bukkit.structure.StructureManager;
+import thor.core.exception.InvalidEnchantException;
+import thor.core.exception.InvalidMaterialException;
 import thor.core.port.input.LocationDto;
 import thor.core.port.output.WorldAccessor;
 import thor.core.structure.chest.Book;
 import thor.core.structure.chest.Item;
 import thor.customFeatures.items.ExtendedItemStack;
 import thor.usefulUtils.utils.OtherUtils;
-import thor.usefulUtils.utils.StructureUtils;
-import thor.usefulUtils.utils.dataStructures.BlockLocation;
-import thor.usefulUtils.utils.dataStructures.BlockPosition;
-import thor.usefulUtils.utils.dataStructures.ImmutableBox;
-import thor.usefulUtils.utils.dataStructures.Point;
+import thor.usefulUtils.utils.dataStructures.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -45,17 +42,17 @@ public class WorldAccessorImpl implements WorldAccessor {
     private BlockLocation location;
 
     @Override
-    public Block getBlockAt(BlockPosition position) {
+    public Block getBlockAt(Point position) {
         return location.world().getBlockAt(createLocation(position));
     }
 
     @Override
-    public void setMapPosition(LocationDto locationDto) {
-        this.location = new BlockLocation(locationDto.x(), locationDto.y(), locationDto.z(), Bukkit.getWorld(locationDto.worldName()));
+    public void setMapPosition(Point position, String worldName) {
+        this.location = BlockLocations.fromPointAndWorld(position, Bukkit.getWorld(worldName));
     }
 
     @Override
-    public void placeRoom(String textId, BlockPosition position, boolean rotated) {
+    public void placeRoom(String textId, Point position, boolean rotated) {
         try {
             File nbt = new File(structuresPath.toFile(), textId + ".nbt");
             Structure structure = plugin.getServer().getStructureManager().loadStructure(nbt);
@@ -66,12 +63,12 @@ public class WorldAccessorImpl implements WorldAccessor {
     }
 
     @Override
-    public void placeTunnel(String textId, BlockPosition position, boolean rotated, int idx) {
+    public void placeTunnel(String textId, Point position, boolean rotated, int idx) {
         placeRoom(textId + "/" + idx, position, rotated);
     }
 
     @Override
-    public void placeChest(BlockPosition position, List<Item> items, List<Book> books, Material material) {
+    public void placeChest(Point position, List<Item> items, List<Book> books, Material material) {
         Location location = createLocation(position);
         Block block = location.getBlock();
         block.setType(material);
@@ -82,14 +79,14 @@ public class WorldAccessorImpl implements WorldAccessor {
             }
             return;
         }
-        throw new RuntimeException(material + " is not container!");
+        throw new InvalidMaterialException(material.name(), "Not container");
     }
 
     @Override
     public void fill(int x0, int y0, int z0, int x, int y, int z, Material material) {
-        BlockLocation corner1 = new BlockLocation(createLocation(new Point(x0, y0, z0)));
-        BlockLocation corner2 = new BlockLocation(createLocation(new Point(x, y, z)));
-        OtherUtils.fill(new ImmutableBox(corner1, corner2), material, false);
+        Point corner1 = convertPosition(new Point(x0, y0, z0));
+        Point corner2 = convertPosition(new Point(x, y, z));
+        OtherUtils.fill(Boxes.fromCorners(corner1, corner2), material, location.world(), false);
     }
 
     @Override
@@ -108,7 +105,7 @@ public class WorldAccessorImpl implements WorldAccessor {
             ItemStack itemStack = new ItemStack(Material.ENCHANTED_BOOK);
             EnchantmentStorageMeta meta = (EnchantmentStorageMeta) itemStack.getItemMeta();
             Enchantment enchantment = RegistryAccess.registryAccess().getRegistry(RegistryKey.ENCHANTMENT).get(NamespacedKey.minecraft(book.enchId()));
-            if (enchantment==null) throw new RuntimeException("invalid enchantment name "+book.enchId());
+            if (enchantment==null) throw new InvalidEnchantException(book.enchId());
             meta.addStoredEnchant(enchantment, book.level(), true);
             itemStack.setItemMeta(meta);
             itemStacks.add(itemStack);
@@ -116,7 +113,11 @@ public class WorldAccessorImpl implements WorldAccessor {
         return itemStacks;
     }
 
-    private Location createLocation(BlockPosition position) {
-        return this.location.add(position).toBlockVector().toLocation(location.world());
+    private Location createLocation(Point position) {
+        return convertPosition(position).toLocation(location.world());
+    }
+
+    private Point convertPosition(Point position) {
+        return BlockLocations.toPoint(location).add(position);
     }
 }

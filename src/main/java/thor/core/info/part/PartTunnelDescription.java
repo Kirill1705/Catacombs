@@ -1,8 +1,8 @@
 package thor.core.info.part;
 
-import thor.usefulUtils.utils.dataStructures.BlockPosition;
+import thor.usefulUtils.utils.dataStructures.Point;
 
 import java.util.Collection;
 
-public record PartTunnelDescription(BlockPosition size, BlockPosition attachmentPoint, Collection<ChestInfo> chests, Collection<PlayerSpawnPlaceInfo> playerSpawnPlaces) {
+public record PartTunnelDescription(Point size, Point attachmentPoint, Collection<ChestInfo> chests, Collection<PlayerSpawnPlaceInfo> playerSpawnPlaces) {
 }

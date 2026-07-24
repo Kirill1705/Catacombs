@@ -1,6 +1,6 @@
 package thor.core.port.mapping.dto;
 
-import thor.usefulUtils.utils.dataStructures.BlockPosition;
+import thor.usefulUtils.utils.dataStructures.Point;
 
-public record MapConfig(BlockPosition mapSize, int roomsQuantity) {
+public record MapConfig(Point mapSize, int roomsQuantity) {
 }

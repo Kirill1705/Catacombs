@@ -1,8 +1,8 @@
 package thor.core.structure;
 
-import thor.usefulUtils.utils.dataStructures.BlockPosition;
+import thor.usefulUtils.utils.dataStructures.Point;
 
 public interface PartTunnel extends Structure, AfterPlacing {
     boolean isVertical();
-    BlockPosition getAttachmentPoint();
+    Point getAttachmentPoint();
 }

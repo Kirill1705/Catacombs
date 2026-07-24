@@ -4,14 +4,12 @@ import lombok.Getter;
 import thor.core.structure.PartTunnel;
 import thor.core.structure.PlayerSpawnNode;
 import thor.core.structure.Room;
-import thor.usefulUtils.utils.dataStructures.BlockPosition;
 import thor.usefulUtils.utils.dataStructures.Point;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Stream;
 
 public class GameMap {
     @Getter
@@ -21,7 +19,7 @@ public class GameMap {
     @Getter
     private final UUID uuid;
 
-    public GameMap(BlockPosition size) {
+    public GameMap(Point size) {
         graph = new MapGraph();
         field = new MapField(size);
         uuid = UUID.randomUUID();
@@ -29,7 +27,7 @@ public class GameMap {
 
     public boolean addRoom(Room room) {
         if (graph.canPlace(room, new Point(0, 0, 0).toBoundingBox(field.getSize().subtract(new Point(1, 1, 1))))) {
-            field.feelMap(room);
+            field.feelMap(room.toBox());
             graph.addRoom(room);
             return true;
         }
@@ -39,7 +37,7 @@ public class GameMap {
     public void addEdge(Room source, Room dest, Collection<PartTunnel> tunnel) {
         graph.addEdge(source, dest, tunnel);
         for (PartTunnel partTunnel: tunnel) {
-            field.feelMap(partTunnel);
+            field.feelMap(partTunnel.toBox());
         }
     }
 

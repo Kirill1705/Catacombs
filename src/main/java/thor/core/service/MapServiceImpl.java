@@ -14,17 +14,18 @@ import thor.core.port.input.MapService;
 import thor.core.port.mapping.ItemMapper;
 import thor.core.port.mapping.StructureInfoMapper;
 import thor.core.port.mapping.dto.MapConfig;
-import thor.core.port.mapping.dto.RoomInfoDto;
-import thor.core.port.mapping.dto.TunnelInfoDto;
-import thor.core.port.output.repository.MapRepository;
 import thor.core.port.output.repository.InfoRepository;
 import thor.core.port.output.repository.ItemRepository;
 import thor.core.port.output.repository.MapConfigHolder;
+import thor.core.port.output.repository.MapRepository;
 import thor.core.structure.chest.ItemCreator;
 import thor.core.structure.create.PartTunnelCreatorImpl;
 import thor.core.structure.create.SimpleRoomCreator;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.UUID;
 
 @AllArgsConstructor
 @Slf4j
@@ -49,24 +50,6 @@ public class MapServiceImpl implements MapService {
         tunnelGenerator.generateTunnels(gameMap);
         mapRepository.addMap(gameMap);
         return gameMap.getUuid();
-    }
-
-    public boolean addRoom(RoomInfoDto dto, boolean force) {
-        boolean success = infoRepository.exportRoomInfo(dto);
-        if (force && !success) {
-            infoRepository.updateRoomInfo(dto);
-            return true;
-        }
-        return false;
-    }
-
-    public boolean addTunnel(TunnelInfoDto dto, boolean force) {
-        boolean success = infoRepository.exportTunnelInfo(dto);
-        if (force && !success) {
-            infoRepository.updateTunnelInfo(dto);
-            return true;
-        }
-        return false;
     }
 
     private List<ItemInfo> getItems() {

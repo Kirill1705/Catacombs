@@ -1,6 +1,5 @@
 package thor.core.generator.tunnel.convert;
 
-import thor.usefulUtils.utils.dataStructures.BlockPosition;
 import thor.usefulUtils.utils.dataStructures.Point;
 
 import java.util.List;
@@ -13,12 +12,12 @@ public class ConverterChain implements Converter{
     }
 
     @Override
-    public BlockPosition getBegin() {
+    public Point getBegin() {
         return toOld(new Point(0, 0, 0));
     }
 
     @Override
-    public BlockPosition convertVector(BlockPosition old) {
+    public Point convertVector(Point old) {
         for (Converter converter: converters) {
             old = converter.convertVector(old);
         }
@@ -26,7 +25,7 @@ public class ConverterChain implements Converter{
     }
 
     @Override
-    public BlockPosition toNew(BlockPosition old) {
+    public Point toNew(Point old) {
         for (Converter converter: converters) {
             old = converter.toNew(old);
         }
@@ -34,7 +33,7 @@ public class ConverterChain implements Converter{
     }
 
     @Override
-    public BlockPosition toOld(BlockPosition position) {
+    public Point toOld(Point position) {
         for (Converter converter: converters) {
             position = converter.toOld(position);
         }

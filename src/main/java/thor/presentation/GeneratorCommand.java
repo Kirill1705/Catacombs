@@ -11,11 +11,10 @@ import io.papermc.paper.command.brigadier.argument.resolvers.BlockPositionResolv
 import io.papermc.paper.math.BlockPosition;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import thor.core.port.input.LocationDto;
 import thor.core.port.input.MapEngineService;
 import thor.core.port.input.MapPlaceOptions;
 import thor.core.port.input.MapService;
-import thor.core.port.mapping.dto.map.PlacedMapDto;
+import thor.usefulUtils.utils.dataStructures.Point;
 
 import java.util.UUID;
 
@@ -46,7 +45,7 @@ public class GeneratorCommand implements CustomCommand{
             MapPlaceOptions options = new MapPlaceOptions();
             options.setFillBedrock(placeBedrock);
             options.setFillStone(fillStone);
-            engineService.placeMap(new LocationDto(sourceStack.getLocation().getWorld().getName(), position.blockX(), position.blockY(), position.blockZ()), uuid, options);
+            engineService.placeMap(new Point(position.blockX(), position.blockY(), position.blockZ()), sourceStack.getLocation().getWorld().getName(), uuid, options);
             return 1;
         } catch (CommandSyntaxException e) {
             e.printStackTrace();

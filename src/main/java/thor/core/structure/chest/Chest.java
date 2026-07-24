@@ -2,7 +2,6 @@ package thor.core.structure.chest;
 
 import lombok.Getter;
 import org.bukkit.Material;
-import thor.core.exception.DomainValidationException;
 import thor.core.generator.tunnel.convert.Converter;
 import thor.core.info.BookInfo;
 import thor.core.info.ItemInfo;
@@ -11,7 +10,6 @@ import thor.core.info.part.ChestInfo;
 import thor.core.info.part.Quality;
 import thor.core.port.output.WorldAccessor;
 import thor.core.structure.AbstractStructurePart;
-import thor.usefulUtils.utils.dataStructures.Point;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,8 +26,6 @@ public class Chest extends AbstractStructurePart {
 
     public Chest(Converter converter, ChestInfo info, ItemCreator itemCreator) {
         super(converter, info.getPosition());
-        if (getPosition().notMore(new Point(0, 0, 0)))
-            throw new DomainValidationException(getPosition());
         this.material = info.getMaterial();
         this.quality = info.getQuality();
         List<ItemInfo> itemInfos = itemCreator.getItems(info.getFillType(), info.getSize().getValue(), info.getQuality().getValue());

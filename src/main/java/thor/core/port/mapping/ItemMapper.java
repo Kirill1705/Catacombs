@@ -8,7 +8,6 @@ import thor.core.info.part.FillType;
 import thor.core.info.part.Weight;
 import thor.core.port.mapping.dto.BookInfoDto;
 import thor.core.port.mapping.dto.ItemInfoDto;
-import thor.core.util.ConfUtils;
 
 public class ItemMapper {
     public static ItemInfo fromDto(ItemInfoDto dto) {

@@ -4,7 +4,6 @@ import lombok.Getter;
 import org.bukkit.Material;
 import thor.core.exception.DomainValidationException;
 import thor.core.util.ConfUtils;
-import thor.usefulUtils.utils.dataStructures.BlockPosition;
 import thor.usefulUtils.utils.dataStructures.Point;
 
 public class ChestInfo {
@@ -19,10 +18,10 @@ public class ChestInfo {
     @Getter
     private final FillType fillType;
     @Getter
-    private final BlockPosition position;
+    private final Point position;
 
-    public ChestInfo(ChestSize size, Quality quality, Probability probability, Material material, FillType fillType, BlockPosition position) {
-        if (position.notMore(new Point(0, 0, 0))) {
+    public ChestInfo(ChestSize size, Quality quality, Probability probability, Material material, FillType fillType, Point position) {
+        if (!position.moreOrEquals(new Point(0, 0, 0))) {
             throw new DomainValidationException(position);
         }
         this.size = size;

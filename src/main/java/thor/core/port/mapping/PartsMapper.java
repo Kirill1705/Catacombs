@@ -8,20 +8,22 @@ import thor.core.port.mapping.dto.PlayerSpawnPlaceInfoDto;
 import thor.core.structure.PlayerSpawnPriority;
 import thor.core.util.ConfUtils;
 
+import java.util.ArrayList;
+
 public final class PartsMapper {
     public static ExitInfo fromDto(ExitInfoDto dto) {
         return new ExitInfo(
                 ConfUtils.enumOrNull(dto.material(), Material::valueOf),
-                PositionMapper.fromDto(dto.position()),
-                dto.blocks() != null ? dto.blocks().stream().map(PositionMapper::fromDto).toList() : null
+                dto.position(),
+                dto.blocks() != null ? dto.blocks() : null
         );
     }
 
     public static ExitInfoDto toDto(ExitInfo domain) {
         return new ExitInfoDto(
-                PositionMapper.toDto(domain.getPosition()),
+                domain.getPosition(),
                 domain.getMaterial().name().toLowerCase(),
-                domain.getBlocks().stream().map(PositionMapper::toDto).toList()
+                new ArrayList<>(domain.getBlocks())
         );
     }
 
@@ -32,13 +34,13 @@ public final class PartsMapper {
                 new Probability(dto.probability()),
                 ConfUtils.enumOrNull(dto.material(), Material::valueOf),
                 ConfUtils.enumOrNull(dto.fillType(), FillType::valueOf),
-                PositionMapper.fromDto(dto.position())
+                dto.position()
         );
     }
 
     public static ChestInfoDto toDto(ChestInfo domain) {
         return new ChestInfoDto(
-                PositionMapper.toDto(domain.getPosition()),
+                domain.getPosition(),
                 domain.getSize().getValue(),
                 domain.getQuality().getValue(),
                 domain.getProbability().getValue(),
@@ -50,13 +52,13 @@ public final class PartsMapper {
     public static PlayerSpawnPlaceInfo fromDto(PlayerSpawnPlaceInfoDto dto) {
         return new PlayerSpawnPlaceInfo(
                 new PlayerSpawnPriority(dto.priority()),
-                PositionMapper.fromDto(dto.position())
+                dto.position()
         );
     }
 
     public static PlayerSpawnPlaceInfoDto toDto(PlayerSpawnPlaceInfo domain) {
         return new PlayerSpawnPlaceInfoDto(
-                PositionMapper.toDto(domain.getPosition()),
+                domain.getPosition(),
                 domain.getPriority().getValue()
         );
     }

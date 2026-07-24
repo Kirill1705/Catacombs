@@ -4,7 +4,7 @@ import org.bukkit.util.BoundingBox;
 import thor.core.structure.PartTunnel;
 import thor.core.structure.Room;
 import thor.core.structure.Structure;
-import thor.usefulUtils.utils.dataStructures.ImmutableOffsetBox;
+import thor.usefulUtils.utils.dataStructures.Boxes;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -26,10 +26,10 @@ public class MapGraph {
     }
 
     public boolean canPlace(Structure structure, BoundingBox mapBox) {
-        BoundingBox box = ImmutableOffsetBox.fromBeginAndSize(structure.getPosition(), structure.getSize()).toBoundingBox();
+        BoundingBox box = Boxes.fromBeginAndSize(structure.getPosition(), structure.getSize()).toBoundingBox();
         if (!mapBox.contains(box)) return false;
         for (Structure room: rooms.keySet()) {
-            if (box.overlaps(ImmutableOffsetBox.fromBeginAndSize(room.getPosition(), room.getSize()).toBoundingBox())) {
+            if (box.overlaps(Boxes.fromBeginAndSize(room.getPosition(), room.getSize()).toBoundingBox())) {
                 return false;
             }
         }

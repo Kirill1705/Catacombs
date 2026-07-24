@@ -6,7 +6,7 @@ import thor.core.info.part.PartTunnelDescription;
 import thor.core.info.part.PartTunnelInfo;
 import thor.core.info.part.TunnelType;
 import thor.core.info.part.Weight;
-import thor.usefulUtils.utils.dataStructures.BlockPosition;
+import thor.usefulUtils.utils.dataStructures.Point;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +19,7 @@ public class TunnelInfo extends StructureInfo {
     @Getter
     private final boolean isNeutral;
 
-    public TunnelInfo(BlockPosition size, Weight weight, String name, TunnelType type, List<PartTunnelDescription> parts, boolean isNeutral) {
+    public TunnelInfo(Point size, Weight weight, String name, TunnelType type, List<PartTunnelDescription> parts, boolean isNeutral) {
         super(size, weight, name, List.of(), List.of());
         this.isNeutral = isNeutral;
         if (parts.isEmpty()) {

@@ -1,9 +1,9 @@
 package thor.core.port.mapping.dto;
 
-import java.util.List;
+import thor.usefulUtils.utils.dataStructures.Point;
 
 public record PlayerSpawnPlaceInfoDto(
-        List<Integer> position,
+        Point position,
         Integer priority
 ) {
 }

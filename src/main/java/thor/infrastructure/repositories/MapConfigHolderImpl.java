@@ -1,7 +1,6 @@
 package thor.infrastructure.repositories;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
 import lombok.Data;
 import thor.core.port.mapping.dto.MapConfig;

@@ -5,17 +5,20 @@ import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
 import thor.core.port.input.MapEngineService;
 import thor.core.port.input.MapService;
+import thor.core.port.input.StructureInfoService;
 import thor.core.port.output.ArenaManager;
+import thor.core.port.output.WorldAccessor;
 import thor.core.port.output.repository.*;
 import thor.core.service.MapEngineServiceImpl;
 import thor.core.service.MapServiceImpl;
-import thor.core.port.output.WorldAccessor;
+import thor.core.service.StructureInfoServiceImpl;
 import thor.infrastructure.ArenaManagerImpl;
 import thor.infrastructure.WorldAccessorImpl;
 import thor.infrastructure.repositories.*;
 import thor.presentation.CustomCommand;
 import thor.presentation.GeneratorCommand;
 import thor.presentation.MainCommand;
+import thor.usefulUtils.reload.CommandManager;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -28,19 +31,28 @@ public class MainPluginClass extends JavaPlugin {
         saveDefaultConfig();
         saveResources();
         FileConfiguration config = getConfig();
+
         InfoRepository infoRepository = infoRepository(config);
+        ReloadableInfoRepository reloadableInfoRepository = new ReloadableInfoRepository(infoRepository);
         ItemRepository itemRepository = itemRepository(config);
+        ReloadableItemRepository reloadableItemRepository = new ReloadableItemRepository(itemRepository);
         MapConfigHolder mapConfigHolder = mapConfigHolder(config);
         WorldAccessor gameWorldAccessor = gameWorldAccessor(config);
         MapRepository mapRepository = mapRepository(config);
         PlacedMapRepository placedMapRepository = placedMapRepository(config);
         ArenaManager arenaManager = arenaManager(config);
-        MapServiceImpl mapService = new MapServiceImpl(infoRepository, mapConfigHolder, itemRepository, mapRepository);
+
+        new CommandManager().registerReloadCommand(this, List.of(reloadableInfoRepository, reloadableItemRepository));
+
+        MapServiceImpl mapService = new MapServiceImpl(reloadableInfoRepository, mapConfigHolder, reloadableItemRepository, mapRepository);
         MapEngineService mapEngineService = new MapEngineServiceImpl(mapRepository, gameWorldAccessor, arenaManager, placedMapRepository);
+        StructureInfoService structureInfoService = new StructureInfoServiceImpl(reloadableInfoRepository);
+
         MainCommand mainCommand = new MainCommand(commands(config, mapService, mapEngineService), this);
         mainCommand.registerCommands(this);
         registerServices(MapService.class, mapService);
         registerServices(MapEngineService.class, mapEngineService);
+        registerServices(StructureInfoService.class, structureInfoService);
     }
 
     private void saveResources() {

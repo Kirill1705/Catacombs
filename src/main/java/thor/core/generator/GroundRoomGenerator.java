@@ -2,31 +2,30 @@ package thor.core.generator;
 
 import lombok.extern.slf4j.Slf4j;
 import thor.core.exception.DomainValidationException;
+import thor.core.exception.RoomsNotFoundException;
 import thor.core.generator.complete.GameMap;
 import thor.core.info.RoomInfo;
 import thor.core.structure.Room;
 import thor.core.structure.create.RoomCreator;
 import thor.core.util.RandomGenerator;
 import thor.core.util.RandomGeneratorImpl;
-import thor.usefulUtils.utils.dataStructures.BlockPosition;
 import thor.usefulUtils.utils.dataStructures.Point;
 
 import java.util.List;
-import java.util.logging.Logger;
 
 @Slf4j
 public class GroundRoomGenerator implements RoomGenerator{
     private final RandomGenerator<RoomInfo> rawRooms;
-    private final BlockPosition size;
+    private final Point size;
     private final int roomsQuantity;
     private final RoomCreator creator;
 
-    public GroundRoomGenerator(List<RoomInfo> roomInfos, BlockPosition size, int roomsQuantity, RoomCreator creator) {
+    public GroundRoomGenerator(List<RoomInfo> roomInfos, Point size, int roomsQuantity, RoomCreator creator) {
         this.creator = creator;
         if (roomInfos.isEmpty()) {
-            throw new DomainValidationException(roomInfos);
+            throw new RoomsNotFoundException();
         }
-        if (size.notMore(new Point(0, 0, 0))) {
+        if (!size.more(new Point(0, 0, 0))) {
             throw new DomainValidationException(size);
         }
         if (roomsQuantity < 0) {

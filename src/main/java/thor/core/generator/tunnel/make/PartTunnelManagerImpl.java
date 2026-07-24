@@ -12,7 +12,6 @@ import thor.core.info.part.TunnelType;
 import thor.core.structure.Exit;
 import thor.core.structure.PartTunnel;
 import thor.core.structure.create.PartTunnelCreator;
-import thor.usefulUtils.utils.dataStructures.BlockPosition;
 import thor.usefulUtils.utils.dataStructures.Point;
 
 import java.util.Collection;
@@ -24,7 +23,7 @@ import java.util.Map;
 public class PartTunnelManagerImpl implements PartTunnelManager {
     private final TunnelPartsDispenser dispenser;
     @Getter
-    private final BlockPosition size;
+    private final Point size;
     @Getter
     private final Converter converter;
     private final PartTunnelCreator creator;
@@ -80,7 +79,7 @@ public class PartTunnelManagerImpl implements PartTunnelManager {
     @Override
     public boolean canPlace(TunnelCreatorNode node) {
         PartTunnel partTunnel = create(node);
-        return field.canPlaceByMap(partTunnel);
+        return field.canPlaceByMap(partTunnel.toBox());
     }
 
     @Override

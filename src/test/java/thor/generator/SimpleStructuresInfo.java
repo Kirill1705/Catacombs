@@ -8,7 +8,7 @@ import thor.core.info.part.ExitInfo;
 import thor.core.info.part.PartTunnelDescription;
 import thor.core.info.part.TunnelType;
 import thor.core.info.part.Weight;
-import thor.usefulUtils.utils.dataStructures.BlockPosition;
+import thor.usefulUtils.utils.dataStructures.Point;
 import thor.usefulUtils.utils.dataStructures.Point;
 
 import java.util.List;
@@ -20,7 +20,7 @@ public enum SimpleStructuresInfo {
     private final List<TunnelInfo> tunnelInfos;
 
     SimpleStructuresInfo() {
-        BlockPosition size = new Point(5, 5, 5);
+        Point size = new Point(5, 5, 5);
         List<ExitInfo> exits = List.of(
                 new ExitInfo(null, new Point(0, 1, 2), List.of()),
                 new ExitInfo(null, new Point(2, 1, 0), List.of()),

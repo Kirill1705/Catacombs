@@ -1,9 +1,9 @@
 package thor.core.port.mapping.dto.map;
 
-import thor.core.port.mapping.dto.PositionDto;
+import thor.usefulUtils.utils.dataStructures.Point;
 
 public record PlayerSpawnPlaceDto(
-        PositionDto positionDto,
+        Point positionDto,
         int priority
 ) {
 }

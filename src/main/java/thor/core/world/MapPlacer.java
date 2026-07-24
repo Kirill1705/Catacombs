@@ -3,11 +3,10 @@ package thor.core.world;
 import lombok.Getter;
 import org.bukkit.Material;
 import thor.core.generator.complete.GameMap;
-import thor.core.port.input.LocationDto;
 import thor.core.port.output.WorldAccessor;
 import thor.core.structure.PartTunnel;
 import thor.core.structure.Room;
-import thor.usefulUtils.utils.dataStructures.BlockPosition;
+import thor.usefulUtils.utils.dataStructures.Point;
 
 import java.util.Collection;
 
@@ -21,9 +20,9 @@ public class MapPlacer {
         this.worldAccessor = worldAccessor;
     }
 
-    public void place(LocationDto location, boolean placeBedrock, boolean fillStone) {
-        worldAccessor.setMapPosition(location);
-        BlockPosition size = map.getField().getSize();
+    public void place(Point position, String worldName, boolean placeBedrock, boolean fillStone) {
+        worldAccessor.setMapPosition(position, worldName);
+        Point size = map.getField().getSize();
         if (placeBedrock) {
             fillBedrock(size);
         }
@@ -43,7 +42,7 @@ public class MapPlacer {
         allTunnels.forEach(partTunnel -> partTunnel.afterPlace(worldAccessor));
     }
 
-    private void fillBedrock(BlockPosition size) {
+    private void fillBedrock(Point size) {
         worldAccessor.fill(-1, -1, -1, -1, size.y(), size.z(), Material.BEDROCK);
         worldAccessor.fill(-1, -1, -1, size.x(), size.y(), -1, Material.BEDROCK);
         worldAccessor.fill(-1, -1, -1, size.x(), -1, size.z(), Material.BEDROCK);

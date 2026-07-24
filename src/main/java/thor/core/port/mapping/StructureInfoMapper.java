@@ -16,8 +16,8 @@ import java.util.List;
 public final class StructureInfoMapper {
     public static PartTunnelDescription fromDto(PartTunnelDescriptionDto dto) {
         return new PartTunnelDescription(
-                PositionMapper.fromDto(dto.size()),
-                PositionMapper.fromDto(dto.attachmentPoint()),
+                dto.size(),
+                dto.attachmentPoint(),
                 dto.chests() != null ? dto.chests().stream().map(PartsMapper::fromDto).toList() : List.of(),
                 dto.playerSpawnPlaces() != null ? dto.playerSpawnPlaces().stream().map(PartsMapper::fromDto).toList() : List.of()
         );
@@ -25,8 +25,8 @@ public final class StructureInfoMapper {
 
     public static PartTunnelDescriptionDto toDto(PartTunnelInfo domain) {
         return new PartTunnelDescriptionDto(
-                PositionMapper.toDto(domain.getSize()),
-                PositionMapper.toDto(domain.getAttachmentPoint()),
+                domain.getSize(),
+                domain.getAttachmentPoint(),
                 domain.getChests().stream().map(PartsMapper::toDto).toList(),
                 domain.getPlayerSpawnPlaces().stream().map(PartsMapper::toDto).toList()
         );
@@ -34,7 +34,7 @@ public final class StructureInfoMapper {
 
     public static TunnelInfo fromDto(TunnelInfoDto dto) {
         return new TunnelInfo(
-                PositionMapper.fromDto(dto.size()),
+                dto.size(),
                 new Weight(dto.weight()),
                 dto.id(),
                 ConfUtils.enumOrNull(dto.type(), TunnelType::valueOf),
@@ -45,7 +45,7 @@ public final class StructureInfoMapper {
 
     public static TunnelInfoDto toDto(TunnelInfo domain) {
         return new TunnelInfoDto(
-                PositionMapper.toDto(domain.getSize()),
+                domain.getSize(),
                 domain.getType().name().toLowerCase(),
                 domain.getTextId(),
                 domain.getWeight().value(),
@@ -60,7 +60,7 @@ public final class StructureInfoMapper {
                 dto.exits().stream().map(PartsMapper::fromDto).toList(),
                 dto.id(),
                 dto.playerSpawnPlaces() != null ? dto.playerSpawnPlaces().stream().map(PartsMapper::fromDto).toList() : List.of(),
-                PositionMapper.fromDto(dto.size()),
+                dto.size(),
                 dto.chests() != null ? dto.chests().stream().map(PartsMapper::fromDto).toList() : List.of(),
                 dto.tunnels()
         );
@@ -70,7 +70,7 @@ public final class StructureInfoMapper {
         return new RoomInfoDto(
                 domain.getTextId(),
                 domain.getWeight().value(),
-                PositionMapper.toDto(domain.getSize()),
+                domain.getSize(),
                 domain.getChests().stream().map(PartsMapper::toDto).toList(),
                 domain.getPlayerSpawnPlaces().stream().map(PartsMapper::toDto).toList(),
                 domain.getExits().stream().map(PartsMapper::toDto).toList(),
