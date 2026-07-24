@@ -14,7 +14,6 @@ import thor.core.structure.Exit;
 import thor.core.structure.PartTunnel;
 import thor.core.structure.Room;
 import thor.core.structure.create.PartTunnelCreator;
-import thor.core.structure.create.PartTunnelCreatorImpl;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -36,6 +35,11 @@ public class GroundTunnelGenerator implements TunnelGenerator {
         vertical = tunnelInfos.stream()
                 .filter(tunnelInfo -> tunnelInfo.getType().equals(TunnelType.VERTICAL))
                 .toList();
+        if (horizontal.isEmpty() || vertical.isEmpty()) {
+            log.error("Cant generate tunnel. Not all categories of tunnels found.");
+            throw new IllegalStateException("not all categories of tunnels found");
+        }
+
         this.dispenser = dispenser;
         this.creator = creator;
     }

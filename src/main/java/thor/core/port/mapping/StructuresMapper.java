@@ -4,19 +4,19 @@ import thor.core.port.mapping.dto.map.PlayerSpawnPlaceDto;
 import thor.core.structure.PartTunnel;
 import thor.core.structure.PlayerSpawnNode;
 import thor.core.structure.PlayerSpawnPriority;
-import thor.usefulUtils.utils.dataStructures.BlockPosition;
+import thor.usefulUtils.utils.dataStructures.Point;
 
 public class StructuresMapper {
-    public static PlayerSpawnPlaceDto toDto(PlayerSpawnNode node, BlockPosition mapPosition) {
+    public static PlayerSpawnPlaceDto toDto(PlayerSpawnNode node, Point mapPosition) {
         return new PlayerSpawnPlaceDto(
-                PositionMapper.toPositionDto(node.getPosition().add(mapPosition)),
+                node.getPosition().add(mapPosition),
                 node.getPriority().getValue()
         );
     }
 
-    public static PlayerSpawnPlaceDto toDto(PartTunnel partTunnel, BlockPosition mapPosition) {
+    public static PlayerSpawnPlaceDto toDto(PartTunnel partTunnel, Point mapPosition) {
         return new PlayerSpawnPlaceDto(
-                PositionMapper.toPositionDto(partTunnel.getAttachmentPoint().add(mapPosition)),
+                partTunnel.getAttachmentPoint().add(mapPosition),
                 PlayerSpawnPriority.lowest().getValue()
         );
     }

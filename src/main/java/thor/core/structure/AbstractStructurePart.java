@@ -2,13 +2,13 @@ package thor.core.structure;
 
 import lombok.Getter;
 import thor.core.generator.tunnel.convert.Converter;
-import thor.usefulUtils.utils.dataStructures.BlockPosition;
+import thor.usefulUtils.utils.dataStructures.Point;
 
 public abstract class AbstractStructurePart {
     @Getter
-    private final BlockPosition position;
+    private final Point position;
 
-    public AbstractStructurePart(Converter converter, BlockPosition localPosition) {
+    public AbstractStructurePart(Converter converter, Point localPosition) {
         this.position = converter.toOld(localPosition);
     }
 }

@@ -8,16 +8,15 @@ import thor.core.info.part.PartTunnelInfo;
 import thor.core.structure.PartTunnel;
 import thor.core.structure.PartTunnelImpl;
 import thor.core.structure.chest.ItemCreator;
-import thor.usefulUtils.utils.dataStructures.BlockPosition;
 import thor.usefulUtils.utils.dataStructures.Point;
 
 import java.util.List;
 
 public record PartTunnelCreatorImpl(ItemCreator generator) implements PartTunnelCreator {
     @Override
-    public PartTunnel create(BlockPosition attachmentPoint, BlockPosition offset, PartTunnelInfo info, Converter converter) {
+    public PartTunnel create(Point attachmentPoint, Point offset, PartTunnelInfo info, Converter converter) {
         Converter localConverter;
-        BlockPosition infoAttachmentPoint = info.getAttachmentPoint();
+        Point infoAttachmentPoint = info.getAttachmentPoint();
         boolean rotated;
         if (offset.equals(new Point(0, 0, 1))) {
             infoAttachmentPoint = new Point(infoAttachmentPoint.z(), infoAttachmentPoint.y(), infoAttachmentPoint.x());

@@ -1,17 +1,17 @@
 package thor.core.generator.tunnel.make;
 
 import lombok.Getter;
-import thor.usefulUtils.utils.dataStructures.BlockPosition;
+import thor.usefulUtils.utils.dataStructures.Point;
 
 @Getter
 public final class TunnelCreatorNode {
-    private final BlockPosition position;
+    private final Point position;
     private final TunnelCreatorNodeStat status;
-    private final BlockPosition offset;
+    private final Point offset;
     private final TunnelCreatorNode parent;
     private final VerticalCount verticalCount;
 
-    public TunnelCreatorNode(BlockPosition position, TunnelCreatorNodeStat status, TunnelCreatorNode parent, BlockPosition offset) {
+    public TunnelCreatorNode(Point position, TunnelCreatorNodeStat status, TunnelCreatorNode parent, Point offset) {
         if (offset.abs().sumXYZ() != 1) {
             throw new RuntimeException("This is not offset " + offset);
         }
@@ -23,11 +23,11 @@ public final class TunnelCreatorNode {
         this.verticalCount = new VerticalCount(parent, status);
     }
 
-    public TunnelCreatorNode(TunnelCreatorNode parent, BlockPosition physicalOffset, TunnelCreatorNodeStat status, BlockPosition offset) {
+    public TunnelCreatorNode(TunnelCreatorNode parent, Point physicalOffset, TunnelCreatorNodeStat status, Point offset) {
         this(parent.position.add(physicalOffset), status, parent, offset);
     }
 
-    public TunnelCreatorNode(TunnelCreatorNode parent, BlockPosition physicalOffset, BlockPosition offset) {
+    public TunnelCreatorNode(TunnelCreatorNode parent, Point physicalOffset, Point offset) {
         this(parent, physicalOffset, parent.status, offset);
     }
 

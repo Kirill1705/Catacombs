@@ -1,14 +1,13 @@
 package thor.core.generator.tunnel.convert;
 
 import lombok.Getter;
-import thor.usefulUtils.utils.dataStructures.BlockPosition;
 import thor.usefulUtils.utils.dataStructures.Point;
 
 public class ConverterImpl implements Converter{
     @Getter
-    private final BlockPosition begin;
-    private final BlockPosition matrix;
-    public ConverterImpl(BlockPosition begin, BlockPosition end) {
+    private final Point begin;
+    private final Point matrix;
+    public ConverterImpl(Point begin, Point end) {
         this.begin = begin;
         matrix = new Point(signum(end.x()-begin.x()), signum(end.y()-begin.y()), signum(end.z()-begin.z()));
     }
@@ -21,15 +20,15 @@ public class ConverterImpl implements Converter{
         return signum;
     }
 
-    public BlockPosition convertVector(BlockPosition old) {
+    public Point convertVector(Point old) {
         return old.multiply(matrix);
     }
 
-    public BlockPosition toNew(BlockPosition old) {
+    public Point toNew(Point old) {
         return old.subtract(begin).multiply(matrix);
     }
 
-    public BlockPosition toOld(BlockPosition position) {
+    public Point toOld(Point position) {
         return position.multiply(matrix).add(begin);
     }
 }

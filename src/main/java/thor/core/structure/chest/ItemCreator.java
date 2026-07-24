@@ -1,5 +1,7 @@
 package thor.core.structure.chest;
 
+import thor.core.exception.EmptyListForGeneratorException;
+import thor.core.exception.MissingItemsForFillTypeException;
 import thor.core.info.ItemInfo;
 import thor.core.info.part.FillType;
 import thor.core.util.RandomGenerator;
@@ -15,7 +17,12 @@ public class ItemCreator {
             List<ItemInfo> typeItems = items.stream()
                     .filter(itemInfo -> itemInfo.getFillType() == type)
                     .toList();
-            generators.put(type, new RandomGeneratorImpl<>(typeItems));
+            try {
+                generators.put(type, new RandomGeneratorImpl<>(typeItems));
+            }
+            catch (EmptyListForGeneratorException e) {
+                throw new MissingItemsForFillTypeException(type.name());
+            }
         }
     }
 

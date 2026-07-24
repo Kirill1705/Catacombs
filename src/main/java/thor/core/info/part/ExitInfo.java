@@ -6,7 +6,6 @@ import org.bukkit.Tag;
 import org.bukkit.block.Block;
 import thor.core.exception.DomainValidationException;
 import thor.core.util.ConfUtils;
-import thor.usefulUtils.utils.dataStructures.BlockPosition;
 import thor.usefulUtils.utils.dataStructures.Point;
 
 import java.util.Collection;
@@ -15,25 +14,25 @@ import java.util.List;
 
 public class ExitInfo {
     @Getter
-    private final BlockPosition position;
+    private final Point position;
     @Getter
     private final Material material;
-    private final Collection<BlockPosition> blocks;
+    private final Collection<Point> blocks;
 
-    public ExitInfo(Material material, BlockPosition position, Collection<BlockPosition> blocks) {
-        if (position.notMore(new Point(0, 0, 0)))
+    public ExitInfo(Material material, Point position, Collection<Point> blocks) {
+        if (!position.moreOrEquals(new Point(0, 0, 0)))
             throw new DomainValidationException(position);
         this.blocks = ConfUtils.takeOrDefault(blocks, List.of());
         this.position = position;
         this.material = ConfUtils.takeOrDefault(material, Material.AIR);
     }
 
-    public BlockPosition getOffset(BlockPosition roomSize) {
+    public Point getOffset(Point roomSize) {
         return new Point(predicateToOffset(position.x() == 0, position.x() == roomSize.x()-1), predicateToOffset(position.y() == 0, position.y() == roomSize.y()-1), predicateToOffset(position.z() == 0, position.z() == roomSize.z()-1));
     }
 
-    public ExitType getType(BlockPosition roomSize) {
-        BlockPosition offset = getOffset(roomSize);
+    public ExitType getType(Point roomSize) {
+        Point offset = getOffset(roomSize);
         if (Math.abs(offset.sumXYZ()) != 1) {
             throw new DomainValidationException(offset);
         }
@@ -58,7 +57,7 @@ public class ExitInfo {
         return block.isSolid() && !block.isPassable() && !isExitMaterial(block.getType());
     }
 
-    public Collection<BlockPosition> getBlocks() {
+    public Collection<Point> getBlocks() {
         return Collections.unmodifiableCollection(blocks);
     }
 

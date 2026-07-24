@@ -1,16 +1,14 @@
 package thor.core.port.mapping.dto.map;
 
 import thor.core.generator.complete.GameMap;
-import thor.core.port.mapping.PositionMapper;
 import thor.core.port.mapping.StructuresMapper;
 import thor.core.structure.PartTunnel;
-import thor.usefulUtils.utils.dataStructures.BlockPosition;
 import thor.usefulUtils.utils.dataStructures.Point;
 
 import java.util.*;
 
 public class PlacedMapMapper {
-    public static PlacedMapDto toDto(GameMap map, BlockPosition mapPosition, String worldName, int spawnPlacesCount) {
+    public static PlacedMapDto toDto(GameMap map, Point mapPosition, String worldName, int spawnPlacesCount) {
         List<PlayerSpawnPlaceDto> playerSpawnPlaces = new ArrayList<>(map.getPlayerSpawnPlaces().stream().map(node -> StructuresMapper.toDto(node, mapPosition)).toList());
         Collections.shuffle(playerSpawnPlaces);
         if (playerSpawnPlaces.size() < spawnPlacesCount) {
@@ -25,8 +23,8 @@ public class PlacedMapMapper {
         return new PlacedMapDto(
                 UUID.randomUUID(),
                 worldName,
-                PositionMapper.toPositionDto(mapPosition),
-                PositionMapper.toPositionDto(mapPosition.add(map.getField().getSize()).subtract(new Point(1, 1, 1))),
+                mapPosition,
+                mapPosition.add(map.getField().getSize()).subtract(new Point(1, 1, 1)),
                 playerSpawnPlaces
         );
     }

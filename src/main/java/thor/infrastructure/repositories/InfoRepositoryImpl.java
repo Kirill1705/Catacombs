@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import thor.core.port.mapping.dto.RoomInfoDto;
 import thor.core.port.mapping.dto.TunnelInfoDto;
 import thor.core.port.output.repository.InfoRepository;
+import thor.infrastructure.json.ModuleCreator;
 
 import java.io.File;
 import java.io.IOException;
@@ -24,6 +25,7 @@ public class InfoRepositoryImpl implements InfoRepository {
         this.tunnels = tunnels;
         mapper = new ObjectMapper();
         mapper.setPropertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE);
+        mapper.registerModule(new ModuleCreator().pointModule());
     }
 
     @Override

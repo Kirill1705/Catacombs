@@ -1,7 +1,7 @@
 package thor.core.generator.tunnel.make;
 
 import thor.core.exception.DomainValidationException;
-import thor.usefulUtils.utils.dataStructures.BlockPosition;
+import thor.usefulUtils.utils.dataStructures.Point;
 
 public class TunnelPartsDispenserImpl implements TunnelPartsDispenser {
     private final double startNeutralPart;
@@ -14,7 +14,7 @@ public class TunnelPartsDispenserImpl implements TunnelPartsDispenser {
     }
 
     @Override
-    public TunnelProgress getProgress(BlockPosition size, BlockPosition position) {
+    public TunnelProgress getProgress(Point size, Point position) {
         double completeDistance = position.size();
         if (completeDistance / size.size() < startNeutralPart) {
             return TunnelProgress.START;

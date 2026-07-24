@@ -1,7 +1,6 @@
 package thor.core.generator.tunnel.make;
 
 import thor.core.structure.PartTunnel;
-import thor.usefulUtils.utils.dataStructures.BlockPosition;
 import thor.usefulUtils.utils.dataStructures.Point;
 
 import java.util.*;
@@ -9,8 +8,8 @@ import java.util.stream.Stream;
 
 public enum TunnelCreator {
     VALUE;
-    public List<PartTunnel> tryCreateTunnel(PartTunnelManager tunnelManager, BlockPosition size, BlockPosition sourceOffset, BlockPosition destOffset) {
-        if (!isOffset(sourceOffset) || !isOffset(destOffset) || size.notMore(new Point(1, 1, 1)) || !checkOffsets(sourceOffset, destOffset)) {
+    public List<PartTunnel> tryCreateTunnel(PartTunnelManager tunnelManager, Point size, Point sourceOffset, Point destOffset) {
+        if (!isOffset(sourceOffset) || !isOffset(destOffset) || !size.more(new Point(0, 0, 0)) || !checkOffsets(sourceOffset, destOffset)) {
             return null;
         }
         TunnelCreatorNode node = bfs(tunnelManager, size, sourceOffset, destOffset);
@@ -25,7 +24,7 @@ public enum TunnelCreator {
         return result;
     }
 
-    private TunnelCreatorNode bfs(PartTunnelManager tunnelManager, BlockPosition size, BlockPosition sourceOffset, BlockPosition destOffset) {
+    private TunnelCreatorNode bfs(PartTunnelManager tunnelManager, Point size, Point sourceOffset, Point destOffset) {
         Queue<TunnelCreatorNode> queue = new LinkedList<>();
         TunnelCreatorNode firstNode = createFirstNode(sourceOffset, destOffset);
         if (!tunnelManager.canPlace(firstNode)) {
@@ -34,7 +33,7 @@ public enum TunnelCreator {
         queue.add(firstNode);
         Set<Vertex> visited = new HashSet<>();
         visited.add(new Vertex(new Point(0, 0, 0), firstNode.getStatus()));
-        BlockPosition destination = size.subtract(new Point(1, 1, 1));
+        Point destination = size.subtract(new Point(1, 1, 1));
         while (!queue.isEmpty()) {
             TunnelCreatorNode node = queue.remove();
             if (node.getPosition().equals(destination) && node.getOffset().multiply(-1).equals(destOffset)) {
@@ -42,8 +41,8 @@ public enum TunnelCreator {
             }
             Collection<TunnelCreatorNode> neighbors = getNeighbors(node, destination, destOffset).stream()
                     .filter(neighbor ->
-                            neighbor.getPosition().notLess(new Point(0, 0, 0)) &&
-                            neighbor.getPosition().notMore(destination) &&
+                            neighbor.getPosition().moreOrEquals(new Point(0, 0, 0)) &&
+                            neighbor.getPosition().lessOrEquals(destination) &&
                             !visited.contains(new Vertex(neighbor.getPosition(), neighbor.getStatus())) &&
                             !(destOffset.equals(new Point(0, -1, 0)) && neighbor.getStatus() != TunnelCreatorNodeStat.VERTICAL && neighbor.getPosition().y() != destination.y() && neighbor.getPosition().x() == destination.x() && neighbor.getPosition().z() == destination.z()) &&
                             tunnelManager.canPlace(neighbor)
@@ -57,19 +56,19 @@ public enum TunnelCreator {
         return null;
     }
 
-    private boolean isOffset(BlockPosition position) {
-        BlockPosition abs = position.abs();
+    private boolean isOffset(Point position) {
+        Point abs = position.abs();
         return abs.sumXYZ() == 1 && (abs.x() == 1 || abs.y() == 1 || abs.z() == 1);
     }
 
-    private TunnelCreatorNode createFirstNode(BlockPosition sourceOffset, BlockPosition destOffset) {
+    private TunnelCreatorNode createFirstNode(Point sourceOffset, Point destOffset) {
         TunnelCreatorNodeStat status = getFirstStatus(sourceOffset, destOffset);
         return new TunnelCreatorNode(new Point(0, 0, 0), status, null, Stream.of(new Point(1, 0, 0), new Point(0, 1, 0), new Point(0, 0, 1))
                 .filter(type -> type.equals(sourceOffset))
                 .findAny().get());
     }
 
-    private TunnelCreatorNodeStat getFirstStatus(BlockPosition sourceOffset, BlockPosition destOffset) {
+    private TunnelCreatorNodeStat getFirstStatus(Point sourceOffset, Point destOffset) {
         if (sourceOffset.equals(new Point(0, 1, 0))) {
             return TunnelCreatorNodeStat.VERTICAL;
         }
@@ -83,11 +82,11 @@ public enum TunnelCreator {
         }
     }
 
-    private boolean checkOffsets(BlockPosition sourceOffset, BlockPosition destOffset) {
-        return sourceOffset.notLess(new Point(0, 0, 0)) && destOffset.notMore(new Point(0, 0, 0));
+    private boolean checkOffsets(Point sourceOffset, Point destOffset) {
+        return sourceOffset.moreOrEquals(new Point(0, 0, 0)) && destOffset.lessOrEquals(new Point(0, 0, 0));
     }
 
-    private Collection<TunnelCreatorNode> getNeighbors(TunnelCreatorNode node, BlockPosition dest, BlockPosition destOffset) {
+    private Collection<TunnelCreatorNode> getNeighbors(TunnelCreatorNode node, Point dest, Point destOffset) {
         List<TunnelCreatorNode> result = new ArrayList<>(getOffsets(node.getOffset())
                 .stream()
                 .map(offset -> new TunnelCreatorNode(node, offset, node.getOffset()))
@@ -110,7 +109,7 @@ public enum TunnelCreator {
         return result;
     }
 
-    private List<BlockPosition> getOffsets(BlockPosition offset) {
+    private List<Point> getOffsets(Point offset) {
         if (offset.equals(new Point(0, 1, 0))) {
             return Collections.singletonList(new Point(0, 1, 0));
         } else if (offset.equals(new Point(1, 0, 0))) {
@@ -121,9 +120,9 @@ public enum TunnelCreator {
         throw new IllegalArgumentException();
     }
 
-    private List<BlockPosition> getOffsetAfterVertical() {
+    private List<Point> getOffsetAfterVertical() {
         return List.of(new Point(1, 0, 0), new Point(0, 0, 1));
     }
 
-    private record Vertex(BlockPosition position, TunnelCreatorNodeStat status) {}
+    private record Vertex(Point position, TunnelCreatorNodeStat status) {}
 }

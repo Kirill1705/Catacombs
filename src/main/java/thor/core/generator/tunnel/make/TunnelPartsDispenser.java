@@ -1,7 +1,7 @@
 package thor.core.generator.tunnel.make;
 
-import thor.usefulUtils.utils.dataStructures.BlockPosition;
+import thor.usefulUtils.utils.dataStructures.Point;
 
 public interface TunnelPartsDispenser {
-    TunnelProgress getProgress(BlockPosition size, BlockPosition position);
+    TunnelProgress getProgress(Point size, Point position);
 }

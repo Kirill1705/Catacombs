@@ -7,12 +7,12 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.structure.Structure;
-import thor.core.port.mapping.dto.PositionDto;
 import thor.core.port.output.ArenaManager;
 import thor.usefulUtils.utils.StructureUtils;
 import thor.usefulUtils.utils.dataStructures.BlockLocation;
-import thor.usefulUtils.utils.dataStructures.BlockPosition;
+import thor.usefulUtils.utils.dataStructures.BlockLocations;
 import thor.usefulUtils.utils.dataStructures.Point;
+import thor.usefulUtils.utils.dataStructures.Points;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -23,24 +23,24 @@ import java.util.UUID;
 @Slf4j
 public class ArenaManagerImpl implements ArenaManager {
     private final Path structurePath;
-    private final BlockPosition size;
+    private final Point size;
 
     private final Map<UUID, BlockLocation> locationMap;
 
     public ArenaManagerImpl(Path structurePath) {
         this.structurePath = structurePath;
-        size = new Point(loadStructure(structurePath).getSize());
+        size = Points.fromVector(loadStructure(structurePath).getSize());
         locationMap = new HashMap<>();
     }
 
     @Override
-    public void placeArena(PositionDto position, String worldName) {
+    public void placeArena(Point position, String worldName) {
         Structure structure = loadStructure(structurePath);
         StructureUtils.place(structure, new Location(Bukkit.getWorld(worldName), position.x(), 0, position.z()));
     }
 
     @Override
-    public void tpPlayerToArena(UUID playerId, PositionDto position, String worldName) {
+    public void tpPlayerToArena(UUID playerId, Point position, String worldName) {
         World world = Bukkit.getWorld(worldName);
         final int maxAttemptCount = 10;
         for (int i = 0; i < maxAttemptCount; i++) {
@@ -55,7 +55,7 @@ public class ArenaManagerImpl implements ArenaManager {
                 upper.setType(Material.AIR);
             }
             if (!block.isSolid() && !upper.isSolid()) {
-                locationMap.put(playerId, new BlockLocation(location));
+                locationMap.put(playerId, BlockLocations.fromLocation(location));
                 Bukkit.getPlayer(playerId).teleport(location);
                 return;
             }
@@ -69,7 +69,7 @@ public class ArenaManagerImpl implements ArenaManager {
             return false;
         }
         BlockLocation location = locationMap.get(playerId);
-        Bukkit.getPlayer(playerId).teleport(location.toLocation());
+        Bukkit.getPlayer(playerId).teleport(BlockLocations.toLocation(location));
         return true;
     }
 

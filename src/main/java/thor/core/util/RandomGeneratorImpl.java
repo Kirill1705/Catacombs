@@ -1,6 +1,6 @@
 package thor.core.util;
 
-import com.google.common.base.Preconditions;
+import thor.core.exception.EmptyListForGeneratorException;
 import thor.core.info.Weightable;
 
 import java.util.ArrayList;
@@ -12,7 +12,9 @@ public class RandomGeneratorImpl<T extends Weightable> implements RandomGenerato
     private long totalWeight = 0;
 
     public RandomGeneratorImpl(List<T> info) {
-        Preconditions.checkArgument(!info.isEmpty(), "List should contains at least 1 object!");
+        if (info.isEmpty()) {
+            throw new EmptyListForGeneratorException();
+        };
         info = new ArrayList<>(info);
         info.sort((o1, o2) -> Integer.compare(o2.getWeight().value(), o1.getWeight().value()));
         for (T item : info) {

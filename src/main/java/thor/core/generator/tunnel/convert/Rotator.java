@@ -1,6 +1,5 @@
 package thor.core.generator.tunnel.convert;
 
-import thor.usefulUtils.utils.dataStructures.BlockPosition;
 import thor.usefulUtils.utils.dataStructures.Point;
 
 public class Rotator implements Converter {
@@ -11,26 +10,26 @@ public class Rotator implements Converter {
     }
 
     @Override
-    public BlockPosition getBegin() {
+    public Point getBegin() {
         return converter.getBegin();
     }
 
     @Override
-    public BlockPosition convertVector(BlockPosition old) {
+    public Point convertVector(Point old) {
         return converter.convertVector(rotate(old));
     }
 
     @Override
-    public BlockPosition toNew(BlockPosition old) {
+    public Point toNew(Point old) {
         return converter.toNew(rotate(old));
     }
 
     @Override
-    public BlockPosition toOld(BlockPosition position) {
+    public Point toOld(Point position) {
         return converter.toOld(rotate(position));
     }
 
-    private BlockPosition rotate(BlockPosition position) {
+    private Point rotate(Point position) {
         return new Point(position.z(), position.y(), position.x());
     }
 }
