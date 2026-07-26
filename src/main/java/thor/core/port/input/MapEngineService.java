@@ -1,5 +1,6 @@
 package thor.core.port.input;
 
+import thor.core.port.mapping.MapPlaceOptions;
 import thor.core.port.mapping.dto.map.PlacedMapDto;
 import thor.usefulUtils.utils.dataStructures.Point;
 

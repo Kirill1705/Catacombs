@@ -12,7 +12,7 @@ import io.papermc.paper.math.BlockPosition;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import thor.core.port.input.MapEngineService;
-import thor.core.port.input.MapPlaceOptions;
+import thor.core.port.mapping.MapPlaceOptions;
 import thor.core.port.input.MapService;
 import thor.usefulUtils.utils.dataStructures.Point;
 

@@ -4,11 +4,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import thor.core.generator.complete.GameMap;
 import thor.core.port.input.MapEngineService;
-import thor.core.port.input.MapPlaceOptions;
+import thor.core.port.mapping.MapPlaceOptions;
 import thor.core.port.mapping.dto.map.PlacedMapDto;
 import thor.core.port.mapping.dto.map.PlacedMapMapper;
 import thor.core.port.output.ArenaManager;
-import thor.core.port.output.WorldAccessor;
+import thor.core.port.output.StructureManager;
+import thor.core.port.output.WorldAccessorCreator;
 import thor.core.port.output.repository.MapRepository;
 import thor.core.port.output.repository.PlacedMapRepository;
 import thor.core.world.MapPlacer;
@@ -21,9 +22,10 @@ import java.util.UUID;
 @Slf4j
 public class MapEngineServiceImpl implements MapEngineService {
     private final MapRepository mapRepository;
-    private final WorldAccessor accessor;
+    private final WorldAccessorCreator accessor;
     private final ArenaManager arenaManager;
     private final PlacedMapRepository placedMapRepository;
+    private final StructureManager structureManager;
 
     @Override
     public PlacedMapDto placeMap(Point point, String worldName, UUID mapId, MapPlaceOptions options) {
@@ -31,8 +33,8 @@ public class MapEngineServiceImpl implements MapEngineService {
         if (gameMap.isEmpty()) {
             throw new IllegalArgumentException();
         }
-        MapPlacer mapPlacer = new MapPlacer(gameMap.get(), accessor);
-        mapPlacer.place(point, worldName, options.isFillBedrock(), options.isFillStone());
+        MapPlacer mapPlacer = new MapPlacer(gameMap.get(), accessor.create(point, worldName), structureManager);
+        mapPlacer.place(options.isFillBedrock(), options.isFillStone());
         arenaManager.placeArena(getArenaPosition(point, gameMap.get().getField().getSize()), worldName);
         PlacedMapDto dto = PlacedMapMapper.toDto(gameMap.get(), point, worldName, options.getSpawnPlacesCount());
         placedMapRepository.addMapOrReplace(dto);

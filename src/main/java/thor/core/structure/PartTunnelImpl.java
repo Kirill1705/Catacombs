@@ -8,6 +8,7 @@ import org.bukkit.block.data.type.Ladder;
 import thor.core.generator.tunnel.convert.Converter;
 import thor.core.info.part.PartTunnelInfo;
 import thor.core.info.part.TunnelType;
+import thor.core.port.output.StructureManager;
 import thor.core.port.output.WorldAccessor;
 import thor.core.structure.chest.ItemCreator;
 import thor.usefulUtils.utils.dataStructures.Point;
@@ -50,7 +51,8 @@ public class PartTunnelImpl extends AbstractStructure implements PartTunnel{
     }
 
     @Override
-    protected void place(WorldAccessor accessor, boolean rotated) {
-        accessor.placeTunnel(getTextId(), getPosition(), rotated, idx);
+    protected void place(WorldAccessor accessor, StructureManager structureManager, boolean rotated) {
+        String path = structureManager.getTunnelPartPath(getTextId(), idx);
+        accessor.placeStructure(path, getPosition(), rotated);
     }
 }

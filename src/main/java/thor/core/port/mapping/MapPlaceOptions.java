@@ -1,4 +1,4 @@
-package thor.core.port.input;
+package thor.core.port.mapping;
 
 import lombok.Data;
 

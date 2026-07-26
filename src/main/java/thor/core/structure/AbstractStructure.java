@@ -3,6 +3,7 @@ package thor.core.structure;
 import lombok.Getter;
 import thor.core.generator.tunnel.convert.Converter;
 import thor.core.info.StructureInfo;
+import thor.core.port.output.StructureManager;
 import thor.core.port.output.WorldAccessor;
 import thor.core.structure.chest.Chest;
 import thor.core.structure.chest.ItemCreator;
@@ -57,8 +58,8 @@ public abstract class AbstractStructure implements Structure {
     }
 
     @Override
-    public void place(WorldAccessor accessor) {
-        place(accessor, rotated);
+    public void place(WorldAccessor accessor, StructureManager structureManager) {
+        place(accessor, structureManager, rotated);
         chests.forEach(chest -> chest.place(accessor));
     }
 
@@ -67,5 +68,5 @@ public abstract class AbstractStructure implements Structure {
         return Boxes.fromBeginAndSize(position, size);
     }
 
-    protected abstract void place(WorldAccessor accessor, boolean rotated);
+    protected abstract void place(WorldAccessor accessor, StructureManager structureManager, boolean rotated);
 }
