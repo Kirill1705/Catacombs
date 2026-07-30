@@ -12,7 +12,7 @@ import thor.core.info.part.TunnelType;
 import thor.core.structure.Exit;
 import thor.core.structure.PartTunnel;
 import thor.core.structure.create.PartTunnelCreator;
-import thor.usefulUtils.utils.dataStructures.Point;
+import ru.vikhrenko.serverUtils.utils.dataStructures.Point;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -32,15 +32,18 @@ public class PartTunnelManagerImpl implements PartTunnelManager {
     private final Map<TunnelProgressInfo, TunnelInfo> tunnelInfoMap = new HashMap<>();
     private final Map<TunnelCreatorNode, TunnelNodeInfo> nodes = new HashMap<>();
 
-    public PartTunnelManagerImpl(Exit first, Exit second, List<TunnelInfo> horizontal, List<TunnelInfo> vertical, TunnelPartsDispenser dispenser, PartTunnelCreator creator, MapField field) {
-        this.dispenser = dispenser;
+    public PartTunnelManagerImpl(Exit first, Exit second, List<TunnelInfo> horizontal, List<TunnelInfo> vertical, PartTunnelCreator creator, MapField field) {
         this.creator = creator;
         this.field = field;
         this.size = first.getPosition().add(first.getOffset()).size((second.getPosition().add(second.getOffset())));
         converter = new ConverterImpl(first.getPosition().add(first.getOffset()), second.getPosition().add(second.getOffset()));
-        tunnelInfoMap.put(new TunnelProgressInfo(TunnelProgress.START, TunnelType.HORIZONTAL), chooseTunnelInfoByName(first.getTunnels(), horizontal));
+
+        TunnelInfo startInfo = chooseTunnelInfoByName(first.getTunnels(), horizontal);
+        TunnelInfo endInfo = chooseTunnelInfoByName(second.getTunnels(), horizontal);
+        dispenser = new TunnelPartsDispenserImpl(startInfo.getParts().size(), endInfo.getParts().size());
+        tunnelInfoMap.put(new TunnelProgressInfo(TunnelProgress.START, TunnelType.HORIZONTAL), startInfo);
         tunnelInfoMap.put(new TunnelProgressInfo(TunnelProgress.START, TunnelType.VERTICAL), chooseTunnelInfoByName(first.getTunnels(), vertical));
-        tunnelInfoMap.put(new TunnelProgressInfo(TunnelProgress.END, TunnelType.HORIZONTAL), chooseTunnelInfoByName(second.getTunnels(), horizontal));
+        tunnelInfoMap.put(new TunnelProgressInfo(TunnelProgress.END, TunnelType.HORIZONTAL), endInfo);
         tunnelInfoMap.put(new TunnelProgressInfo(TunnelProgress.END, TunnelType.VERTICAL), chooseTunnelInfoByName(second.getTunnels(), vertical));
         tunnelInfoMap.put(new TunnelProgressInfo(TunnelProgress.NEUTRAL, TunnelType.HORIZONTAL), getRandomNeutralTunnelInfo(horizontal));
         tunnelInfoMap.put(new TunnelProgressInfo(TunnelProgress.NEUTRAL, TunnelType.VERTICAL), getRandomNeutralTunnelInfo(vertical));
@@ -53,11 +56,14 @@ public class PartTunnelManagerImpl implements PartTunnelManager {
 
     private TunnelInfo chooseTunnelInfoByName(@NotNull Collection<String> tunnelNames, List<TunnelInfo> tunnelInfos) {
         if (tunnelNames.isEmpty()) {
-            return getRandomTunnelInfo(tunnelInfos);
+            return getRandomNeutralTunnelInfo(tunnelInfos);
         }
         List<TunnelInfo> filteredInfos = tunnelInfos.stream()
                 .filter(tunnelInfo -> tunnelNames.contains(tunnelInfo.getTextId()))
                 .toList();
+        if (filteredInfos.isEmpty()) {
+            return getRandomNeutralTunnelInfo(tunnelInfos);
+        }
         return getRandomTunnelInfo(filteredInfos);
     }
 
@@ -84,11 +90,17 @@ public class PartTunnelManagerImpl implements PartTunnelManager {
 
     @Override
     public PartTunnel create(TunnelCreatorNode node) {
-        TunnelProgress progress = dispenser.getProgress(size, node.getPosition());
         TunnelType type = TunnelType.fromOffset(node.getOffset());
         int idx = 0;
+        TunnelProgress progress = TunnelProgress.START;
         if (node.getParent() != null && nodes.containsKey(node.getParent())) {
             TunnelNodeInfo parentInfo = nodes.get(node.getParent());
+            if (parentInfo.progress == TunnelProgress.START) {
+                progress = dispenser.getProgress(size, node.getPosition(), parentInfo.idx + 1);
+            }
+            else {
+                progress = dispenser.getProgress(size, node.getPosition(), null);
+            }
             if (parentInfo.progress == progress) {
                 idx = parentInfo.idx + 1;
             }
@@ -97,7 +109,7 @@ public class PartTunnelManagerImpl implements PartTunnelManager {
             log.warn("NodeInfo not contains!!");
         }
         TunnelInfo info = tunnelInfoMap.get(new TunnelProgressInfo(progress, type));
-        PartTunnelInfo partTunnelInfo = info.getByIdx(idx);
+        PartTunnelInfo partTunnelInfo = info.getByIdx(progress == TunnelProgress.END ? Math.max(0, info.getParts().size() - idx - 1) : idx);
         nodes.put(node, new TunnelNodeInfo(idx, progress));
         return creator.create(node.getPosition(), node.getOffset(), partTunnelInfo, converter);
     }

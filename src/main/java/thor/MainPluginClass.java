@@ -23,7 +23,7 @@ import thor.infrastructure.repositories.*;
 import thor.presentation.CustomCommand;
 import thor.presentation.GeneratorCommand;
 import thor.presentation.MainCommand;
-import thor.usefulUtils.reload.CommandManager;
+import ru.vikhrenko.serverUtils.reload.CommandManager;
 
 import java.io.File;
 import java.nio.file.Path;

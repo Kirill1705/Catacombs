@@ -1,8 +1,11 @@
 package thor.core.service;
 
 import lombok.RequiredArgsConstructor;
+import thor.core.info.RoomInfo;
+import thor.core.info.TunnelInfo;
 import thor.core.port.input.StructureInfoService;
 import thor.core.port.mapping.RoomInfoWithPath;
+import thor.core.port.mapping.StructureInfoMapper;
 import thor.core.port.mapping.TunnelInfoWithPath;
 import thor.core.port.mapping.dto.RoomInfoDto;
 import thor.core.port.mapping.dto.TunnelInfoDto;
@@ -18,26 +21,26 @@ public class StructureInfoServiceImpl implements StructureInfoService {
 
     @Override
     public boolean addRoom(RoomInfoWithPath dto, boolean force) {
-        boolean success = infoRepository.exportRoomInfo(dto.roomInfo());
+        RoomInfoDto roomInfoDto = validate(dto.roomInfo());
+        boolean success = infoRepository.exportRoomInfo(roomInfoDto);
         if (force && !success) {
-            infoRepository.updateRoomInfo(dto.roomInfo());
-            success = true;
+            success = infoRepository.updateRoomInfo(roomInfoDto);
         }
         if (success) {
-            structureManager.addRoomStructure(dto.path(), dto.roomInfo().id());
+            structureManager.addRoomStructure(dto.structure(), roomInfoDto.id());
         }
         return success;
     }
 
     @Override
     public boolean addTunnel(TunnelInfoWithPath dto, boolean force) {
-        boolean success = infoRepository.exportTunnelInfo(dto.tunnelInfo());
+        TunnelInfoDto tunnelInfoDto = validate(dto.tunnelInfo());
+        boolean success = infoRepository.exportTunnelInfo(tunnelInfoDto);
         if (force && !success) {
-            infoRepository.updateTunnelInfo(dto.tunnelInfo());
-            success = true;
+            success = infoRepository.updateTunnelInfo(tunnelInfoDto);
         }
         if (success) {
-            structureManager.addTunnelStructure(dto.paths(), dto.tunnelInfo().id());
+            structureManager.addTunnelStructure(dto.paths(), tunnelInfoDto.id());
         }
         return success;
     }
@@ -46,7 +49,7 @@ public class StructureInfoServiceImpl implements StructureInfoService {
     public List<RoomInfoWithPath> allRooms() {
         List<RoomInfoDto> rooms = infoRepository.getRooms();
         return rooms.stream()
-                .map(roomInfoDto -> new RoomInfoWithPath(roomInfoDto, structureManager.getRoomStructurePath(roomInfoDto.id())))
+                .map(roomInfoDto -> new RoomInfoWithPath(validate(roomInfoDto), structureManager.getRoomStructurePath(roomInfoDto.id())))
                 .toList();
     }
 
@@ -54,7 +57,14 @@ public class StructureInfoServiceImpl implements StructureInfoService {
     public List<TunnelInfoWithPath> allTunnels() {
         List<TunnelInfoDto> tunnels = infoRepository.getTunnels();
         return tunnels.stream()
-                .map(tunnelInfoDto -> new TunnelInfoWithPath(tunnelInfoDto, structureManager.getTunnelPartPaths(tunnelInfoDto.id(), tunnelInfoDto.parts().size())))
+                .map(tunnelInfoDto -> new TunnelInfoWithPath(validate(tunnelInfoDto), structureManager.getTunnelPartPaths(tunnelInfoDto.id(), tunnelInfoDto.parts().size())))
                 .toList();
+    }
+
+    private TunnelInfoDto validate(TunnelInfoDto dto) {
+        return StructureInfoMapper.toDto(StructureInfoMapper.fromDto(dto));
+    }
+    private RoomInfoDto validate(RoomInfoDto dto) {
+        return StructureInfoMapper.toDto(StructureInfoMapper.fromDto(dto));
     }
 }

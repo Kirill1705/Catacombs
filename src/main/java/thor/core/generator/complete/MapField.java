@@ -2,7 +2,7 @@ package thor.core.generator.complete;
 
 import lombok.Getter;
 import org.bukkit.util.BoundingBox;
-import thor.usefulUtils.utils.dataStructures.Point;
+import ru.vikhrenko.serverUtils.utils.dataStructures.Point;
 
 public class MapField {
     private final boolean[][][] map;

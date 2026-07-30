@@ -8,7 +8,7 @@ import thor.core.port.output.StructureManager;
 import thor.core.port.output.WorldAccessor;
 import thor.core.structure.PartTunnel;
 import thor.core.structure.Room;
-import thor.usefulUtils.utils.dataStructures.Point;
+import ru.vikhrenko.serverUtils.utils.dataStructures.Point;
 
 import java.util.Collection;
 

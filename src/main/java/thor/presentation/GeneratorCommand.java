@@ -1,6 +1,7 @@
 package thor.presentation;
 
 import com.mojang.brigadier.arguments.BoolArgumentType;
+import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -14,7 +15,7 @@ import lombok.RequiredArgsConstructor;
 import thor.core.port.input.MapEngineService;
 import thor.core.port.mapping.MapPlaceOptions;
 import thor.core.port.input.MapService;
-import thor.usefulUtils.utils.dataStructures.Point;
+import ru.vikhrenko.serverUtils.utils.dataStructures.Point;
 
 import java.util.UUID;
 

@@ -9,13 +9,14 @@ import thor.core.structure.PlayerSpawnPriority;
 import thor.core.util.ConfUtils;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public final class PartsMapper {
     public static ExitInfo fromDto(ExitInfoDto dto) {
         return new ExitInfo(
                 ConfUtils.enumOrNull(dto.material(), Material::valueOf),
                 dto.position(),
-                dto.blocks() != null ? dto.blocks() : null
+                dto.blocks() != null ? dto.blocks() : List.of()
         );
     }
 

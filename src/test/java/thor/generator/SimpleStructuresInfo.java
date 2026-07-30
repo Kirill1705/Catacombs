@@ -8,8 +8,8 @@ import thor.core.info.part.ExitInfo;
 import thor.core.info.part.PartTunnelDescription;
 import thor.core.info.part.TunnelType;
 import thor.core.info.part.Weight;
-import thor.usefulUtils.utils.dataStructures.Point;
-import thor.usefulUtils.utils.dataStructures.Point;
+import ru.vikhrenko.serverUtils.utils.dataStructures.Point;
+import ru.vikhrenko.serverUtils.utils.dataStructures.Point;
 
 import java.util.List;
 

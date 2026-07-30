@@ -5,7 +5,7 @@ import org.bukkit.block.Block;
 import thor.core.port.mapping.LocationDto;
 import thor.core.structure.chest.Book;
 import thor.core.structure.chest.Item;
-import thor.usefulUtils.utils.dataStructures.Point;
+import ru.vikhrenko.serverUtils.utils.dataStructures.Point;
 
 import java.util.List;
 import java.util.UUID;

@@ -11,7 +11,7 @@ import thor.core.info.part.TunnelType;
 import thor.core.port.output.StructureManager;
 import thor.core.port.output.WorldAccessor;
 import thor.core.structure.chest.ItemCreator;
-import thor.usefulUtils.utils.dataStructures.Point;
+import ru.vikhrenko.serverUtils.utils.dataStructures.Point;
 
 public class PartTunnelImpl extends AbstractStructure implements PartTunnel{
     @Getter

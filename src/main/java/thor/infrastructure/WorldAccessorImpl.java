@@ -22,8 +22,8 @@ import thor.core.port.output.WorldAccessor;
 import thor.core.structure.chest.Book;
 import thor.core.structure.chest.Item;
 import thor.customFeatures.items.ExtendedItemStack;
-import thor.usefulUtils.utils.OtherUtils;
-import thor.usefulUtils.utils.dataStructures.*;
+import ru.vikhrenko.serverUtils.utils.OtherUtils;
+import ru.vikhrenko.serverUtils.utils.dataStructures.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -69,7 +69,7 @@ public class WorldAccessorImpl implements WorldAccessor {
             structure = cache.get(path);
         }
         else {
-            File nbt = new File(path + ".nbt");
+            File nbt = new File(path);
             try {
                 structure = Bukkit.getServer().getStructureManager().loadStructure(nbt);
                 cache.put(path, structure);

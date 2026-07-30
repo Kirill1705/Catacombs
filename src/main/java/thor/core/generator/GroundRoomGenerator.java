@@ -9,7 +9,7 @@ import thor.core.structure.Room;
 import thor.core.structure.create.RoomCreator;
 import thor.core.util.RandomGenerator;
 import thor.core.util.RandomGeneratorImpl;
-import thor.usefulUtils.utils.dataStructures.Point;
+import ru.vikhrenko.serverUtils.utils.dataStructures.Point;
 
 import java.util.List;
 

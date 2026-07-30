@@ -5,8 +5,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 import thor.core.port.output.WorldAccessor;
 import thor.core.port.output.WorldAccessorCreator;
-import thor.usefulUtils.utils.dataStructures.BlockLocations;
-import thor.usefulUtils.utils.dataStructures.Point;
+import ru.vikhrenko.serverUtils.utils.dataStructures.BlockLocations;
+import ru.vikhrenko.serverUtils.utils.dataStructures.Point;
 
 import java.nio.file.Path;
 

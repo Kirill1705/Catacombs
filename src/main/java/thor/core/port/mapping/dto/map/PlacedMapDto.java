@@ -1,6 +1,6 @@
 package thor.core.port.mapping.dto.map;
 
-import thor.usefulUtils.utils.dataStructures.Point;
+import ru.vikhrenko.serverUtils.utils.dataStructures.Point;
 
 import java.util.List;
 import java.util.UUID;

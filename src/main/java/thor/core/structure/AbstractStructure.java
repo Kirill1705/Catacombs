@@ -7,9 +7,9 @@ import thor.core.port.output.StructureManager;
 import thor.core.port.output.WorldAccessor;
 import thor.core.structure.chest.Chest;
 import thor.core.structure.chest.ItemCreator;
-import thor.usefulUtils.utils.dataStructures.Boxes;
-import thor.usefulUtils.utils.dataStructures.ImmutableBox;
-import thor.usefulUtils.utils.dataStructures.Point;
+import ru.vikhrenko.serverUtils.utils.dataStructures.Boxes;
+import ru.vikhrenko.serverUtils.utils.dataStructures.ImmutableBox;
+import ru.vikhrenko.serverUtils.utils.dataStructures.Point;
 
 import java.util.Collection;
 import java.util.List;

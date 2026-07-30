@@ -1,7 +1,7 @@
 package thor.core.generator.tunnel.convert;
 
 import lombok.Getter;
-import thor.usefulUtils.utils.dataStructures.Point;
+import ru.vikhrenko.serverUtils.utils.dataStructures.Point;
 
 public class ConverterImpl implements Converter{
     @Getter

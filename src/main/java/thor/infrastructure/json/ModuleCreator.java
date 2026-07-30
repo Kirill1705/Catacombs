@@ -1,7 +1,7 @@
 package thor.infrastructure.json;
 
 import com.fasterxml.jackson.databind.module.SimpleModule;
-import thor.usefulUtils.utils.dataStructures.Point;
+import ru.vikhrenko.serverUtils.utils.dataStructures.Point;
 
 public class ModuleCreator {
     public SimpleModule pointModule() {

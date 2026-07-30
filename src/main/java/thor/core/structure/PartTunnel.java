@@ -1,6 +1,6 @@
 package thor.core.structure;
 
-import thor.usefulUtils.utils.dataStructures.Point;
+import ru.vikhrenko.serverUtils.utils.dataStructures.Point;
 
 public interface PartTunnel extends Structure, AfterPlacing {
     boolean isVertical();

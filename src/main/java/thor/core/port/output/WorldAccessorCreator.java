@@ -1,6 +1,6 @@
 package thor.core.port.output;
 
-import thor.usefulUtils.utils.dataStructures.Point;
+import ru.vikhrenko.serverUtils.utils.dataStructures.Point;
 
 public interface WorldAccessorCreator {
     WorldAccessor create(Point position, String worldName);

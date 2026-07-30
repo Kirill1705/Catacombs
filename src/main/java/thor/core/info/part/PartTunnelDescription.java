@@ -1,6 +1,6 @@
 package thor.core.info.part;
 
-import thor.usefulUtils.utils.dataStructures.Point;
+import ru.vikhrenko.serverUtils.utils.dataStructures.Point;
 
 import java.util.Collection;
 

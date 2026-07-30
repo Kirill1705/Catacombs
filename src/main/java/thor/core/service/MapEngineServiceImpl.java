@@ -13,7 +13,7 @@ import thor.core.port.output.WorldAccessorCreator;
 import thor.core.port.output.repository.MapRepository;
 import thor.core.port.output.repository.PlacedMapRepository;
 import thor.core.world.MapPlacer;
-import thor.usefulUtils.utils.dataStructures.Point;
+import ru.vikhrenko.serverUtils.utils.dataStructures.Point;
 
 import java.util.Optional;
 import java.util.UUID;

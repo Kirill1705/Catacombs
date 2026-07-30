@@ -4,7 +4,7 @@ import org.bukkit.util.BoundingBox;
 import thor.core.structure.PartTunnel;
 import thor.core.structure.Room;
 import thor.core.structure.Structure;
-import thor.usefulUtils.utils.dataStructures.Boxes;
+import ru.vikhrenko.serverUtils.utils.dataStructures.Boxes;
 
 import java.util.*;
 import java.util.stream.Collectors;

@@ -1,6 +1,6 @@
 package thor.core.generator.tunnel.convert;
 
-import thor.usefulUtils.utils.dataStructures.Point;
+import ru.vikhrenko.serverUtils.utils.dataStructures.Point;
 
 public class Rotator implements Converter {
     private final Converter converter;

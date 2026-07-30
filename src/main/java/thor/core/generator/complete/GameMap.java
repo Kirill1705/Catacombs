@@ -4,7 +4,7 @@ import lombok.Getter;
 import thor.core.structure.PartTunnel;
 import thor.core.structure.PlayerSpawnNode;
 import thor.core.structure.Room;
-import thor.usefulUtils.utils.dataStructures.Point;
+import ru.vikhrenko.serverUtils.utils.dataStructures.Point;
 
 import java.util.ArrayList;
 import java.util.Collection;

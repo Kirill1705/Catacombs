@@ -3,6 +3,7 @@ package thor.infrastructure;
 import lombok.AllArgsConstructor;
 import thor.core.port.output.StructureManager;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.*;
 import java.util.ArrayList;
@@ -23,8 +24,15 @@ public class StructureManagerImpl implements StructureManager {
 
     @Override
     public void addTunnelStructure(List<String> structurePaths, String textId) {
+        File directory = structuresPath.resolve(textId).toFile();
+        if (directory.exists() && directory.isFile()) {
+            throw new IllegalStateException("Cant mkdir. File with path " + structuresPath.resolve(textId) + " exists");
+        }
+        if (!directory.exists()) {
+            directory.mkdir();
+        }
         for (int i = 0; i < structurePaths.size(); i++) {
-            addRoomStructure(structurePaths.get(i) + "/" + i, textId);
+            addRoomStructure(structurePaths.get(i), textId + "/" + i);
         }
     }
 

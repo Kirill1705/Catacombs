@@ -8,7 +8,7 @@ import thor.core.info.part.PartTunnelInfo;
 import thor.core.structure.PartTunnel;
 import thor.core.structure.PartTunnelImpl;
 import thor.core.structure.chest.ItemCreator;
-import thor.usefulUtils.utils.dataStructures.Point;
+import ru.vikhrenko.serverUtils.utils.dataStructures.Point;
 
 import java.util.List;
 

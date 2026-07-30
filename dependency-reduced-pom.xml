@@ -133,6 +133,12 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
+      <groupId>ru.vikhrenko</groupId>
+      <artifactId>serverutils</artifactId>
+      <version>1.0-SNAPSHOT</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
       <version>1.18.46</version>

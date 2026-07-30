@@ -2,6 +2,7 @@ package thor.infrastructure.repositories;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import thor.core.port.mapping.dto.RoomInfoDto;
 import thor.core.port.mapping.dto.TunnelInfoDto;
 import thor.core.port.output.repository.InfoRepository;
@@ -23,9 +24,10 @@ public class InfoRepositoryImpl implements InfoRepository {
     public InfoRepositoryImpl(Path rooms, Path tunnels) {
         this.rooms = rooms;
         this.tunnels = tunnels;
-        mapper = new ObjectMapper();
-        mapper.setPropertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE);
-        mapper.registerModule(new ModuleCreator().pointModule());
+        mapper = new ObjectMapper()
+                .setPropertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE)
+                .enable(SerializationFeature.INDENT_OUTPUT)
+                .registerModule(new ModuleCreator().pointModule());
     }
 
     @Override
@@ -88,7 +90,6 @@ public class InfoRepositoryImpl implements InfoRepository {
 
     private<T> void exportOrReplace(Path directory, T dto, String fileName) {
         File file = new File(directory.toFile(), fileName);
-        ObjectMapper mapper = new ObjectMapper();
         try {
             mapper.writeValue(file, dto);
         } catch (IOException e) {

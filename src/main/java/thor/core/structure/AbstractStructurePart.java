@@ -2,7 +2,7 @@ package thor.core.structure;
 
 import lombok.Getter;
 import thor.core.generator.tunnel.convert.Converter;
-import thor.usefulUtils.utils.dataStructures.Point;
+import ru.vikhrenko.serverUtils.utils.dataStructures.Point;
 
 public abstract class AbstractStructurePart {
     @Getter
