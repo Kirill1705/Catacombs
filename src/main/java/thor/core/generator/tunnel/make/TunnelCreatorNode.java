@@ -1,7 +1,7 @@
 package thor.core.generator.tunnel.make;
 
 import lombok.Getter;
-import thor.usefulUtils.utils.dataStructures.Point;
+import ru.vikhrenko.serverUtils.utils.dataStructures.Point;
 
 @Getter
 public final class TunnelCreatorNode {

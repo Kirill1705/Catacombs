@@ -1,27 +1,25 @@
 package thor.core.world;
 
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import org.bukkit.Material;
 import thor.core.generator.complete.GameMap;
+import thor.core.port.output.StructureManager;
 import thor.core.port.output.WorldAccessor;
 import thor.core.structure.PartTunnel;
 import thor.core.structure.Room;
-import thor.usefulUtils.utils.dataStructures.Point;
+import ru.vikhrenko.serverUtils.utils.dataStructures.Point;
 
 import java.util.Collection;
 
+@RequiredArgsConstructor
 public class MapPlacer {
     @Getter
     private final GameMap map;
     private final WorldAccessor worldAccessor;
+    private final StructureManager structureManager;
 
-    public MapPlacer(GameMap map, WorldAccessor worldAccessor) {
-        this.map = map;
-        this.worldAccessor = worldAccessor;
-    }
-
-    public void place(Point position, String worldName, boolean placeBedrock, boolean fillStone) {
-        worldAccessor.setMapPosition(position, worldName);
+    public void place(boolean placeBedrock, boolean fillStone) {
         Point size = map.getField().getSize();
         if (placeBedrock) {
             fillBedrock(size);
@@ -30,15 +28,15 @@ public class MapPlacer {
             worldAccessor.fill(0, 0, 0, size.x() - 1, size.y() - 1, size.z() - 1, Material.STONE);
         }
         for (Room room: map.getGraph().getRooms()) {
-            room.place(worldAccessor);
+            room.place(worldAccessor, structureManager);
         }
         Collection<PartTunnel> allTunnels = map.getGraph().getAllTunnels();
         allTunnels.stream()
                 .filter(PartTunnel::isVertical)
-                .forEach(partTunnel -> partTunnel.place(worldAccessor));
+                .forEach(partTunnel -> partTunnel.place(worldAccessor, structureManager));
         allTunnels.stream()
                 .filter(partTunnel -> !partTunnel.isVertical())
-                .forEach(partTunnel -> partTunnel.place(worldAccessor));
+                .forEach(partTunnel -> partTunnel.place(worldAccessor, structureManager));
         allTunnels.forEach(partTunnel -> partTunnel.afterPlace(worldAccessor));
     }
 

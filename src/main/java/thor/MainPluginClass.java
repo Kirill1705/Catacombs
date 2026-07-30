@@ -1,24 +1,29 @@
 package thor;
 
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.FileConfigurationOptions;
 import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
 import thor.core.port.input.MapEngineService;
 import thor.core.port.input.MapService;
 import thor.core.port.input.StructureInfoService;
 import thor.core.port.output.ArenaManager;
+import thor.core.port.output.StructureManager;
 import thor.core.port.output.WorldAccessor;
+import thor.core.port.output.WorldAccessorCreator;
 import thor.core.port.output.repository.*;
 import thor.core.service.MapEngineServiceImpl;
 import thor.core.service.MapServiceImpl;
 import thor.core.service.StructureInfoServiceImpl;
 import thor.infrastructure.ArenaManagerImpl;
+import thor.infrastructure.StructureManagerImpl;
+import thor.infrastructure.WorldAccessorCreatorImpl;
 import thor.infrastructure.WorldAccessorImpl;
 import thor.infrastructure.repositories.*;
 import thor.presentation.CustomCommand;
 import thor.presentation.GeneratorCommand;
 import thor.presentation.MainCommand;
-import thor.usefulUtils.reload.CommandManager;
+import ru.vikhrenko.serverUtils.reload.CommandManager;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -37,16 +42,17 @@ public class MainPluginClass extends JavaPlugin {
         ItemRepository itemRepository = itemRepository(config);
         ReloadableItemRepository reloadableItemRepository = new ReloadableItemRepository(itemRepository);
         MapConfigHolder mapConfigHolder = mapConfigHolder(config);
-        WorldAccessor gameWorldAccessor = gameWorldAccessor(config);
+        WorldAccessorCreator gameWorldAccessor = gameWorldAccessor(config);
         MapRepository mapRepository = mapRepository(config);
         PlacedMapRepository placedMapRepository = placedMapRepository(config);
         ArenaManager arenaManager = arenaManager(config);
+        StructureManager structureManager = structureManager(config);
 
         new CommandManager().registerReloadCommand(this, List.of(reloadableInfoRepository, reloadableItemRepository));
 
         MapServiceImpl mapService = new MapServiceImpl(reloadableInfoRepository, mapConfigHolder, reloadableItemRepository, mapRepository);
-        MapEngineService mapEngineService = new MapEngineServiceImpl(mapRepository, gameWorldAccessor, arenaManager, placedMapRepository);
-        StructureInfoService structureInfoService = new StructureInfoServiceImpl(reloadableInfoRepository);
+        MapEngineService mapEngineService = new MapEngineServiceImpl(mapRepository, gameWorldAccessor, arenaManager, placedMapRepository, structureManager);
+        StructureInfoService structureInfoService = new StructureInfoServiceImpl(reloadableInfoRepository, structureManager);
 
         MainCommand mainCommand = new MainCommand(commands(config, mapService, mapEngineService), this);
         mainCommand.registerCommands(this);
@@ -102,8 +108,12 @@ public class MainPluginClass extends JavaPlugin {
         return new MapConfigHolderImpl(toPath(config.getString("map_config_path", "map.yml")));
     }
 
-    private WorldAccessor gameWorldAccessor(FileConfiguration config) {
-        return new WorldAccessorImpl(this, toPath(config.getString("structures_path", "structures")));
+    private StructureManager structureManager(FileConfiguration config) {
+        return new StructureManagerImpl(toPath(config.getString("structures_path", "structures")));
+    }
+
+    private WorldAccessorCreator gameWorldAccessor(FileConfiguration config) {
+        return new WorldAccessorCreatorImpl();
     }
 
     private List<CustomCommand> commands(FileConfiguration config, MapService mapService, MapEngineService engineService) {

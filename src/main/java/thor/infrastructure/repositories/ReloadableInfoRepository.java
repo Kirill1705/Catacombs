@@ -3,7 +3,7 @@ package thor.infrastructure.repositories;
 import thor.core.port.mapping.dto.RoomInfoDto;
 import thor.core.port.mapping.dto.TunnelInfoDto;
 import thor.core.port.output.repository.InfoRepository;
-import thor.usefulUtils.reload.Reloadable;
+import ru.vikhrenko.serverUtils.reload.Reloadable;
 
 import java.nio.file.Path;
 import java.util.List;
@@ -31,22 +31,22 @@ public class ReloadableInfoRepository implements InfoRepository, Reloadable {
 
     @Override
     public boolean exportRoomInfo(RoomInfoDto roomInfo) {
-        return false;
+        return infoRepository.exportRoomInfo(roomInfo);
     }
 
     @Override
     public boolean exportTunnelInfo(TunnelInfoDto tunnelInfo) {
-        return false;
+        return infoRepository.exportTunnelInfo(tunnelInfo);
     }
 
     @Override
     public boolean updateRoomInfo(RoomInfoDto roomInfo) {
-        return false;
+        return infoRepository.updateRoomInfo(roomInfo);
     }
 
     @Override
     public boolean updateTunnelInfo(TunnelInfoDto tunnelInfo) {
-        return false;
+        return infoRepository.updateTunnelInfo(tunnelInfo);
     }
 
     @Override

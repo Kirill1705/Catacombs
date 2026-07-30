@@ -1,6 +1,6 @@
 package thor.core.port.mapping.dto;
 
-import thor.usefulUtils.utils.dataStructures.Point;
+import ru.vikhrenko.serverUtils.utils.dataStructures.Point;
 
 public record PlayerSpawnPlaceInfoDto(
         Point position,

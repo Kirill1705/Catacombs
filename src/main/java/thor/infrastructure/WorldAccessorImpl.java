@@ -14,57 +14,30 @@ import org.bukkit.block.structure.StructureRotation;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.structure.Structure;
 import thor.core.exception.InvalidEnchantException;
 import thor.core.exception.InvalidMaterialException;
-import thor.core.port.input.LocationDto;
+import thor.core.port.mapping.LocationDto;
 import thor.core.port.output.WorldAccessor;
 import thor.core.structure.chest.Book;
 import thor.core.structure.chest.Item;
 import thor.customFeatures.items.ExtendedItemStack;
-import thor.usefulUtils.utils.OtherUtils;
-import thor.usefulUtils.utils.dataStructures.*;
+import ru.vikhrenko.serverUtils.utils.OtherUtils;
+import ru.vikhrenko.serverUtils.utils.dataStructures.*;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-import java.util.UUID;
+import java.util.*;
 
 @RequiredArgsConstructor
 public class WorldAccessorImpl implements WorldAccessor {
-    private final Plugin plugin;
-    private final Path structuresPath;
+    private final BlockLocation location;
 
-    private BlockLocation location;
+    private final Map<String, Structure> cache = new HashMap<>();
 
     @Override
     public Block getBlockAt(Point position) {
         return location.world().getBlockAt(createLocation(position));
-    }
-
-    @Override
-    public void setMapPosition(Point position, String worldName) {
-        this.location = BlockLocations.fromPointAndWorld(position, Bukkit.getWorld(worldName));
-    }
-
-    @Override
-    public void placeRoom(String textId, Point position, boolean rotated) {
-        try {
-            File nbt = new File(structuresPath.toFile(), textId + ".nbt");
-            Structure structure = plugin.getServer().getStructureManager().loadStructure(nbt);
-            structure.place(createLocation(position), true, rotated ? StructureRotation.COUNTERCLOCKWISE_90 : StructureRotation.NONE, Mirror.NONE, 0, 1, new Random());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    @Override
-    public void placeTunnel(String textId, Point position, boolean rotated, int idx) {
-        placeRoom(textId + "/" + idx, position, rotated);
     }
 
     @Override
@@ -87,6 +60,24 @@ public class WorldAccessorImpl implements WorldAccessor {
         Point corner1 = convertPosition(new Point(x0, y0, z0));
         Point corner2 = convertPosition(new Point(x, y, z));
         OtherUtils.fill(Boxes.fromCorners(corner1, corner2), material, location.world(), false);
+    }
+
+    @Override
+    public void placeStructure(String path, Point position, boolean rotated) {
+        Structure structure;
+        if (cache.containsKey(path)) {
+            structure = cache.get(path);
+        }
+        else {
+            File nbt = new File(path);
+            try {
+                structure = Bukkit.getServer().getStructureManager().loadStructure(nbt);
+                cache.put(path, structure);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        structure.place(createLocation(position), true, rotated ? StructureRotation.COUNTERCLOCKWISE_90 : StructureRotation.NONE, Mirror.NONE, 0, 1, new Random());
     }
 
     @Override

@@ -8,11 +8,11 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.structure.Structure;
 import thor.core.port.output.ArenaManager;
-import thor.usefulUtils.utils.StructureUtils;
-import thor.usefulUtils.utils.dataStructures.BlockLocation;
-import thor.usefulUtils.utils.dataStructures.BlockLocations;
-import thor.usefulUtils.utils.dataStructures.Point;
-import thor.usefulUtils.utils.dataStructures.Points;
+import ru.vikhrenko.serverUtils.utils.StructureUtils;
+import ru.vikhrenko.serverUtils.utils.dataStructures.BlockLocation;
+import ru.vikhrenko.serverUtils.utils.dataStructures.BlockLocations;
+import ru.vikhrenko.serverUtils.utils.dataStructures.Point;
+import ru.vikhrenko.serverUtils.utils.dataStructures.Points;
 
 import java.io.IOException;
 import java.nio.file.Path;

@@ -1,7 +1,8 @@
 package thor.core.port.input;
 
+import thor.core.port.mapping.MapPlaceOptions;
 import thor.core.port.mapping.dto.map.PlacedMapDto;
-import thor.usefulUtils.utils.dataStructures.Point;
+import ru.vikhrenko.serverUtils.utils.dataStructures.Point;
 
 import java.util.UUID;
 

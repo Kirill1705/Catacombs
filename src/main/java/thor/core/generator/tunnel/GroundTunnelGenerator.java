@@ -7,7 +7,6 @@ import thor.core.generator.complete.GameMap;
 import thor.core.generator.tunnel.convert.Converter;
 import thor.core.generator.tunnel.make.PartTunnelManagerImpl;
 import thor.core.generator.tunnel.make.TunnelCreator;
-import thor.core.generator.tunnel.make.TunnelPartsDispenser;
 import thor.core.info.TunnelInfo;
 import thor.core.info.part.TunnelType;
 import thor.core.structure.Exit;
@@ -25,10 +24,9 @@ public class GroundTunnelGenerator implements TunnelGenerator {
 
     private final List<TunnelInfo> horizontal;
     private final List<TunnelInfo> vertical;
-    private final TunnelPartsDispenser dispenser;
     private final PartTunnelCreator creator;
 
-    public GroundTunnelGenerator(List<TunnelInfo> tunnelInfos, TunnelPartsDispenser dispenser, PartTunnelCreator creator) {
+    public GroundTunnelGenerator(List<TunnelInfo> tunnelInfos, PartTunnelCreator creator) {
         horizontal = tunnelInfos.stream()
                 .filter(tunnelInfo -> !tunnelInfo.getType().equals(TunnelType.VERTICAL))
                 .toList();
@@ -40,7 +38,6 @@ public class GroundTunnelGenerator implements TunnelGenerator {
             throw new IllegalStateException("not all categories of tunnels found");
         }
 
-        this.dispenser = dispenser;
         this.creator = creator;
     }
 
@@ -78,7 +75,7 @@ public class GroundTunnelGenerator implements TunnelGenerator {
             for (Exit secondExit : secondExits) {
                 if (firstExit.isClosed() || secondExit.isClosed())
                     continue;
-                PartTunnelManagerImpl manager = new PartTunnelManagerImpl(firstExit, secondExit, horizontal, vertical, dispenser, creator, rooms.getField());
+                PartTunnelManagerImpl manager = new PartTunnelManagerImpl(firstExit, secondExit, horizontal, vertical, creator, rooms.getField());
                 if (manager.isUpsideDown()) {
                     continue;
                 }

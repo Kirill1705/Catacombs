@@ -5,7 +5,7 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
 import lombok.Data;
 import thor.core.port.mapping.dto.MapConfig;
 import thor.core.port.output.repository.MapConfigHolder;
-import thor.usefulUtils.utils.dataStructures.Point;
+import ru.vikhrenko.serverUtils.utils.dataStructures.Point;
 
 import java.io.IOException;
 import java.nio.file.Path;

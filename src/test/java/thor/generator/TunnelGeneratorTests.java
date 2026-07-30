@@ -11,7 +11,7 @@ import thor.core.structure.PartTunnel;
 import thor.core.structure.Room;
 import thor.core.structure.RoomImpl;
 import thor.core.structure.create.PartTunnelCreatorImpl;
-import thor.usefulUtils.utils.dataStructures.Point;
+import ru.vikhrenko.serverUtils.utils.dataStructures.Point;
 
 import java.util.Collection;
 import java.util.logging.Logger;
@@ -27,7 +27,6 @@ public class TunnelGeneratorTests {
         map.addRoom(second);
         TunnelGenerator generator = new GroundTunnelGenerator(
                 SimpleStructuresInfo.VALUE.getTunnelInfos(),
-                new TunnelPartsDispenserImpl(0.3),
                 new PartTunnelCreatorImpl(null)
         );
 
@@ -50,7 +49,6 @@ public class TunnelGeneratorTests {
         map.addRoom(second);
         TunnelGenerator generator = new GroundTunnelGenerator(
                 SimpleStructuresInfo.VALUE.getTunnelInfos(),
-                new TunnelPartsDispenserImpl(0.3),
                 new PartTunnelCreatorImpl(null)
         );
 
@@ -73,7 +71,6 @@ public class TunnelGeneratorTests {
         map.addRoom(second);
         TunnelGenerator generator = new GroundTunnelGenerator(
                 SimpleStructuresInfo.VALUE.getTunnelInfos(),
-                new TunnelPartsDispenserImpl(0.3),
                 new PartTunnelCreatorImpl(null)
         );
 
@@ -96,7 +93,6 @@ public class TunnelGeneratorTests {
         map.addRoom(second);
         TunnelGenerator generator = new GroundTunnelGenerator(
                 SimpleStructuresInfo.VALUE.getTunnelInfos(),
-                new TunnelPartsDispenserImpl(0.3),
                 new PartTunnelCreatorImpl(null)
         );
 
@@ -119,7 +115,6 @@ public class TunnelGeneratorTests {
         map.addRoom(second);
         TunnelGenerator generator = new GroundTunnelGenerator(
                 SimpleStructuresInfo.VALUE.getTunnelInfos(),
-                new TunnelPartsDispenserImpl(0.3),
                 new PartTunnelCreatorImpl(null)
         );
 

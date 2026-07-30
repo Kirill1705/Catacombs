@@ -46,7 +46,7 @@ public class MapServiceImpl implements MapService {
         ItemCreator itemCreator = new ItemCreator(getItems());
         RoomGenerator roomGenerator = new GroundRoomGenerator(infoRepository.getRooms().stream().map(StructureInfoMapper::fromDto).toList(), mapConfig.mapSize(), mapConfig.roomsQuantity(), new SimpleRoomCreator(itemCreator));
         GameMap gameMap = roomGenerator.generate();
-        TunnelGenerator tunnelGenerator = new GroundTunnelGenerator(infoRepository.getTunnels().stream().map(StructureInfoMapper::fromDto).toList(), new TunnelPartsDispenserImpl(0.3), new PartTunnelCreatorImpl(itemCreator));
+        TunnelGenerator tunnelGenerator = new GroundTunnelGenerator(infoRepository.getTunnels().stream().map(StructureInfoMapper::fromDto).toList(), new PartTunnelCreatorImpl(itemCreator));
         tunnelGenerator.generateTunnels(gameMap);
         mapRepository.addMap(gameMap);
         return gameMap.getUuid();

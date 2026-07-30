@@ -2,7 +2,7 @@ package thor.core.info.part;
 
 import lombok.Getter;
 import thor.core.structure.PlayerSpawnPriority;
-import thor.usefulUtils.utils.dataStructures.Point;
+import ru.vikhrenko.serverUtils.utils.dataStructures.Point;
 
 public class PlayerSpawnPlaceInfo {
     @Getter

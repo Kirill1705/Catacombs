@@ -4,7 +4,7 @@ import lombok.Getter;
 import org.bukkit.Material;
 import thor.core.exception.DomainValidationException;
 import thor.core.util.ConfUtils;
-import thor.usefulUtils.utils.dataStructures.Point;
+import ru.vikhrenko.serverUtils.utils.dataStructures.Point;
 
 public class ChestInfo {
     @Getter

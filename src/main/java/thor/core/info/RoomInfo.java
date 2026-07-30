@@ -7,7 +7,7 @@ import thor.core.info.part.ExitInfo;
 import thor.core.info.part.PlayerSpawnPlaceInfo;
 import thor.core.info.part.Weight;
 import thor.core.util.ConfUtils;
-import thor.usefulUtils.utils.dataStructures.Point;
+import ru.vikhrenko.serverUtils.utils.dataStructures.Point;
 
 import java.util.Collection;
 import java.util.Collections;

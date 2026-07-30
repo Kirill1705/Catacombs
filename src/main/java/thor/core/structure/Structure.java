@@ -1,9 +1,10 @@
 package thor.core.structure;
 
+import thor.core.port.output.StructureManager;
 import thor.core.port.output.WorldAccessor;
 import thor.core.structure.chest.Chest;
-import thor.usefulUtils.utils.dataStructures.ImmutableBox;
-import thor.usefulUtils.utils.dataStructures.Point;
+import ru.vikhrenko.serverUtils.utils.dataStructures.ImmutableBox;
+import ru.vikhrenko.serverUtils.utils.dataStructures.Point;
 
 import java.util.Collection;
 
@@ -13,5 +14,5 @@ public interface Structure {
     ImmutableBox toBox();
     Collection<Chest> getChests();
     Collection<PlayerSpawnNode> getPlayerSpawnPlaces();
-    void place(WorldAccessor accessor);
+    void place(WorldAccessor accessor, StructureManager structureManager);
 }

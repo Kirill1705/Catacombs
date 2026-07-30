@@ -6,7 +6,7 @@ import org.bukkit.Tag;
 import org.bukkit.block.Block;
 import thor.core.exception.DomainValidationException;
 import thor.core.util.ConfUtils;
-import thor.usefulUtils.utils.dataStructures.Point;
+import ru.vikhrenko.serverUtils.utils.dataStructures.Point;
 
 import java.util.Collection;
 import java.util.Collections;

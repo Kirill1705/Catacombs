@@ -1,9 +1,10 @@
 package thor.core.structure;
 
 import lombok.Getter;
+import org.jspecify.annotations.NonNull;
 import thor.core.util.ConfUtils;
 
-public class PlayerSpawnPriority {
+public class PlayerSpawnPriority implements Comparable<PlayerSpawnPriority> {
     public static PlayerSpawnPriority lowest() {
         return new PlayerSpawnPriority(minPriority);
     }
@@ -18,7 +19,8 @@ public class PlayerSpawnPriority {
         this.value = ConfUtils.checkOrDefault(value, defaultValue, integer -> integer >= 0 && integer <= minPriority);
     }
 
-    public boolean morePriorityThen(PlayerSpawnPriority other) {
-        return value < other.value;
+    @Override
+    public int compareTo(@NonNull PlayerSpawnPriority o) {
+        return Integer.compare(o.value, value);
     }
 }

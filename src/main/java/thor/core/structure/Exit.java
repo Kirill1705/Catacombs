@@ -6,7 +6,7 @@ import org.bukkit.Material;
 import thor.core.generator.tunnel.convert.Converter;
 import thor.core.info.part.ExitInfo;
 import thor.core.port.output.WorldAccessor;
-import thor.usefulUtils.utils.dataStructures.Point;
+import ru.vikhrenko.serverUtils.utils.dataStructures.Point;
 
 import java.util.ArrayList;
 import java.util.Collection;

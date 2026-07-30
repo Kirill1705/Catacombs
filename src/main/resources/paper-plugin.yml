@@ -4,3 +4,9 @@ main: thor.MainPluginClass
 api-version: '1.21'
 description: Catacombs map generator
 authors: [ Thor ]
+
+dependencies:
+  server:
+    ServerUtils:
+      required: true
+      load: BEFORE

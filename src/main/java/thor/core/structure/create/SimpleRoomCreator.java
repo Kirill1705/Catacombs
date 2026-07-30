@@ -5,7 +5,7 @@ import thor.core.info.RoomInfo;
 import thor.core.structure.Room;
 import thor.core.structure.RoomImpl;
 import thor.core.structure.chest.ItemCreator;
-import thor.usefulUtils.utils.dataStructures.Point;
+import ru.vikhrenko.serverUtils.utils.dataStructures.Point;
 
 public record SimpleRoomCreator(ItemCreator items) implements RoomCreator {
     @Override

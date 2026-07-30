@@ -3,7 +3,7 @@ package thor.core.info.part;
 import lombok.Getter;
 import thor.core.exception.DomainValidationException;
 import thor.core.info.StructureInfo;
-import thor.usefulUtils.utils.dataStructures.Point;
+import ru.vikhrenko.serverUtils.utils.dataStructures.Point;
 
 import java.util.Collection;
 

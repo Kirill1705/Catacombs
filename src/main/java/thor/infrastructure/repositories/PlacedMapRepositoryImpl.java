@@ -1,7 +1,7 @@
 package thor.infrastructure.repositories;
 
 import ch.ethz.globis.phtree.PhTreeSolid;
-import thor.core.port.input.LocationDto;
+import thor.core.port.mapping.LocationDto;
 import thor.core.port.mapping.dto.map.PlacedMapDto;
 import thor.core.port.output.repository.PlacedMapRepository;
 
