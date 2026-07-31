@@ -1,10 +1,10 @@
 package thor.core.structure;
 
+import lombok.Getter;
 import thor.core.generator.tunnel.convert.Converter;
 import thor.core.info.RoomInfo;
 import thor.core.port.output.StructureManager;
 import thor.core.port.output.WorldAccessor;
-import thor.core.structure.chest.ItemCreator;
 
 import java.util.Collection;
 import java.util.List;
@@ -12,12 +12,16 @@ import java.util.List;
 public class RoomImpl extends AbstractStructure implements Room{
     private final List<Exit> exits;
     private final Collection<String> tunnels;
-    public RoomImpl(ItemCreator generator, Converter converter, RoomInfo info) {
-        super(generator, converter, info, false);
+    @Getter
+    private final RoomInfo roomInfo;
+
+    public RoomImpl(Converter converter, RoomInfo info) {
+        super(converter, info, false);
         tunnels = info.getTunnels();
         exits = info.getExits().stream()
                 .map(exitInfo -> new Exit(converter, exitInfo, tunnels, info.getSize()))
                 .toList();
+        this.roomInfo = info;
     }
 
     @Override

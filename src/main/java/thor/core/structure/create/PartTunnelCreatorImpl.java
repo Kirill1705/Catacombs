@@ -12,7 +12,7 @@ import ru.vikhrenko.serverUtils.utils.dataStructures.Point;
 
 import java.util.List;
 
-public record PartTunnelCreatorImpl(ItemCreator generator) implements PartTunnelCreator {
+public record PartTunnelCreatorImpl() implements PartTunnelCreator {
     @Override
     public PartTunnel create(Point attachmentPoint, Point offset, PartTunnelInfo info, Converter converter) {
         Converter localConverter;
@@ -27,6 +27,6 @@ public record PartTunnelCreatorImpl(ItemCreator generator) implements PartTunnel
             localConverter = new ConverterImpl(attachmentPoint.subtract(infoAttachmentPoint), attachmentPoint);
             rotated = false;
         }
-        return new PartTunnelImpl(generator, new ConverterChain(List.of(localConverter, converter)), info, rotated);
+        return new PartTunnelImpl(new ConverterChain(List.of(localConverter, converter)), info, rotated);
     }
 }

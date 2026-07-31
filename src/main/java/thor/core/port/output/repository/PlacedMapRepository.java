@@ -1,6 +1,7 @@
 package thor.core.port.output.repository;
 
-import thor.core.port.mapping.LocationDto;
+import ru.vikhrenko.serverUtils.utils.dataStructures.BlockLocation;
+import ru.vikhrenko.serverUtils.utils.dataStructures.Point;
 import thor.core.port.mapping.dto.map.PlacedMapDto;
 
 import java.util.Optional;
@@ -11,5 +12,5 @@ public interface PlacedMapRepository {
 
     Optional<PlacedMapDto> findById(UUID placedMapId);
 
-    Optional<PlacedMapDto> findByLocation(LocationDto locationDto);
+    Optional<PlacedMapDto> findByLocation(Point position, String worldName);
 }

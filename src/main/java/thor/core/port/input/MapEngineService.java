@@ -17,4 +17,6 @@ public interface MapEngineService {
     void tptoArena(UUID playerId, UUID placedMapId);
 
     boolean tpFromArena(UUID playerId);
+
+    void onPressedSomething(UUID playerId, Point position, String worldName, String signalType);
 }

@@ -38,8 +38,4 @@ public class Chest extends AbstractStructurePart {
             }
         }
     }
-
-    public void place(WorldAccessor accessor) {
-        accessor.placeChest(getPosition(), items, books, material);
-    }
 }

@@ -12,7 +12,5 @@ public interface Structure {
     Point getPosition();
     Point getSize();
     ImmutableBox toBox();
-    Collection<Chest> getChests();
-    Collection<PlayerSpawnNode> getPlayerSpawnPlaces();
     void place(WorldAccessor accessor, StructureManager structureManager);
 }

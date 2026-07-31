@@ -6,4 +6,5 @@ import ru.vikhrenko.serverUtils.utils.dataStructures.Point;
 
 public interface RoomCreator {
     Room create(Point position, RoomInfo info);
+
 }

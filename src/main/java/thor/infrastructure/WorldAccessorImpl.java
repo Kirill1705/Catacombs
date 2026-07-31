@@ -3,21 +3,20 @@ package thor.infrastructure;
 import io.papermc.paper.registry.RegistryAccess;
 import io.papermc.paper.registry.RegistryKey;
 import lombok.RequiredArgsConstructor;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.Container;
 import org.bukkit.block.structure.Mirror;
 import org.bukkit.block.structure.StructureRotation;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Entity;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.structure.Structure;
 import thor.core.exception.InvalidEnchantException;
 import thor.core.exception.InvalidMaterialException;
-import thor.core.port.mapping.LocationDto;
 import thor.core.port.output.WorldAccessor;
 import thor.core.structure.chest.Book;
 import thor.core.structure.chest.Item;
@@ -81,9 +80,17 @@ public class WorldAccessorImpl implements WorldAccessor {
     }
 
     @Override
-    public LocationDto getPlayerLocation(UUID playerID) {
-        Location loc = Bukkit.getPlayer(playerID).getLocation();
-        return new LocationDto(loc.getWorld().getName(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
+    public void teleportPlayer(UUID playerId, Point position, Point direction) {
+        Entity entity = Bukkit.getEntity(playerId);
+        if (entity == null) return;
+        Location location = createLocation(position);
+        location = location.toCenterLocation();
+        location.setY(location.y() - 0.4);
+        if (direction != null) {
+            location.setDirection(direction.toBlockVector().normalize());
+        }
+        entity.teleport(location);
+        entity.sendMessage(Component.text("Teleporting successful!").color(NamedTextColor.GREEN));
     }
 
     private List<ItemStack> getItems(List<Item> items, List<Book> books) {

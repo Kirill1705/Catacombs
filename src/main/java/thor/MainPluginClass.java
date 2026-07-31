@@ -20,6 +20,7 @@ import thor.infrastructure.StructureManagerImpl;
 import thor.infrastructure.WorldAccessorCreatorImpl;
 import thor.infrastructure.WorldAccessorImpl;
 import thor.infrastructure.repositories.*;
+import thor.presentation.CatacombsListener;
 import thor.presentation.CustomCommand;
 import thor.presentation.GeneratorCommand;
 import thor.presentation.MainCommand;
@@ -56,6 +57,8 @@ public class MainPluginClass extends JavaPlugin {
 
         MainCommand mainCommand = new MainCommand(commands(config, mapService, mapEngineService), this);
         mainCommand.registerCommands(this);
+        CatacombsListener listener = new CatacombsListener(mapEngineService);
+        getServer().getPluginManager().registerEvents(listener, this);
         registerServices(MapService.class, mapService);
         registerServices(MapEngineService.class, mapEngineService);
         registerServices(StructureInfoService.class, structureInfoService);

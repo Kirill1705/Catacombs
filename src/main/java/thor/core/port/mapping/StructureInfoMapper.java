@@ -2,12 +2,10 @@ package thor.core.port.mapping;
 
 import thor.core.info.RoomInfo;
 import thor.core.info.TunnelInfo;
-import thor.core.info.part.PartTunnelDescription;
-import thor.core.info.part.PartTunnelInfo;
-import thor.core.info.part.TunnelType;
-import thor.core.info.part.Weight;
+import thor.core.info.part.*;
 import thor.core.port.mapping.dto.PartTunnelDescriptionDto;
 import thor.core.port.mapping.dto.RoomInfoDto;
+import thor.core.port.mapping.dto.TeleportInfoDto;
 import thor.core.port.mapping.dto.TunnelInfoDto;
 import thor.core.util.ConfUtils;
 
@@ -62,7 +60,8 @@ public final class StructureInfoMapper {
                 dto.playerSpawnPlaces() != null ? dto.playerSpawnPlaces().stream().map(PartsMapper::fromDto).toList() : List.of(),
                 dto.size(),
                 dto.chests() != null ? dto.chests().stream().map(PartsMapper::fromDto).toList() : List.of(),
-                dto.tunnels()
+                dto.tunnels(),
+                PartsMapper.fromDto(dto.teleport())
         );
     }
 
@@ -74,7 +73,8 @@ public final class StructureInfoMapper {
                 domain.getChests().stream().map(PartsMapper::toDto).toList(),
                 domain.getPlayerSpawnPlaces().stream().map(PartsMapper::toDto).toList(),
                 domain.getExits().stream().map(PartsMapper::toDto).toList(),
-                domain.getTunnels().stream().toList()
+                domain.getTunnels().stream().toList(),
+                PartsMapper.toDto(domain.getTeleport())
         );
     }
 }

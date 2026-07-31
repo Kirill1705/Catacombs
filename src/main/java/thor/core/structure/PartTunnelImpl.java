@@ -10,7 +10,6 @@ import thor.core.info.part.PartTunnelInfo;
 import thor.core.info.part.TunnelType;
 import thor.core.port.output.StructureManager;
 import thor.core.port.output.WorldAccessor;
-import thor.core.structure.chest.ItemCreator;
 import ru.vikhrenko.serverUtils.utils.dataStructures.Point;
 
 public class PartTunnelImpl extends AbstractStructure implements PartTunnel{
@@ -19,8 +18,8 @@ public class PartTunnelImpl extends AbstractStructure implements PartTunnel{
     private final TunnelType type;
     private final int idx;
 
-    public PartTunnelImpl(ItemCreator generator, Converter converter, PartTunnelInfo partTunnelInfo, boolean rotated) {
-        super(generator, converter, partTunnelInfo, rotated);
+    public PartTunnelImpl(Converter converter, PartTunnelInfo partTunnelInfo, boolean rotated) {
+        super(converter, partTunnelInfo, rotated);
         this.attachmentPoint = converter.toOld(partTunnelInfo.getAttachmentPoint());
         this.type = partTunnelInfo.getType();
         this.idx = partTunnelInfo.getIdx();

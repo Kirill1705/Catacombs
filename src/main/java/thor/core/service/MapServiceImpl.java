@@ -7,7 +7,6 @@ import thor.core.generator.RoomGenerator;
 import thor.core.generator.TunnelGenerator;
 import thor.core.generator.complete.GameMap;
 import thor.core.generator.tunnel.GroundTunnelGenerator;
-import thor.core.generator.tunnel.make.TunnelPartsDispenserImpl;
 import thor.core.info.ItemInfo;
 import thor.core.info.part.FillType;
 import thor.core.port.input.MapService;
@@ -21,6 +20,7 @@ import thor.core.port.output.repository.MapRepository;
 import thor.core.structure.chest.ItemCreator;
 import thor.core.structure.create.PartTunnelCreatorImpl;
 import thor.core.structure.create.SimpleRoomCreator;
+import thor.core.structure.create.StructurePartsHolder;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -43,10 +43,11 @@ public class MapServiceImpl implements MapService {
     @Override
     public UUID generateMap() {
         MapConfig mapConfig = mapConfigHolder.getConfig();
-        ItemCreator itemCreator = new ItemCreator(getItems());
-        RoomGenerator roomGenerator = new GroundRoomGenerator(infoRepository.getRooms().stream().map(StructureInfoMapper::fromDto).toList(), mapConfig.mapSize(), mapConfig.roomsQuantity(), new SimpleRoomCreator(itemCreator));
-        GameMap gameMap = roomGenerator.generate();
-        TunnelGenerator tunnelGenerator = new GroundTunnelGenerator(infoRepository.getTunnels().stream().map(StructureInfoMapper::fromDto).toList(), new PartTunnelCreatorImpl(itemCreator));
+        StructurePartsHolder partsHolder = new StructurePartsHolder(new ItemCreator(getItems()));
+        GameMap gameMap = new GameMap(mapConfig.mapSize(), partsHolder);
+        RoomGenerator roomGenerator = new GroundRoomGenerator(infoRepository.getRooms().stream().map(StructureInfoMapper::fromDto).toList(), mapConfig.roomsQuantity(), new SimpleRoomCreator());
+        roomGenerator.generate(gameMap);
+        TunnelGenerator tunnelGenerator = new GroundTunnelGenerator(infoRepository.getTunnels().stream().map(StructureInfoMapper::fromDto).toList(), new PartTunnelCreatorImpl());
         tunnelGenerator.generateTunnels(gameMap);
         mapRepository.addMap(gameMap);
         return gameMap.getUuid();

@@ -3,6 +3,7 @@ package thor.core.generator.complete;
 import lombok.Getter;
 import org.bukkit.util.BoundingBox;
 import ru.vikhrenko.serverUtils.utils.dataStructures.Point;
+import thor.core.exception.DomainValidationException;
 
 public class MapField {
     private final boolean[][][] map;
@@ -10,6 +11,10 @@ public class MapField {
     private final Point size;
 
     public MapField(Point size) {
+        if (!size.more(new Point(0, 0, 0))) {
+            throw new DomainValidationException(size);
+        }
+
         this.size = size;
         map = new boolean[size.x()][size.y()][size.z()];
     }

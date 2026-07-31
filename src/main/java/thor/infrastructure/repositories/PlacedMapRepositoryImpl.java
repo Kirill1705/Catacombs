@@ -1,7 +1,7 @@
 package thor.infrastructure.repositories;
 
 import ch.ethz.globis.phtree.PhTreeSolid;
-import thor.core.port.mapping.LocationDto;
+import ru.vikhrenko.serverUtils.utils.dataStructures.Point;
 import thor.core.port.mapping.dto.map.PlacedMapDto;
 import thor.core.port.output.repository.PlacedMapRepository;
 
@@ -40,14 +40,16 @@ public class PlacedMapRepositoryImpl implements PlacedMapRepository {
     }
 
     @Override
-    public Optional<PlacedMapDto> findByLocation(LocationDto locationDto) {
-        long[] min = {locationDto.x(), locationDto.y(), locationDto.z()};
+    public Optional<PlacedMapDto> findByLocation(Point position, String worldName) {
+        long[] min = {position.x(), position.y(), position.z()};
         PhTreeSolid.PhIteratorS<UUID> iterator = index.queryIntersect(min, min);
-        if (!iterator.hasNext()) {
-            return Optional.empty();
+        if (iterator.hasNext()) {
+            UUID uuid = iterator.next();
+            if (maps.get(uuid).worldName().equals(worldName)) {
+                return Optional.of(maps.get(uuid));
+            }
         }
-        UUID uuid = iterator.next();
-        return findById(uuid);
+        return Optional.empty();
     }
 
     private void delete(UUID uuid) {

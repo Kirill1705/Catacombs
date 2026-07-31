@@ -1,10 +1,12 @@
 package thor.core.port.mapping;
 
 import org.bukkit.Material;
+import thor.core.info.SignalType;
 import thor.core.info.part.*;
 import thor.core.port.mapping.dto.ChestInfoDto;
 import thor.core.port.mapping.dto.ExitInfoDto;
 import thor.core.port.mapping.dto.PlayerSpawnPlaceInfoDto;
+import thor.core.port.mapping.dto.TeleportInfoDto;
 import thor.core.structure.PlayerSpawnPriority;
 import thor.core.util.ConfUtils;
 
@@ -61,6 +63,25 @@ public final class PartsMapper {
         return new PlayerSpawnPlaceInfoDto(
                 domain.getPosition(),
                 domain.getPriority().getValue()
+        );
+    }
+
+    public static TeleportInfoDto toDto(TeleportInfo teleportInfo) {
+        return new TeleportInfoDto(
+                teleportInfo.trigger(),
+                teleportInfo.place(),
+                teleportInfo.direction(),
+                teleportInfo.signalType().name().toLowerCase()
+        );
+    }
+
+    public static TeleportInfo fromDto(TeleportInfoDto dto) {
+        if (dto == null) return null;
+        return new TeleportInfo(
+                dto.trigger(),
+                dto.place(),
+                dto.direction(),
+                SignalType.valueOf(dto.signalType().toUpperCase())
         );
     }
 }

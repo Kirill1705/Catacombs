@@ -14,7 +14,6 @@ import java.util.Collection;
 
 @RequiredArgsConstructor
 public class MapPlacer {
-    @Getter
     private final GameMap map;
     private final WorldAccessor worldAccessor;
     private final StructureManager structureManager;
@@ -38,6 +37,7 @@ public class MapPlacer {
                 .filter(partTunnel -> !partTunnel.isVertical())
                 .forEach(partTunnel -> partTunnel.place(worldAccessor, structureManager));
         allTunnels.forEach(partTunnel -> partTunnel.afterPlace(worldAccessor));
+        map.getPartsHolder().place(worldAccessor);
     }
 
     private void fillBedrock(Point size) {

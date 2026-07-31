@@ -1,14 +1,13 @@
 package thor.core.generator.complete;
 
 import lombok.Getter;
+import thor.core.generator.tunnel.convert.Converter;
 import thor.core.structure.PartTunnel;
-import thor.core.structure.PlayerSpawnNode;
 import thor.core.structure.Room;
 import ru.vikhrenko.serverUtils.utils.dataStructures.Point;
+import thor.core.structure.create.StructurePartsHolder;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.UUID;
 
 public class GameMap {
@@ -18,8 +17,11 @@ public class GameMap {
     private final MapGraph graph;
     @Getter
     private final UUID uuid;
+    @Getter
+    private final StructurePartsHolder partsHolder;
 
-    public GameMap(Point size) {
+    public GameMap(Point size, StructurePartsHolder partsHolder) {
+        this.partsHolder = partsHolder;
         graph = new MapGraph();
         field = new MapField(size);
         uuid = UUID.randomUUID();
@@ -29,6 +31,7 @@ public class GameMap {
         if (graph.canPlace(room, new Point(0, 0, 0).toBoundingBox(field.getSize().subtract(new Point(1, 1, 1))))) {
             field.feelMap(room.toBox());
             graph.addRoom(room);
+            partsHolder.createFromRoomInfo(Converter.simple(room.getPosition()), room.getRoomInfo());
             return true;
         }
         return false;
@@ -39,18 +42,5 @@ public class GameMap {
         for (PartTunnel partTunnel: tunnel) {
             field.feelMap(partTunnel.toBox());
         }
-    }
-
-    public List<PlayerSpawnNode> getPlayerSpawnPlaces() {
-        List<PlayerSpawnNode> roomNodes = graph.getRooms().stream()
-                .flatMap(room -> room.getPlayerSpawnPlaces().stream())
-                .toList();
-        List<PlayerSpawnNode> tunnelNodes = graph.getAllTunnels().stream()
-                .flatMap(partTunnel -> partTunnel.getPlayerSpawnPlaces().stream())
-                .toList();
-        List<PlayerSpawnNode> result = new ArrayList<>();
-        result.addAll(roomNodes);
-        result.addAll(tunnelNodes);
-        return result;
     }
 }
