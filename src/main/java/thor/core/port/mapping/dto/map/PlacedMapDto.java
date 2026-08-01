@@ -12,7 +12,6 @@ public record PlacedMapDto(
         String worldName,
         Point corner1,
         Point corner2,
-        List<PlayerSpawnPlaceDto> playerSpawnPlaces,
-        TeleportManager teleportManager
+        List<PlayerSpawnPlaceDto> playerSpawnPlaces
 ) {
 }

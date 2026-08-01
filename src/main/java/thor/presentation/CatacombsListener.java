@@ -52,7 +52,7 @@ public class CatacombsListener implements Listener {
         if (block.getBlockData() instanceof Switch) {
             return SignalType.BUTTON;
         }
-        if (block.getBlockData() instanceof AnaloguePowerable && typeName.contains("PRESSURE_PLATE")) {
+        if (block.getBlockData() instanceof AnaloguePowerable || block.getBlockData() instanceof Powerable && typeName.contains("PRESSURE_PLATE")) {
             return SignalType.PLATE;
         }
 

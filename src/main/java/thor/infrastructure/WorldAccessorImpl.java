@@ -12,8 +12,11 @@ import org.bukkit.block.structure.Mirror;
 import org.bukkit.block.structure.StructureRotation;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.structure.Structure;
 import thor.core.exception.InvalidEnchantException;
 import thor.core.exception.InvalidMaterialException;
@@ -91,6 +94,15 @@ public class WorldAccessorImpl implements WorldAccessor {
         }
         entity.teleport(location);
         entity.sendMessage(Component.text("Teleporting successful!").color(NamedTextColor.GREEN));
+    }
+
+    @Override
+    public void applyEffect(UUID entityId, String effect, int amplifier, int duration) {
+        if (Bukkit.getEntity(entityId) instanceof LivingEntity entity) {
+            NamespacedKey key = NamespacedKey.minecraft(effect);
+            PotionEffectType effectType = Registry.POTION_EFFECT_TYPE.get(key);
+            entity.addPotionEffect(new PotionEffect(effectType, duration, amplifier));
+        }
     }
 
     private List<ItemStack> getItems(List<Item> items, List<Book> books) {

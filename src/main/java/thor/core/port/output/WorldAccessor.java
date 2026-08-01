@@ -16,4 +16,5 @@ public interface WorldAccessor {
     void placeStructure(String path, Point position, boolean rotated);
 
     void teleportPlayer(UUID playerId, Point position, Point direction);
+    void applyEffect(UUID entityId, String effect, int amplifier, int duration);
 }

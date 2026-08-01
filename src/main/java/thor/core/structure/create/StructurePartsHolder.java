@@ -7,6 +7,7 @@ import thor.core.info.RoomInfo;
 import thor.core.port.output.WorldAccessor;
 import thor.core.structure.chest.ItemCreator;
 import thor.core.structure.manager.ChestManager;
+import thor.core.structure.manager.EffectNodeManager;
 import thor.core.structure.manager.PlayerSpawnManager;
 import thor.core.structure.manager.TeleportManager;
 
@@ -19,9 +20,12 @@ public class StructurePartsHolder {
     private final PlayerSpawnManager playerSpawnManager;
     @Getter
     private final TeleportManager teleportManager;
+    @Getter
+    private final EffectNodeManager effectNodeManager;
 
     public StructurePartsHolder(ItemCreator itemCreator) {
         this.chestManager = new ChestManager(itemCreator);
+        this.effectNodeManager = new EffectNodeManager();
         this.teleportManager = new TeleportManager();
         this.playerSpawnManager = new PlayerSpawnManager();
     }
@@ -30,6 +34,7 @@ public class StructurePartsHolder {
         chestManager.addParts(roomInfo.getChests(), converter);
         playerSpawnManager.addParts(roomInfo.getPlayerSpawnPlaces(), converter);
         teleportManager.addParts(roomInfo.getTeleport() != null ? List.of(roomInfo.getTeleport()) : List.of(), converter);
+        effectNodeManager.addParts(roomInfo.getEffects(), converter);
     }
 
     public void place(WorldAccessor accessor) {

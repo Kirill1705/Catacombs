@@ -9,12 +9,8 @@ import thor.core.structure.Teleport;
 
 import java.util.*;
 
-public class TeleportManager extends AbstractStructurePartManager<TeleportInfo, Teleport>{
+public class TeleportManager extends AbstractStructurePartManager<TeleportInfo, Teleport> implements SignalPartManager {
     private final Map<UUID, Long> lock = new HashMap<>();
-
-    public TeleportManager(List<Teleport> teleports) {
-        super(teleports);
-    }
 
     public TeleportManager() {
 
@@ -25,9 +21,10 @@ public class TeleportManager extends AbstractStructurePartManager<TeleportInfo, 
         return new Teleport(converter, info);
     }
 
-    public void tryToTeleportPlayer(WorldAccessor accessor, UUID playerId, Point position, SignalType signalType) {
+    @Override
+    public void onSignal(WorldAccessor accessor, UUID entityId, Point position, SignalType signalType) {
         if (getParts().size() <= 1) return;
-        if (!canTeleport(playerId)) return;
+        if (!canTeleport(entityId)) return;
         int teleportIdx = -1;
         for (int i = 0; i < getParts().size(); i++) {
             if (getParts().get(i).getPosition().equals(position) && signalType == getParts().get(i).getType()) {
@@ -37,16 +34,15 @@ public class TeleportManager extends AbstractStructurePartManager<TeleportInfo, 
         }
         if (teleportIdx == -1) return;
         teleportIdx = (teleportIdx + 1) % getParts().size();
-        accessor.teleportPlayer(playerId, getParts().get(teleportIdx).getPlace(), getParts().get(teleportIdx).getDirection());
-        lock.put(playerId, System.currentTimeMillis());
+        accessor.teleportPlayer(entityId, getParts().get(teleportIdx).getPlace(), getParts().get(teleportIdx).getDirection());
+        lock.put(entityId, System.currentTimeMillis());
     }
 
-    boolean canTeleport(UUID entityId) {
+    private boolean canTeleport(UUID entityId) {
         final int timeoutMills = 200;
         long time = System.currentTimeMillis();
         if (!lock.containsKey(entityId)) return true;
         long tpTime = lock.get(entityId);
-        if (time - tpTime <= timeoutMills) return false;
-        return true;
+        return time - tpTime > timeoutMills;
     }
 }

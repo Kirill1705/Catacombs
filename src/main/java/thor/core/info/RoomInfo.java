@@ -18,11 +18,14 @@ public class RoomInfo extends StructureInfo {
     private final Collection<String> tunnels;
     @Getter
     private final TeleportInfo teleport;
+    @Getter
+    private final Collection<EffectInfo> effects;
 
-    public RoomInfo(Weight weight, Collection<ExitInfo> exits, String textId, Collection<PlayerSpawnPlaceInfo> playerSpawnPlaces, Point size, Collection<ChestInfo> chests, Collection<String> tunnels, TeleportInfo teleport) {
+    public RoomInfo(Weight weight, Collection<ExitInfo> exits, String textId, Collection<PlayerSpawnPlaceInfo> playerSpawnPlaces, Point size, Collection<ChestInfo> chests, Collection<String> tunnels, TeleportInfo teleport, Collection<EffectInfo> effects) {
         super(size, weight, textId, chests, playerSpawnPlaces);
         this.tunnels = ConfUtils.takeOrDefault(tunnels, List.of());
         this.teleport = teleport;
+        this.effects = effects;
         if (exits.isEmpty()) {
             throw new DomainValidationException(exits);
         }

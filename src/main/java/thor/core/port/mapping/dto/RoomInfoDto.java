@@ -13,9 +13,10 @@ public record RoomInfoDto(
         List<PlayerSpawnPlaceInfoDto> playerSpawnPlaces,
         List<ExitInfoDto> exits,
         List<String> tunnels,
-        TeleportInfoDto teleport
+        TeleportInfoDto teleport,
+        List<EffectInfoDto> effects
 ){
     public RoomInfoDto(String id, Integer weight, Point size, List<ChestInfoDto> chests, List<PlayerSpawnPlaceInfoDto> playerSpawnPlaces, List<ExitInfoDto> exits, List<String> tunnels) {
-        this(id, weight, size, chests, playerSpawnPlaces, exits, tunnels, null);
+        this(id, weight, size, chests, playerSpawnPlaces, exits, tunnels, null, List.of());
     }
 }

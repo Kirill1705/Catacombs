@@ -3,15 +3,13 @@ package thor.core.port.mapping;
 import org.bukkit.Material;
 import thor.core.info.SignalType;
 import thor.core.info.part.*;
-import thor.core.port.mapping.dto.ChestInfoDto;
-import thor.core.port.mapping.dto.ExitInfoDto;
-import thor.core.port.mapping.dto.PlayerSpawnPlaceInfoDto;
-import thor.core.port.mapping.dto.TeleportInfoDto;
+import thor.core.port.mapping.dto.*;
 import thor.core.structure.PlayerSpawnPriority;
 import thor.core.util.ConfUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public final class PartsMapper {
     public static ExitInfo fromDto(ExitInfoDto dto) {
@@ -67,6 +65,7 @@ public final class PartsMapper {
     }
 
     public static TeleportInfoDto toDto(TeleportInfo teleportInfo) {
+        if (teleportInfo == null) return null;
         return new TeleportInfoDto(
                 teleportInfo.trigger(),
                 teleportInfo.place(),
@@ -81,6 +80,28 @@ public final class PartsMapper {
                 dto.trigger(),
                 dto.place(),
                 dto.direction(),
+                SignalType.valueOf(dto.signalType().toUpperCase())
+        );
+    }
+
+    public static EffectInfoDto toDto(EffectInfo effectInfo) {
+        if (effectInfo == null) return null;
+        return new EffectInfoDto(
+                effectInfo.position(),
+                effectInfo.effect(),
+                effectInfo.amplifier(),
+                effectInfo.duration(),
+                effectInfo.signalType().name().toLowerCase()
+        );
+    }
+
+    public static EffectInfo fromDto(EffectInfoDto dto) {
+        if (dto == null) return null;
+        return new EffectInfo(
+                dto.position(),
+                dto.effect(),
+                dto.amplifier(),
+                dto.duration(),
                 SignalType.valueOf(dto.signalType().toUpperCase())
         );
     }

@@ -61,7 +61,8 @@ public final class StructureInfoMapper {
                 dto.size(),
                 dto.chests() != null ? dto.chests().stream().map(PartsMapper::fromDto).toList() : List.of(),
                 dto.tunnels(),
-                PartsMapper.fromDto(dto.teleport())
+                PartsMapper.fromDto(dto.teleport()),
+                dto.effects() != null ? dto.effects().stream().map(PartsMapper::fromDto).toList() : List.of()
         );
     }
 
@@ -74,7 +75,8 @@ public final class StructureInfoMapper {
                 domain.getPlayerSpawnPlaces().stream().map(PartsMapper::toDto).toList(),
                 domain.getExits().stream().map(PartsMapper::toDto).toList(),
                 domain.getTunnels().stream().toList(),
-                PartsMapper.toDto(domain.getTeleport())
+                PartsMapper.toDto(domain.getTeleport()),
+                domain.getEffects().stream().map(PartsMapper::toDto).toList()
         );
     }
 }

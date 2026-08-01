@@ -6,6 +6,7 @@ import thor.core.generator.complete.GameMap;
 import thor.core.info.SignalType;
 import thor.core.port.input.MapEngineService;
 import thor.core.port.mapping.MapPlaceOptions;
+import thor.core.port.mapping.dto.map.AllMapInfo;
 import thor.core.port.mapping.dto.map.PlacedMapDto;
 import thor.core.port.mapping.dto.map.PlacedMapMapper;
 import thor.core.port.output.ArenaManager;
@@ -14,6 +15,7 @@ import thor.core.port.output.WorldAccessor;
 import thor.core.port.output.WorldAccessorCreator;
 import thor.core.port.output.repository.MapRepository;
 import thor.core.port.output.repository.PlacedMapRepository;
+import thor.core.structure.manager.SignalPartManager;
 import thor.core.structure.manager.TeleportManager;
 import thor.core.world.MapPlacer;
 import ru.vikhrenko.serverUtils.utils.dataStructures.Point;
@@ -40,19 +42,19 @@ public class MapEngineServiceImpl implements MapEngineService {
         MapPlacer mapPlacer = new MapPlacer(gameMap.get(), accessorCreator.create(point, worldName), structureManager);
         mapPlacer.place(options.isFillBedrock(), options.isFillStone());
         arenaManager.placeArena(getArenaPosition(point, gameMap.get().getField().getSize()), worldName);
-        PlacedMapDto dto = PlacedMapMapper.toDto(gameMap.get(), point, worldName, options.getSpawnPlacesCount());
+        AllMapInfo dto = PlacedMapMapper.toDto(gameMap.get(), point, worldName, options.getSpawnPlacesCount());
         placedMapRepository.addMapOrReplace(dto);
         log.info("Map placed successfully");
-        return dto;
+        return dto.mapDto();
     }
 
     @Override
     public void tptoArena(UUID playerId, UUID placedMapId) {
-        Optional<PlacedMapDto> dto = placedMapRepository.findById(placedMapId);
+        Optional<AllMapInfo> dto = placedMapRepository.findById(placedMapId);
         if (dto.isEmpty()) {
             return;
         }
-        arenaManager.tpPlayerToArena(playerId, dto.get().corner2(), dto.get().worldName());
+        arenaManager.tpPlayerToArena(playerId, dto.get().mapDto().corner2(), dto.get().mapDto().worldName());
     }
 
     @Override
@@ -63,11 +65,11 @@ public class MapEngineServiceImpl implements MapEngineService {
     @Override
     public void onPressedSomething(UUID playerId, Point position, String worldName, String signalType) {
         SignalType type = SignalType.valueOf(signalType.toUpperCase());
-        Optional<PlacedMapDto> mapOptional = placedMapRepository.findByLocation(position, worldName);
+        Optional<AllMapInfo> mapOptional = placedMapRepository.findByLocation(position, worldName);
         if (mapOptional.isEmpty()) return;
-        WorldAccessor accessor = accessorCreator.create(mapOptional.get().corner1(), worldName);
-        TeleportManager teleportManager = mapOptional.get().teleportManager();
-        teleportManager.tryToTeleportPlayer(accessor, playerId, position.subtract(mapOptional.get().corner1()), type);
+        WorldAccessor accessor = accessorCreator.create(mapOptional.get().mapDto().corner1(), worldName);
+        SignalPartManager manager = mapOptional.get().signalPartManager();
+        manager.onSignal(accessor, playerId, position.subtract(mapOptional.get().mapDto().corner1()), type);
     }
 
     private Point getArenaPosition(Point mapPosition, Point size) {
