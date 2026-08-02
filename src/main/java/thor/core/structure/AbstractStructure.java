@@ -15,6 +15,7 @@ public abstract class AbstractStructure implements Structure {
     private final boolean rotated;
     @Getter
     private final String textId;
+    private final Converter converter;
 
     public AbstractStructure(Converter converter, StructureInfo structureInfo, boolean rotated) {
         this.rotated = rotated;
@@ -22,11 +23,12 @@ public abstract class AbstractStructure implements Structure {
         this.position = end.min(converter.getBegin());
         this.size = end.size(converter.getBegin());
         this.textId = structureInfo.getTextId();
+        this.converter = converter;
     }
 
     @Override
-    public Point getPosition() {
-        return position;
+    public Converter getPosition() {
+        return converter;
     }
 
     @Override

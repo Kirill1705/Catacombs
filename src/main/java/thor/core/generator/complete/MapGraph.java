@@ -1,66 +1,30 @@
 package thor.core.generator.complete;
 
 import org.bukkit.util.BoundingBox;
-import thor.core.structure.PartTunnel;
-import thor.core.structure.Room;
 import thor.core.structure.Structure;
 import ru.vikhrenko.serverUtils.utils.dataStructures.Boxes;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class MapGraph {
-    private final Map<Room, List<Edge>> rooms = new LinkedHashMap<>();
+    private final List<Structure> rooms = new ArrayList<>();
 
-    public void addEdge(Room from, Room to, Collection<PartTunnel> tunnel) {
-        rooms.get(from).add(new Edge(from, to, tunnel));
-        rooms.get(to).add(new Edge(to, from, tunnel));
-    }
-
-    public Set<Edge> getEdges() {
-        return rooms.values().stream().flatMap(Collection::stream).collect(Collectors.toSet());
-    }
-
-    public void addRoom(Room room) {
-        rooms.put(room, new ArrayList<>());
+    public void addStructure(Structure room) {
+        rooms.add(room);
     }
 
     public boolean canPlace(Structure structure, BoundingBox mapBox) {
-        BoundingBox box = Boxes.fromBeginAndSize(structure.getPosition(), structure.getSize()).toBoundingBox();
+        BoundingBox box = Boxes.fromBeginAndSize(structure.getPosition().getBegin(), structure.getSize()).toBoundingBox();
         if (!mapBox.contains(box)) return false;
-        for (Structure room: rooms.keySet()) {
-            if (box.overlaps(Boxes.fromBeginAndSize(room.getPosition(), room.getSize()).toBoundingBox())) {
+        for (Structure room: rooms) {
+            if (box.overlaps(Boxes.fromBeginAndSize(room.getPosition().getBegin(), room.getSize()).toBoundingBox())) {
                 return false;
             }
         }
         return true;
     }
 
-    public Collection<PartTunnel> getEdge(Room from, Room to) {
-        if (!rooms.containsKey(from)) {
-            return null;
-        }
-        Optional<Edge> edgeOptional = rooms.get(from).stream()
-                .filter(edge -> edge.to()==to)
-                .findAny();
-        return edgeOptional.map(Edge::tunnels).orElse(null);
-    }
-
-    public Collection<Room> getRooms() {
-        return Collections.unmodifiableCollection(rooms.keySet());
-    }
-
-    public Collection<PartTunnel> getAllTunnels() {
-        List<PartTunnel> result = new ArrayList<>();
-        Set<Edge> visited = new HashSet<>();
-        for (var edges: rooms.values()) {
-            for (Edge edge: edges) {
-                if (!visited.contains(edge)) {
-                    result.addAll(edge.tunnels());
-                }
-                visited.add(edge);
-            }
-        }
-        return result;
+    public List<Structure> getRooms() {
+        return Collections.unmodifiableList(rooms);
     }
 }

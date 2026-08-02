@@ -2,8 +2,10 @@ package thor.core.structure.manager;
 
 import ru.vikhrenko.serverUtils.utils.dataStructures.Point;
 import thor.core.generator.tunnel.convert.Converter;
+import thor.core.info.RoomInfo;
 import thor.core.info.SignalType;
 import thor.core.info.part.EffectInfo;
+import thor.core.info.part.PartTunnelInfo;
 import thor.core.port.output.WorldAccessor;
 import thor.core.structure.EffectNode;
 
@@ -15,6 +17,16 @@ public class EffectNodeManager extends AbstractStructurePartManager<EffectInfo, 
     @Override
     protected EffectNode create(EffectInfo info, Converter converter) {
         return new EffectNode(converter, info);
+    }
+
+    @Override
+    protected Iterable<EffectInfo> extractFromRoomInfo(RoomInfo roomInfo) {
+        return roomInfo.getEffects();
+    }
+
+    @Override
+    protected Iterable<EffectInfo> extractFromPartTunnelInfo(PartTunnelInfo partTunnelInfo) {
+        return List.of();
     }
 
     @Override

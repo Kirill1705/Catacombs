@@ -2,25 +2,26 @@ package thor.core.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import thor.core.generator.complete.GameMap;
+import ru.vikhrenko.serverUtils.utils.dataStructures.Boxes;
+import ru.vikhrenko.serverUtils.utils.dataStructures.ImmutableBox;
+import thor.core.exception.MapNotFoundException;
+import thor.core.exception.MapNotPlacedException;
 import thor.core.info.SignalType;
 import thor.core.port.input.MapEngineService;
 import thor.core.port.mapping.MapPlaceOptions;
-import thor.core.port.mapping.dto.map.AllMapInfo;
-import thor.core.port.mapping.dto.map.PlacedMapDto;
-import thor.core.port.mapping.dto.map.PlacedMapMapper;
-import thor.core.port.output.ArenaManager;
-import thor.core.port.output.StructureManager;
+import thor.core.port.mapping.dto.MapPartInfo;
+import thor.core.port.mapping.dto.map.InteractiveGameMap;
 import thor.core.port.output.WorldAccessor;
 import thor.core.port.output.WorldAccessorCreator;
 import thor.core.port.output.repository.MapRepository;
-import thor.core.port.output.repository.PlacedMapRepository;
+import thor.core.port.output.repository.MapGeoIndex;
+import thor.core.structure.PlacePartResult;
+import thor.core.structure.manager.PlacePartManager;
+import thor.core.structure.manager.PlayerSpawnManager;
 import thor.core.structure.manager.SignalPartManager;
-import thor.core.structure.manager.TeleportManager;
-import thor.core.world.MapPlacer;
 import ru.vikhrenko.serverUtils.utils.dataStructures.Point;
 
-import java.util.Locale;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -29,50 +30,58 @@ import java.util.UUID;
 public class MapEngineServiceImpl implements MapEngineService {
     private final MapRepository mapRepository;
     private final WorldAccessorCreator accessorCreator;
-    private final ArenaManager arenaManager;
-    private final PlacedMapRepository placedMapRepository;
-    private final StructureManager structureManager;
+    private final MapGeoIndex mapGeoIndex;
 
     @Override
-    public PlacedMapDto placeMap(Point point, String worldName, UUID mapId, MapPlaceOptions options) {
-        Optional<GameMap> gameMap = mapRepository.findById(mapId);
+    public void placeMap(Point point, String worldName, UUID mapId, MapPlaceOptions options) {
+        Optional<InteractiveGameMap> gameMap = mapRepository.findById(mapId);
         if (gameMap.isEmpty()) {
             throw new IllegalArgumentException();
         }
-        MapPlacer mapPlacer = new MapPlacer(gameMap.get(), accessorCreator.create(point, worldName), structureManager);
-        mapPlacer.place(options.isFillBedrock(), options.isFillStone());
-        arenaManager.placeArena(getArenaPosition(point, gameMap.get().getField().getSize()), worldName);
-        AllMapInfo dto = PlacedMapMapper.toDto(gameMap.get(), point, worldName, options.getSpawnPlacesCount());
-        placedMapRepository.addMapOrReplace(dto);
-        log.info("Map placed successfully");
-        return dto.mapDto();
+        for (PlacePartManager manager: gameMap.get().placePartManagers()) {
+            Optional<PlacePartResult> result = manager.place(accessorCreator, worldName, point, options);
+            if (result.isPresent()) {
+                ImmutableBox box = Boxes.fromCorners(point.add(result.get().box().begin()), point.add(result.get().box().end()));
+                mapGeoIndex.addToIndex(mapId, box, worldName);
+            }
+        }
     }
 
     @Override
     public void tptoArena(UUID playerId, UUID placedMapId) {
-        Optional<AllMapInfo> dto = placedMapRepository.findById(placedMapId);
-        if (dto.isEmpty()) {
+        Optional<InteractiveGameMap> mapOptional = mapRepository.findById(placedMapId);
+        if (mapOptional.isEmpty()) {
             return;
         }
-        arenaManager.tpPlayerToArena(playerId, dto.get().mapDto().corner2(), dto.get().mapDto().worldName());
-    }
-
-    @Override
-    public boolean tpFromArena(UUID playerId) {
-        return arenaManager.tpPlayerFromArena(playerId);
+        if (mapOptional.get().arenaTeleportator() == null) {
+            throw new IllegalStateException("Game map does not have arena. Cant teleport entity");
+        }
+        mapOptional.get().arenaTeleportator().teleport(playerId);
     }
 
     @Override
     public void onPressedSomething(UUID playerId, Point position, String worldName, String signalType) {
         SignalType type = SignalType.valueOf(signalType.toUpperCase());
-        Optional<AllMapInfo> mapOptional = placedMapRepository.findByLocation(position, worldName);
+        Optional<MapPartInfo> mapId = mapGeoIndex.findByLocation(position, worldName);
+        if (mapId.isEmpty()) {
+            return;
+        }
+        Optional<InteractiveGameMap> mapOptional = mapRepository.findById(mapId.get().mapId());
         if (mapOptional.isEmpty()) return;
-        WorldAccessor accessor = accessorCreator.create(mapOptional.get().mapDto().corner1(), worldName);
-        SignalPartManager manager = mapOptional.get().signalPartManager();
-        manager.onSignal(accessor, playerId, position.subtract(mapOptional.get().mapDto().corner1()), type);
+        WorldAccessor accessor = accessorCreator.create(mapId.get().position(), worldName);
+        for (SignalPartManager manager: mapOptional.get().signalPartManagers()) {
+            manager.onSignal(accessor, playerId, position.subtract(mapId.get().position()), type);
+        }
     }
 
-    private Point getArenaPosition(Point mapPosition, Point size) {
-        return mapPosition.add(size).subtract(new Point(1, 1, 1));
+    @Override
+    public void tpPlayers(List<UUID> entityIds, UUID placedMapId) {
+        Optional<InteractiveGameMap> mapOptional = mapRepository.findById(placedMapId);
+        if (mapOptional.isEmpty()) {
+            throw new MapNotFoundException();
+        }
+
+        mapOptional.get().playerSpawnManager().tpPlayers(entityIds);
     }
+
 }

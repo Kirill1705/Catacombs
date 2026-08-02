@@ -9,7 +9,6 @@ import thor.core.util.ConfUtils;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 public final class PartsMapper {
     public static ExitInfo fromDto(ExitInfoDto dto) {
@@ -103,6 +102,22 @@ public final class PartsMapper {
                 dto.amplifier(),
                 dto.duration(),
                 SignalType.valueOf(dto.signalType().toUpperCase())
+        );
+    }
+
+    public static ArenaButtonInfo fromDto(ArenaButtonInfoDto dto) {
+        return new ArenaButtonInfo(
+                dto.position(),
+                dto.backPosition(),
+                SignalType.valueOf(dto.signalType().toUpperCase())
+        );
+    }
+
+    public static ArenaButtonInfoDto toDto(ArenaButtonInfo info) {
+        return new ArenaButtonInfoDto(
+                info.position(),
+                info.backPosition(),
+                info.signalType().name().toLowerCase()
         );
     }
 }

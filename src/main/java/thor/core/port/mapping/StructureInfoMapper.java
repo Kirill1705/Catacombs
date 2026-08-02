@@ -62,7 +62,8 @@ public final class StructureInfoMapper {
                 dto.chests() != null ? dto.chests().stream().map(PartsMapper::fromDto).toList() : List.of(),
                 dto.tunnels(),
                 PartsMapper.fromDto(dto.teleport()),
-                dto.effects() != null ? dto.effects().stream().map(PartsMapper::fromDto).toList() : List.of()
+                dto.effects() != null ? dto.effects().stream().map(PartsMapper::fromDto).toList() : List.of(),
+                dto.arenaButtons() != null ? dto.arenaButtons().stream().map(PartsMapper::fromDto).toList() : List.of()
         );
     }
 
@@ -76,7 +77,8 @@ public final class StructureInfoMapper {
                 domain.getExits().stream().map(PartsMapper::toDto).toList(),
                 domain.getTunnels().stream().toList(),
                 PartsMapper.toDto(domain.getTeleport()),
-                domain.getEffects().stream().map(PartsMapper::toDto).toList()
+                domain.getEffects().stream().map(PartsMapper::toDto).toList(),
+                domain.getArenaButtons().stream().map(PartsMapper::toDto).toList()
         );
     }
 }

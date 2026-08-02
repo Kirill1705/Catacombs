@@ -83,7 +83,7 @@ public class WorldAccessorImpl implements WorldAccessor {
     }
 
     @Override
-    public void teleportPlayer(UUID playerId, Point position, Point direction) {
+    public void teleportEntity(UUID playerId, Point position, Point direction) {
         Entity entity = Bukkit.getEntity(playerId);
         if (entity == null) return;
         Location location = createLocation(position);
@@ -97,12 +97,44 @@ public class WorldAccessorImpl implements WorldAccessor {
     }
 
     @Override
+    public boolean teleportEntityInRandomPlaceInBox(ImmutableBox box, UUID entityId) {
+        World world = location.world();
+        Point position = BlockLocations.toPoint(location).add(box.begin());
+        Point size = box.size();
+        final int maxAttemptCount = 10;
+        for (int i = 0; i < maxAttemptCount; i++) {
+            int x = (int) (position.x() + 1 + Math.random()*(size.x() - position.x() - 1));
+            int y = (int) (position.y() + 1 + Math.random()*(size.y() - position.y() - 1));
+            int z = (int) (position.z() + 1 + Math.random()*(size.z() - position.z() - 1));
+            Location location = new Location(world, x, y, z);
+            Block block = location.getBlock();
+            Block upper = block.getRelative(0, 1, 0);
+            if (i == maxAttemptCount - 1) {
+                block.setType(Material.AIR);
+                upper.setType(Material.AIR);
+            }
+            if (!block.isSolid() && !upper.isSolid()) {
+                Entity entity = Bukkit.getEntity(entityId);
+                if (entity == null) return false;
+                entity.teleport(location);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
     public void applyEffect(UUID entityId, String effect, int amplifier, int duration) {
         if (Bukkit.getEntity(entityId) instanceof LivingEntity entity) {
             NamespacedKey key = NamespacedKey.minecraft(effect);
             PotionEffectType effectType = Registry.POTION_EFFECT_TYPE.get(key);
             entity.addPotionEffect(new PotionEffect(effectType, duration, amplifier));
         }
+    }
+
+    @Override
+    public String getWorldName() {
+        return location.world().getName();
     }
 
     private List<ItemStack> getItems(List<Item> items, List<Book> books) {

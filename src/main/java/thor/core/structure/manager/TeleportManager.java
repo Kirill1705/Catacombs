@@ -2,7 +2,9 @@ package thor.core.structure.manager;
 
 import ru.vikhrenko.serverUtils.utils.dataStructures.Point;
 import thor.core.generator.tunnel.convert.Converter;
+import thor.core.info.RoomInfo;
 import thor.core.info.SignalType;
+import thor.core.info.part.PartTunnelInfo;
 import thor.core.info.part.TeleportInfo;
 import thor.core.port.output.WorldAccessor;
 import thor.core.structure.Teleport;
@@ -22,6 +24,16 @@ public class TeleportManager extends AbstractStructurePartManager<TeleportInfo, 
     }
 
     @Override
+    protected Iterable<TeleportInfo> extractFromRoomInfo(RoomInfo roomInfo) {
+        return List.of(roomInfo.getTeleport());
+    }
+
+    @Override
+    protected Iterable<TeleportInfo> extractFromPartTunnelInfo(PartTunnelInfo partTunnelInfo) {
+        return List.of();
+    }
+
+    @Override
     public void onSignal(WorldAccessor accessor, UUID entityId, Point position, SignalType signalType) {
         if (getParts().size() <= 1) return;
         if (!canTeleport(entityId)) return;
@@ -34,7 +46,7 @@ public class TeleportManager extends AbstractStructurePartManager<TeleportInfo, 
         }
         if (teleportIdx == -1) return;
         teleportIdx = (teleportIdx + 1) % getParts().size();
-        accessor.teleportPlayer(entityId, getParts().get(teleportIdx).getPlace(), getParts().get(teleportIdx).getDirection());
+        accessor.teleportEntity(entityId, getParts().get(teleportIdx).getPlace(), getParts().get(teleportIdx).getDirection());
         lock.put(entityId, System.currentTimeMillis());
     }
 

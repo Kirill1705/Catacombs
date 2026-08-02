@@ -2,7 +2,7 @@ package thor.core.generator.tunnel;
 
 import lombok.extern.slf4j.Slf4j;
 import org.jspecify.annotations.NonNull;
-import thor.core.generator.TunnelGenerator;
+import thor.core.generator.Generator;
 import thor.core.generator.complete.GameMap;
 import thor.core.generator.tunnel.convert.Converter;
 import thor.core.generator.tunnel.make.PartTunnelManagerImpl;
@@ -20,7 +20,7 @@ import java.util.Collections;
 import java.util.List;
 
 @Slf4j
-public class GroundTunnelGenerator implements TunnelGenerator {
+public class GroundTunnelGenerator implements Generator {
 
     private final List<TunnelInfo> horizontal;
     private final List<TunnelInfo> vertical;
@@ -42,8 +42,11 @@ public class GroundTunnelGenerator implements TunnelGenerator {
     }
 
     @Override
-    public void generateTunnels(GameMap map) {
-        List<Room> roomList = new ArrayList<>(map.getGraph().getRooms());
+    public void generate(GameMap map) {
+        List<Room> roomList = map.getAllStructures().stream()
+                .filter(structure -> structure instanceof Room)
+                .map(structure -> (Room)structure)
+                .toList();
         var roomPairs = createSortedPairs(roomList);
         int persents = 10;
         int counter = 0;
@@ -61,12 +64,12 @@ public class GroundTunnelGenerator implements TunnelGenerator {
                 continue;
             }
             tunnelsCount++;
-            map.addEdge(current.first, current.second, tunnel);
+            tunnel.forEach(map::addStructure);
         }
         log.info("Generated successfully {} tunnels", tunnelsCount);
     }
 
-    public Collection<PartTunnel> bind(Room first, Room second, GameMap rooms) {
+    public Collection<PartTunnel> bind(Room first, Room second, GameMap gameMap) {
         List<Exit> firstExits = new ArrayList<>(first.getExits());
         List<Exit> secondExits = new ArrayList<>(second.getExits());
         Collections.shuffle(firstExits);
@@ -75,7 +78,7 @@ public class GroundTunnelGenerator implements TunnelGenerator {
             for (Exit secondExit : secondExits) {
                 if (firstExit.isClosed() || secondExit.isClosed())
                     continue;
-                PartTunnelManagerImpl manager = new PartTunnelManagerImpl(firstExit, secondExit, horizontal, vertical, creator, rooms.getField());
+                PartTunnelManagerImpl manager = new PartTunnelManagerImpl(firstExit, secondExit, horizontal, vertical, creator, gameMap);
                 if (manager.isUpsideDown()) {
                     continue;
                 }
@@ -108,7 +111,7 @@ public class GroundTunnelGenerator implements TunnelGenerator {
 
     private record RoomPair(Room first, Room second) implements Comparable<RoomPair> {
         public double distance() {
-            return first.getPosition().distanceSquared(second.getPosition());
+            return first.getPosition().getBegin().distanceSquared(second.getPosition().getBegin());
         }
 
         @Override

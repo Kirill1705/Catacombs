@@ -1,14 +1,14 @@
 package thor.core.port.output.repository;
 
-import thor.core.generator.complete.GameMap;
+import thor.core.port.mapping.dto.map.InteractiveGameMap;
 
 import java.util.Optional;
 import java.util.UUID;
 
 public interface MapRepository {
-    void addMap(GameMap map);
+    void addMap(InteractiveGameMap map);
 
-    Optional<GameMap> findById(UUID mapId);
+    Optional<InteractiveGameMap> findById(UUID mapId);
 
     void delete(UUID mapId);
 }

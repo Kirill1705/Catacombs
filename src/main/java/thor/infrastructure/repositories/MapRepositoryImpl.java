@@ -1,6 +1,6 @@
 package thor.infrastructure.repositories;
 
-import thor.core.generator.complete.GameMap;
+import thor.core.port.mapping.dto.map.InteractiveGameMap;
 import thor.core.port.output.repository.MapRepository;
 
 import java.util.HashMap;
@@ -9,15 +9,15 @@ import java.util.Optional;
 import java.util.UUID;
 
 public class MapRepositoryImpl implements MapRepository {
-    private final Map<UUID, GameMap> data = new HashMap<>();
+    private final Map<UUID, InteractiveGameMap> data = new HashMap<>();
 
     @Override
-    public void addMap(GameMap map) {
-        data.put(map.getUuid(), map);
+    public void addMap(InteractiveGameMap map) {
+        data.put(map.id(), map);
     }
 
     @Override
-    public Optional<GameMap> findById(UUID mapId) {
+    public Optional<InteractiveGameMap> findById(UUID mapId) {
         return Optional.ofNullable(data.getOrDefault(mapId, null));
     }
 
