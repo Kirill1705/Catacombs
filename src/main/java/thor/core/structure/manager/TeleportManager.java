@@ -25,7 +25,7 @@ public class TeleportManager extends AbstractStructurePartManager<TeleportInfo, 
 
     @Override
     protected Iterable<TeleportInfo> extractFromRoomInfo(RoomInfo roomInfo) {
-        return List.of(roomInfo.getTeleport());
+        return roomInfo.getTeleport() != null ? List.of(roomInfo.getTeleport()) : List.of();
     }
 
     @Override

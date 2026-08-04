@@ -14,6 +14,7 @@ public interface WorldAccessor {
     Block getBlockAt(Point position);
     void placeChest(Point position, List<Item> items, List<Book> books, Material material);
     void fill(int x0, int y0, int z0, int x, int y, int z, Material material);
+    void killEntities(ImmutableBox box);
     void placeStructure(String path, Point position, boolean rotated);
 
     void teleportEntity(UUID playerId, Point position, Point direction);

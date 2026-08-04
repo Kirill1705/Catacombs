@@ -13,7 +13,6 @@ import thor.core.service.MapEngineServiceImpl;
 import thor.core.service.MapServiceImpl;
 import thor.core.service.StructureInfoServiceImpl;
 import thor.core.structure.create.CatacombsGameMapCreator;
-import thor.core.structure.manager.config.ArenaConfig;
 import thor.core.structure.manager.config.ReloadableArenaConfig;
 import thor.infrastructure.StructureManagerImpl;
 import thor.infrastructure.WorldAccessorCreatorImpl;
@@ -43,16 +42,16 @@ public class MainPluginClass extends JavaPlugin {
         MapConfigHolder mapConfigHolder = mapConfigHolder(config);
         WorldAccessorCreator gameWorldAccessor = gameWorldAccessor(config);
         MapRepository mapRepository = mapRepository(config);
-        MapGeoIndex mapGeoIndex = placedMapRepository(config);
-        ArenaConfig arenaConfig = new ReloadableArenaConfig(getDataPath());
+        MapRepository mapGeoIndex = mapRepository(config);
+        ReloadableArenaConfig arenaConfig = new ReloadableArenaConfig(getDataPath());
         StructureManager structureManager = structureManager(config);
 
-        new CommandManager().registerReloadCommand(this, List.of(reloadableInfoRepository, reloadableItemRepository));
+        new CommandManager().registerReloadCommand(this, List.of(reloadableInfoRepository, reloadableItemRepository, arenaConfig));
 
         CatacombsGameMapCreator catacombsCreator = new CatacombsGameMapCreator(mapConfigHolder, infoRepository, itemRepository, arenaConfig, structureManager);
 
         MapServiceImpl mapService = new MapServiceImpl(mapRepository, catacombsCreator);
-        MapEngineService mapEngineService = new MapEngineServiceImpl(mapRepository, gameWorldAccessor, mapGeoIndex);
+        MapEngineService mapEngineService = new MapEngineServiceImpl(mapRepository, gameWorldAccessor);
         StructureInfoService structureInfoService = new StructureInfoServiceImpl(reloadableInfoRepository, structureManager);
 
         MainCommand mainCommand = new MainCommand(commands(config, mapService, mapEngineService), this);
@@ -93,10 +92,6 @@ public class MainPluginClass extends JavaPlugin {
         Path barrelsPath = toPath(config.getString("barrel_path", "barrel.yml"));
         Path booksPath = toPath(config.getString("books_path", "books.yml"));
         return new ItemRepositoryImpl(booksPath, Map.of("chest", chestsPath, "barrel", barrelsPath));
-    }
-
-    private MapGeoIndex placedMapRepository(FileConfiguration config) {
-        return new MapGeoIndexImpl();
     }
 
     private MapRepository mapRepository(FileConfiguration config) {

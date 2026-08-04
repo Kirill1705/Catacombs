@@ -10,11 +10,13 @@ import ru.vikhrenko.serverUtils.utils.dataStructures.ImmutableBox;
 import ru.vikhrenko.serverUtils.utils.dataStructures.Point;
 
 public abstract class AbstractStructure implements Structure {
+    @Getter
     private final Point position;
     private final Point size;
     private final boolean rotated;
     @Getter
     private final String textId;
+    @Getter
     private final Converter converter;
 
     public AbstractStructure(Converter converter, StructureInfo structureInfo, boolean rotated) {
@@ -24,11 +26,6 @@ public abstract class AbstractStructure implements Structure {
         this.size = end.size(converter.getBegin());
         this.textId = structureInfo.getTextId();
         this.converter = converter;
-    }
-
-    @Override
-    public Converter getPosition() {
-        return converter;
     }
 
     @Override

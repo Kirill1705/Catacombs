@@ -2,6 +2,7 @@ package thor.core.structure;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.bukkit.Material;
 import ru.vikhrenko.serverUtils.utils.dataStructures.Boxes;
 import ru.vikhrenko.serverUtils.utils.dataStructures.Point;
 import thor.core.port.mapping.MapPlaceOptions;
@@ -42,6 +43,13 @@ public class CatacombsPlaceStructureVisitor implements StructureVisitor, PlacePa
     @Override
     public Optional<PlacePartResult> place(WorldAccessorCreator accessorCreator, String worldName, Point position, MapPlaceOptions options) {
         WorldAccessor accessor = accessorCreator.create(position, worldName);
+        if (options.isFillBedrock()) {
+            fillBedrock(accessor);
+        }
+        if (options.isFillStone()) {
+            fillStone(accessor);
+        }
+        accessor.killEntities(Boxes.fromBeginAndSize(new Point(0, 0, 0), size));
         place(accessor, rooms);
         place(accessor, verticalTunnels);
         place(accessor, horizontalTunnels);
@@ -53,5 +61,18 @@ public class CatacombsPlaceStructureVisitor implements StructureVisitor, PlacePa
 
     private <T extends Structure> void place(WorldAccessor accessor, List<T> structures) {
         structures.forEach(structure -> structure.place(accessor, structureManager));
+    }
+
+    private void fillBedrock(WorldAccessor accessor) {
+        accessor.fill(-1, -1, -1, size.x(), size.y(), -1, Material.BEDROCK);
+        accessor.fill(-1, -1, -1, size.x(), -1, size.z(), Material.BEDROCK);
+        accessor.fill(-1, -1, -1, -1, size.y(), size.z(), Material.BEDROCK);
+        accessor.fill(-1, size.y(), size.z(), size.x(), size.y(), size.z(), Material.BEDROCK);
+        accessor.fill(size.x(), size.y(), -1, size.x(), size.y(), size.z(), Material.BEDROCK);
+        accessor.fill(size.x(), -1, size.z(), size.x(), size.y(), size.z(), Material.BEDROCK);
+    }
+
+    private void fillStone(WorldAccessor accessor) {
+        accessor.fill(0, 0, 0, size.x() - 1, size.y() - 1, size.z() - 1, Material.STONE);
     }
 }

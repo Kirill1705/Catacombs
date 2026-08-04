@@ -3,6 +3,7 @@ package thor.infrastructure;
 import io.papermc.paper.registry.RegistryAccess;
 import io.papermc.paper.registry.RegistryKey;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.*;
@@ -31,6 +32,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
+@Slf4j
 @RequiredArgsConstructor
 public class WorldAccessorImpl implements WorldAccessor {
     private final BlockLocation location;
@@ -62,6 +64,18 @@ public class WorldAccessorImpl implements WorldAccessor {
         Point corner1 = convertPosition(new Point(x0, y0, z0));
         Point corner2 = convertPosition(new Point(x, y, z));
         OtherUtils.fill(Boxes.fromCorners(corner1, corner2), material, location.world(), false);
+    }
+
+    @Override
+    public void killEntities(ImmutableBox box) {
+        box = box.shift(BlockLocations.toPoint(location));
+        location.world().getNearbyEntities(box.toBoundingBox()).forEach(entity -> {
+            try {
+                entity.remove();
+            } catch (RuntimeException e) {
+                log.warn("Cant remove entity", e);
+            }
+        });
     }
 
     @Override
@@ -103,17 +117,18 @@ public class WorldAccessorImpl implements WorldAccessor {
         Point size = box.size();
         final int maxAttemptCount = 10;
         for (int i = 0; i < maxAttemptCount; i++) {
-            int x = (int) (position.x() + 1 + Math.random()*(size.x() - position.x() - 1));
-            int y = (int) (position.y() + 1 + Math.random()*(size.y() - position.y() - 1));
-            int z = (int) (position.z() + 1 + Math.random()*(size.z() - position.z() - 1));
+            int x = (int) (position.x() + 1 + Math.random()*(size.x() - 1));
+            int y = (int) (position.y() + 1 + Math.random()*(size.y() - 1));
+            int z = (int) (position.z() + 1 + Math.random()*(size.z() - 1));
             Location location = new Location(world, x, y, z);
             Block block = location.getBlock();
             Block upper = block.getRelative(0, 1, 0);
+            Block under = block.getRelative(0, -1, 0);
             if (i == maxAttemptCount - 1) {
                 block.setType(Material.AIR);
                 upper.setType(Material.AIR);
             }
-            if (!block.isSolid() && !upper.isSolid()) {
+            if (!block.isSolid() && !upper.isSolid() && under.isSolid()) {
                 Entity entity = Bukkit.getEntity(entityId);
                 if (entity == null) return false;
                 entity.teleport(location);

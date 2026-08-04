@@ -111,7 +111,7 @@ public class GroundTunnelGenerator implements Generator {
 
     private record RoomPair(Room first, Room second) implements Comparable<RoomPair> {
         public double distance() {
-            return first.getPosition().getBegin().distanceSquared(second.getPosition().getBegin());
+            return first.getPosition().distanceSquared(second.getPosition());
         }
 
         @Override

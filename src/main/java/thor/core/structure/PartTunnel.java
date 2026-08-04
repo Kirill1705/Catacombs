@@ -50,7 +50,7 @@ public class PartTunnel extends AbstractStructure {
     @Override
     protected void place(WorldAccessor accessor, StructureManager structureManager, boolean rotated) {
         String path = structureManager.getTunnelPartPath(getTextId(), idx);
-        accessor.placeStructure(path, getPosition().getBegin(), rotated);
+        accessor.placeStructure(path, getPosition(), rotated);
     }
 
     @Override

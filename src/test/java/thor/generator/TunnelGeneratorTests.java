@@ -128,7 +128,7 @@ public class TunnelGeneratorTests {
         int count = 0;
         int max = 0;
         for (PartTunnel partTunnel: tunnel) {
-            Pair current = new Pair(partTunnel.getPosition().getBegin().x(), partTunnel.getPosition().getBegin().z());
+            Pair current = new Pair(partTunnel.getPosition().x(), partTunnel.getPosition().z());
             if (pair.equals(current)) {
                 count++;
             }

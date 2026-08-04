@@ -35,7 +35,7 @@ public class Room extends AbstractStructure {
     @Override
     protected void place(WorldAccessor accessor, StructureManager structureManager, boolean rotated) {
         String path = structureManager.getRoomStructurePath(getTextId());
-        accessor.placeStructure(path, getPosition().getBegin(), rotated);
+        accessor.placeStructure(path, getPosition(), rotated);
         exits.forEach(exit -> exit.place(accessor));
     }
 

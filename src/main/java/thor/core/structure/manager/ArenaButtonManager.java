@@ -47,8 +47,8 @@ public class ArenaButtonManager extends AbstractStructurePartManager<ArenaButton
 
     @Override
     public void onSignal(WorldAccessor accessor, UUID entityId, Point position, SignalType signalType) {
-        if (arenaPosition.add(arenaConfig.getButtonPosition()).equals(position) && signalType == SignalType.BUTTON && originPositionMap.containsKey(entityId)) {
-            accessor.teleportEntity(entityId, originPositionMap.get(entityId), null);
+        if (arenaConfig.getButtonPosition().equals(position) && signalType == SignalType.BUTTON && originPositionMap.containsKey(entityId)) {
+            arenaAccessor.teleportEntity(entityId, originPositionMap.get(entityId), null);
             originPositionMap.remove(entityId);
             return;
         }

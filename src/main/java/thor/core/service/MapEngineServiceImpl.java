@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import ru.vikhrenko.serverUtils.utils.dataStructures.Boxes;
 import ru.vikhrenko.serverUtils.utils.dataStructures.ImmutableBox;
 import thor.core.exception.MapNotFoundException;
-import thor.core.exception.MapNotPlacedException;
 import thor.core.info.SignalType;
 import thor.core.port.input.MapEngineService;
 import thor.core.port.mapping.MapPlaceOptions;
@@ -14,10 +13,8 @@ import thor.core.port.mapping.dto.map.InteractiveGameMap;
 import thor.core.port.output.WorldAccessor;
 import thor.core.port.output.WorldAccessorCreator;
 import thor.core.port.output.repository.MapRepository;
-import thor.core.port.output.repository.MapGeoIndex;
 import thor.core.structure.PlacePartResult;
 import thor.core.structure.manager.PlacePartManager;
-import thor.core.structure.manager.PlayerSpawnManager;
 import thor.core.structure.manager.SignalPartManager;
 import ru.vikhrenko.serverUtils.utils.dataStructures.Point;
 
@@ -30,7 +27,6 @@ import java.util.UUID;
 public class MapEngineServiceImpl implements MapEngineService {
     private final MapRepository mapRepository;
     private final WorldAccessorCreator accessorCreator;
-    private final MapGeoIndex mapGeoIndex;
 
     @Override
     public void placeMap(Point point, String worldName, UUID mapId, MapPlaceOptions options) {
@@ -42,7 +38,7 @@ public class MapEngineServiceImpl implements MapEngineService {
             Optional<PlacePartResult> result = manager.place(accessorCreator, worldName, point, options);
             if (result.isPresent()) {
                 ImmutableBox box = Boxes.fromCorners(point.add(result.get().box().begin()), point.add(result.get().box().end()));
-                mapGeoIndex.addToIndex(mapId, box, worldName);
+                mapRepository.addToIndex(mapId, box, worldName);
             }
         }
     }
@@ -62,7 +58,7 @@ public class MapEngineServiceImpl implements MapEngineService {
     @Override
     public void onPressedSomething(UUID playerId, Point position, String worldName, String signalType) {
         SignalType type = SignalType.valueOf(signalType.toUpperCase());
-        Optional<MapPartInfo> mapId = mapGeoIndex.findByLocation(position, worldName);
+        Optional<MapPartInfo> mapId = mapRepository.findByLocation(position, worldName);
         if (mapId.isEmpty()) {
             return;
         }

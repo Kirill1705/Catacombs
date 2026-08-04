@@ -11,7 +11,7 @@ public class AddInfoStructureVisitor implements StructureVisitor {
 
     @Override
     public void visit(Room room) {
-        managers.forEach(manager -> manager.addFromRoomInfo(room.getRoomInfo(), room.getPosition()));
+        managers.forEach(manager -> manager.addFromRoomInfo(room.getRoomInfo(), room.getConverter()));
     }
 
     @Override

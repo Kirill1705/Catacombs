@@ -1,6 +1,7 @@
 package thor.core.structure.create;
 
 import lombok.RequiredArgsConstructor;
+import ru.vikhrenko.serverUtils.utils.dataStructures.Point;
 import thor.core.generator.GroundRoomGenerator;
 import thor.core.generator.complete.GameMap;
 import thor.core.generator.complete.GameMapImpl;
@@ -44,7 +45,7 @@ public class CatacombsGameMapCreator {
         ChestManager chestManager = new ChestManager(itemCreator);
         PlayerSpawnManager playerSpawnManager = new PlayerSpawnManager();
         TeleportManager teleportManager = new TeleportManager();
-        ArenaButtonManager arenaButtonManager = new ArenaButtonManager(arenaConfig, mapConfigHolder.getConfig().mapSize());
+        ArenaButtonManager arenaButtonManager = new ArenaButtonManager(arenaConfig, mapConfigHolder.getConfig().mapSize().add(new Point(2, 2, 2)));
         EffectNodeManager effectNodeManager = new EffectNodeManager();
 
         AddInfoStructureVisitor structureVisitor = new AddInfoStructureVisitor(List.of(chestManager, playerSpawnManager, teleportManager, arenaButtonManager, effectNodeManager));

@@ -14,10 +14,10 @@ public class MapGraph {
     }
 
     public boolean canPlace(Structure structure, BoundingBox mapBox) {
-        BoundingBox box = Boxes.fromBeginAndSize(structure.getPosition().getBegin(), structure.getSize()).toBoundingBox();
+        BoundingBox box = structure.toBox().toBoundingBox();
         if (!mapBox.contains(box)) return false;
         for (Structure room: rooms) {
-            if (box.overlaps(Boxes.fromBeginAndSize(room.getPosition().getBegin(), room.getSize()).toBoundingBox())) {
+            if (box.overlaps(room.toBox().toBoundingBox())) {
                 return false;
             }
         }

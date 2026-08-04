@@ -154,6 +154,7 @@
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
             <version>2.18.2</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>ru.vikhrenko</groupId>
@@ -165,6 +166,7 @@
             <groupId>com.fasterxml.jackson.dataformat</groupId>
             <artifactId>jackson-dataformat-yaml</artifactId>
             <version>2.18.2</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.tinspin</groupId>

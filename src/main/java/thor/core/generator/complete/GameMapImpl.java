@@ -1,6 +1,8 @@
 package thor.core.generator.complete;
 
 import lombok.Getter;
+import ru.vikhrenko.serverUtils.utils.dataStructures.Boxes;
+import ru.vikhrenko.serverUtils.utils.dataStructures.ImmutableBox;
 import ru.vikhrenko.serverUtils.utils.dataStructures.Point;
 import thor.core.structure.Structure;
 
@@ -33,7 +35,7 @@ public class GameMapImpl implements GameMap {
 
     @Override
     public boolean canAddByOverlaps(Structure structure) {
-        return graph.canPlace(structure, new Point(0, 0, 0).toBoundingBox(field.getSize().subtract(new Point(1, 1, 1))));
+        return graph.canPlace(structure, Boxes.fromBeginAndSize(new Point(0, 0, 0), field.getSize()).toBoundingBox());
     }
 
     @Override
