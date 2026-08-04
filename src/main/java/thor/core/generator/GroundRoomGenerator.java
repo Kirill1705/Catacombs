@@ -14,31 +14,26 @@ import ru.vikhrenko.serverUtils.utils.dataStructures.Point;
 import java.util.List;
 
 @Slf4j
-public class GroundRoomGenerator implements RoomGenerator{
+public class GroundRoomGenerator implements Generator{
     private final RandomGenerator<RoomInfo> rawRooms;
-    private final Point size;
     private final int roomsQuantity;
     private final RoomCreator creator;
 
-    public GroundRoomGenerator(List<RoomInfo> roomInfos, Point size, int roomsQuantity, RoomCreator creator) {
+    public GroundRoomGenerator(List<RoomInfo> roomInfos, int roomsQuantity, RoomCreator creator) {
         this.creator = creator;
         if (roomInfos.isEmpty()) {
             throw new RoomsNotFoundException();
-        }
-        if (!size.more(new Point(0, 0, 0))) {
-            throw new DomainValidationException(size);
         }
         if (roomsQuantity < 0) {
             throw new DomainValidationException(roomsQuantity);
         }
         this.rawRooms = new RandomGeneratorImpl<>(roomInfos);
-        this.size = size;
         this.roomsQuantity = roomsQuantity;
     }
 
     @Override
-    public GameMap generate() {
-        GameMap map = new GameMap(size);
+    public void generate(GameMap map) {
+        Point size = map.getSize();
         log.info("Starting ground rooms generator. {} rooms required", roomsQuantity);
         int roomsCount = 0;
         for (int i = 0; i < 1e5; i++) {
@@ -47,15 +42,15 @@ public class GroundRoomGenerator implements RoomGenerator{
             int y = (int) (Math.random() * size.y());
             int z = (int) (Math.random() * size.z());
             Room room = creator.create(new Point(x, y, z), current);
-            if (map.addRoom(room)) {
+            if (map.canAddByOverlaps(room)) {
+                map.addStructure(room);
                 roomsCount++;
                 if (roomsCount >= roomsQuantity) {
                     log.info("Rooms generated successfully");
-                    return map;
+                    return;
                 }
             }
         }
         log.warn("Generated only {} rooms", roomsCount);
-        return map;
     }
 }

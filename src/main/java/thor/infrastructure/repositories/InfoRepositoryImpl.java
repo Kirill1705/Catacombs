@@ -3,10 +3,10 @@ package thor.infrastructure.repositories;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import ru.vikhrenko.serverUtils.json.ModuleCreator;
 import thor.core.port.mapping.dto.RoomInfoDto;
 import thor.core.port.mapping.dto.TunnelInfoDto;
 import thor.core.port.output.repository.InfoRepository;
-import thor.infrastructure.json.ModuleCreator;
 
 import java.io.File;
 import java.io.IOException;

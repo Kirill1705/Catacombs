@@ -1,7 +1,7 @@
 package thor.core.generator.tunnel.make;
 
-import thor.core.structure.PartTunnel;
 import ru.vikhrenko.serverUtils.utils.dataStructures.Point;
+import thor.core.structure.PartTunnel;
 
 import java.util.*;
 import java.util.stream.Stream;

@@ -6,13 +6,11 @@ import thor.core.generator.tunnel.convert.ConverterImpl;
 import thor.core.generator.tunnel.convert.Rotator;
 import thor.core.info.part.PartTunnelInfo;
 import thor.core.structure.PartTunnel;
-import thor.core.structure.PartTunnelImpl;
-import thor.core.structure.chest.ItemCreator;
 import ru.vikhrenko.serverUtils.utils.dataStructures.Point;
 
 import java.util.List;
 
-public record PartTunnelCreatorImpl(ItemCreator generator) implements PartTunnelCreator {
+public record PartTunnelCreatorImpl() implements PartTunnelCreator {
     @Override
     public PartTunnel create(Point attachmentPoint, Point offset, PartTunnelInfo info, Converter converter) {
         Converter localConverter;
@@ -27,6 +25,6 @@ public record PartTunnelCreatorImpl(ItemCreator generator) implements PartTunnel
             localConverter = new ConverterImpl(attachmentPoint.subtract(infoAttachmentPoint), attachmentPoint);
             rotated = false;
         }
-        return new PartTunnelImpl(generator, new ConverterChain(List.of(localConverter, converter)), info, rotated);
+        return new PartTunnel(new ConverterChain(List.of(localConverter, converter)), info, rotated);
     }
 }

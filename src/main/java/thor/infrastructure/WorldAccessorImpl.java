@@ -3,21 +3,24 @@ package thor.infrastructure;
 import io.papermc.paper.registry.RegistryAccess;
 import io.papermc.paper.registry.RegistryKey;
 import lombok.RequiredArgsConstructor;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
+import lombok.extern.slf4j.Slf4j;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.Container;
 import org.bukkit.block.structure.Mirror;
 import org.bukkit.block.structure.StructureRotation;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.structure.Structure;
 import thor.core.exception.InvalidEnchantException;
 import thor.core.exception.InvalidMaterialException;
-import thor.core.port.mapping.LocationDto;
 import thor.core.port.output.WorldAccessor;
 import thor.core.structure.chest.Book;
 import thor.core.structure.chest.Item;
@@ -29,6 +32,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
+@Slf4j
 @RequiredArgsConstructor
 public class WorldAccessorImpl implements WorldAccessor {
     private final BlockLocation location;
@@ -63,6 +67,18 @@ public class WorldAccessorImpl implements WorldAccessor {
     }
 
     @Override
+    public void killEntities(ImmutableBox box) {
+        box = box.shift(BlockLocations.toPoint(location));
+        location.world().getNearbyEntities(box.toBoundingBox()).forEach(entity -> {
+            try {
+                entity.remove();
+            } catch (RuntimeException e) {
+                log.warn("Cant remove entity", e);
+            }
+        });
+    }
+
+    @Override
     public void placeStructure(String path, Point position, boolean rotated) {
         Structure structure;
         if (cache.containsKey(path)) {
@@ -81,9 +97,59 @@ public class WorldAccessorImpl implements WorldAccessor {
     }
 
     @Override
-    public LocationDto getPlayerLocation(UUID playerID) {
-        Location loc = Bukkit.getPlayer(playerID).getLocation();
-        return new LocationDto(loc.getWorld().getName(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
+    public void teleportEntity(UUID playerId, Point position, Point direction) {
+        Entity entity = Bukkit.getEntity(playerId);
+        if (entity == null) return;
+        Location location = createLocation(position);
+        location = location.toCenterLocation();
+        location.setY(location.y() - 0.4);
+        if (direction != null) {
+            location.setDirection(direction.toBlockVector().normalize());
+        }
+        entity.teleport(location);
+        entity.sendMessage(Component.text("Teleporting successful!").color(NamedTextColor.GREEN));
+    }
+
+    @Override
+    public boolean teleportEntityInRandomPlaceInBox(ImmutableBox box, UUID entityId) {
+        World world = location.world();
+        Point position = BlockLocations.toPoint(location).add(box.begin());
+        Point size = box.size();
+        final int maxAttemptCount = 10;
+        for (int i = 0; i < maxAttemptCount; i++) {
+            int x = (int) (position.x() + 1 + Math.random()*(size.x() - 1));
+            int y = (int) (position.y() + 1 + Math.random()*(size.y() - 1));
+            int z = (int) (position.z() + 1 + Math.random()*(size.z() - 1));
+            Location location = new Location(world, x, y, z);
+            Block block = location.getBlock();
+            Block upper = block.getRelative(0, 1, 0);
+            Block under = block.getRelative(0, -1, 0);
+            if (i == maxAttemptCount - 1) {
+                block.setType(Material.AIR);
+                upper.setType(Material.AIR);
+            }
+            if (!block.isSolid() && !upper.isSolid() && under.isSolid()) {
+                Entity entity = Bukkit.getEntity(entityId);
+                if (entity == null) return false;
+                entity.teleport(location);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public void applyEffect(UUID entityId, String effect, int amplifier, int duration) {
+        if (Bukkit.getEntity(entityId) instanceof LivingEntity entity) {
+            NamespacedKey key = NamespacedKey.minecraft(effect);
+            PotionEffectType effectType = Registry.POTION_EFFECT_TYPE.get(key);
+            entity.addPotionEffect(new PotionEffect(effectType, duration, amplifier));
+        }
+    }
+
+    @Override
+    public String getWorldName() {
+        return location.world().getName();
     }
 
     private List<ItemStack> getItems(List<Item> items, List<Book> books) {

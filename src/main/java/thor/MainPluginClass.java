@@ -1,25 +1,23 @@
 package thor;
 
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.FileConfigurationOptions;
 import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
 import thor.core.port.input.MapEngineService;
 import thor.core.port.input.MapService;
 import thor.core.port.input.StructureInfoService;
-import thor.core.port.output.ArenaManager;
 import thor.core.port.output.StructureManager;
-import thor.core.port.output.WorldAccessor;
 import thor.core.port.output.WorldAccessorCreator;
 import thor.core.port.output.repository.*;
 import thor.core.service.MapEngineServiceImpl;
 import thor.core.service.MapServiceImpl;
 import thor.core.service.StructureInfoServiceImpl;
-import thor.infrastructure.ArenaManagerImpl;
+import thor.core.structure.create.CatacombsGameMapCreator;
+import thor.core.structure.manager.config.ReloadableArenaConfig;
 import thor.infrastructure.StructureManagerImpl;
 import thor.infrastructure.WorldAccessorCreatorImpl;
-import thor.infrastructure.WorldAccessorImpl;
 import thor.infrastructure.repositories.*;
+import thor.presentation.CatacombsListener;
 import thor.presentation.CustomCommand;
 import thor.presentation.GeneratorCommand;
 import thor.presentation.MainCommand;
@@ -44,18 +42,22 @@ public class MainPluginClass extends JavaPlugin {
         MapConfigHolder mapConfigHolder = mapConfigHolder(config);
         WorldAccessorCreator gameWorldAccessor = gameWorldAccessor(config);
         MapRepository mapRepository = mapRepository(config);
-        PlacedMapRepository placedMapRepository = placedMapRepository(config);
-        ArenaManager arenaManager = arenaManager(config);
+        MapRepository mapGeoIndex = mapRepository(config);
+        ReloadableArenaConfig arenaConfig = new ReloadableArenaConfig(getDataPath());
         StructureManager structureManager = structureManager(config);
 
-        new CommandManager().registerReloadCommand(this, List.of(reloadableInfoRepository, reloadableItemRepository));
+        new CommandManager().registerReloadCommand(this, List.of(reloadableInfoRepository, reloadableItemRepository, arenaConfig));
 
-        MapServiceImpl mapService = new MapServiceImpl(reloadableInfoRepository, mapConfigHolder, reloadableItemRepository, mapRepository);
-        MapEngineService mapEngineService = new MapEngineServiceImpl(mapRepository, gameWorldAccessor, arenaManager, placedMapRepository, structureManager);
+        CatacombsGameMapCreator catacombsCreator = new CatacombsGameMapCreator(mapConfigHolder, infoRepository, itemRepository, arenaConfig, structureManager);
+
+        MapServiceImpl mapService = new MapServiceImpl(mapRepository, catacombsCreator);
+        MapEngineService mapEngineService = new MapEngineServiceImpl(mapRepository, gameWorldAccessor);
         StructureInfoService structureInfoService = new StructureInfoServiceImpl(reloadableInfoRepository, structureManager);
 
         MainCommand mainCommand = new MainCommand(commands(config, mapService, mapEngineService), this);
         mainCommand.registerCommands(this);
+        CatacombsListener listener = new CatacombsListener(mapEngineService);
+        getServer().getPluginManager().registerEvents(listener, this);
         registerServices(MapService.class, mapService);
         registerServices(MapEngineService.class, mapEngineService);
         registerServices(StructureInfoService.class, structureInfoService);
@@ -90,14 +92,6 @@ public class MainPluginClass extends JavaPlugin {
         Path barrelsPath = toPath(config.getString("barrel_path", "barrel.yml"));
         Path booksPath = toPath(config.getString("books_path", "books.yml"));
         return new ItemRepositoryImpl(booksPath, Map.of("chest", chestsPath, "barrel", barrelsPath));
-    }
-
-    private PlacedMapRepository placedMapRepository(FileConfiguration config) {
-        return new PlacedMapRepositoryImpl();
-    }
-
-    private ArenaManager arenaManager(FileConfiguration config) {
-        return new ArenaManagerImpl(toPath(config.getString("arena", "arena.nbt")));
     }
 
     private MapRepository mapRepository(FileConfiguration config) {

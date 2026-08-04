@@ -1,8 +1,6 @@
 package thor.core.service;
 
 import lombok.RequiredArgsConstructor;
-import thor.core.info.RoomInfo;
-import thor.core.info.TunnelInfo;
 import thor.core.port.input.StructureInfoService;
 import thor.core.port.mapping.RoomInfoWithPath;
 import thor.core.port.mapping.StructureInfoMapper;

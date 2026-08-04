@@ -3,7 +3,7 @@ package thor.core.generator.tunnel.make;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
-import thor.core.generator.complete.MapField;
+import thor.core.generator.complete.GameMap;
 import thor.core.generator.tunnel.convert.Converter;
 import thor.core.generator.tunnel.convert.ConverterImpl;
 import thor.core.info.TunnelInfo;
@@ -27,12 +27,12 @@ public class PartTunnelManagerImpl implements PartTunnelManager {
     @Getter
     private final Converter converter;
     private final PartTunnelCreator creator;
-    private final MapField field;
+    private final GameMap field;
 
     private final Map<TunnelProgressInfo, TunnelInfo> tunnelInfoMap = new HashMap<>();
     private final Map<TunnelCreatorNode, TunnelNodeInfo> nodes = new HashMap<>();
 
-    public PartTunnelManagerImpl(Exit first, Exit second, List<TunnelInfo> horizontal, List<TunnelInfo> vertical, PartTunnelCreator creator, MapField field) {
+    public PartTunnelManagerImpl(Exit first, Exit second, List<TunnelInfo> horizontal, List<TunnelInfo> vertical, PartTunnelCreator creator, GameMap field) {
         this.creator = creator;
         this.field = field;
         this.size = first.getPosition().add(first.getOffset()).size((second.getPosition().add(second.getOffset())));
@@ -85,7 +85,7 @@ public class PartTunnelManagerImpl implements PartTunnelManager {
     @Override
     public boolean canPlace(TunnelCreatorNode node) {
         PartTunnel partTunnel = create(node);
-        return field.canPlaceByMap(partTunnel.toBox());
+        return field.canAddByField(partTunnel);
     }
 
     @Override

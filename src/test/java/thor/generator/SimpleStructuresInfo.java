@@ -36,6 +36,9 @@ public enum SimpleStructuresInfo {
                 List.of(),
                 size,
                 List.of(),
+                List.of(),
+                null,
+                List.of(),
                 List.of()
         );
         tunnelInfos = List.of(new TunnelInfo(
