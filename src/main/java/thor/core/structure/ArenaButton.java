@@ -12,9 +12,9 @@ public class ArenaButton extends AbstractStructurePart {
     @Getter
     private final Point backPosition;
 
-    public ArenaButton(Converter converter, ArenaButtonInfo arenaButtonInfo) {
-        super(converter, arenaButtonInfo.position());
+    public ArenaButton(StructurePartPlaceInfo placeInfo, ArenaButtonInfo arenaButtonInfo) {
+        super(placeInfo, arenaButtonInfo.position());
         signalType = arenaButtonInfo.signalType();
-        backPosition = converter.toOld(arenaButtonInfo.backPosition());
+        backPosition = placeInfo.mapPosition().add(placeInfo.converter().toOld(arenaButtonInfo.backPosition()));
     }
 }

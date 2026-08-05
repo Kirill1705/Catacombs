@@ -1,14 +1,11 @@
 package thor.core.structure.manager;
 
-import thor.core.generator.tunnel.convert.Converter;
-import thor.core.info.RoomInfo;
-import thor.core.info.part.ChestInfo;
-import thor.core.info.part.PartTunnelInfo;
-
-import java.util.Collection;
+import ru.vikhrenko.serverUtils.utils.dataStructures.Point;
+import thor.core.structure.Island;
+import thor.core.structure.Room;
 
 public interface StructurePartsManager {
-    void addFromRoomInfo(RoomInfo roomInfo, Converter converter);
+    void addFromRoom(Room room, Point mapPosition, String worldName);
 
-    void addFromPartTunnelInfo(PartTunnelInfo partTunnelInfo, Converter converter);
+    void addFromIslandInfo(Island island, Point mapPosition, String worldName);
 }

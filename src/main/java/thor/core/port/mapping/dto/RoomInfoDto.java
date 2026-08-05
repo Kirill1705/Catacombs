@@ -16,9 +16,10 @@ public record RoomInfoDto(
         List<String> tunnels,
         TeleportInfoDto teleport,
         List<EffectInfoDto> effects,
-        List<ArenaButtonInfoDto> arenaButtons
+        List<ArenaButtonInfoDto> arenaButtons,
+        List<PortalInfoDto> portals
 ){
     public RoomInfoDto(String id, Integer weight, Point size, List<ChestInfoDto> chests, List<PlayerSpawnPlaceInfoDto> playerSpawnPlaces, List<ExitInfoDto> exits, List<String> tunnels) {
-        this(id, weight, size, chests, playerSpawnPlaces, exits, tunnels, null, List.of(), List.of());
+        this(id, weight, size, chests, playerSpawnPlaces, exits, tunnels, null, List.of(), List.of(), List.of());
     }
 }

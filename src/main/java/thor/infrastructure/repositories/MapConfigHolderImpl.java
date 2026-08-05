@@ -1,59 +1,58 @@
 package thor.infrastructure.repositories;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
 import lombok.Data;
-import thor.core.port.mapping.dto.MapConfig;
+import ru.vikhrenko.serverUtils.reload.YamlAbstractReloadable;
+import thor.core.exception.DomainValidationException;
 import thor.core.port.output.repository.MapConfigHolder;
 import ru.vikhrenko.serverUtils.utils.dataStructures.Point;
 
-import java.io.IOException;
-import java.nio.file.Path;
+public class MapConfigHolderImpl extends YamlAbstractReloadable<MapConfigHolderImpl.Config> implements MapConfigHolder {
 
-public class MapConfigHolderImpl implements MapConfigHolder {
-    private final Path path;
-
-    public MapConfigHolderImpl(Path path) {
-        this.path = path;
-        if (!path.toFile().exists()) {
-            addDefaultConfig();
-        }
+    public MapConfigHolderImpl() {
+        super(new Config(), Config.class);
     }
-
 
     @Override
-    public MapConfig getConfig() {
-        YAMLMapper mapper = new YAMLMapper();
-        try {
-            YamlConfig config = mapper.readValue(path.toFile(), YamlConfig.class);
-            return fromJson(config);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+    public Point catacombsMapSize() {
+        return getOptions().catacombsMapSize;
+    }
+
+    @Override
+    public Point waterWorldSize() {
+        return getOptions().waterMapSize;
+    }
+
+    @Override
+    public int roomsQuantity() {
+        return getOptions().catacombsRoomsQuantity;
+    }
+
+    @Override
+    public int getWaterIslandsQuantity() {
+        return getOptions().waterIslandsQuantity;
+    }
+
+    @Override
+    public void validate() {
+        if (!catacombsMapSize().more(new Point(0, 0, 0))) {
+            throw new DomainValidationException(getOptions().catacombsMapSize);
         }
-    }
-
-    private MapConfig fromJson(YamlConfig config) {
-        return new MapConfig(
-                new Point(config.mapSize[0], config.mapSize[1], config.mapSize[2]),
-                config.roomsQuantity
-        );
-    }
-
-    private void addDefaultConfig() {
-        YAMLMapper mapper = new YAMLMapper();
-        try {
-            mapper.writeValue(path.toFile(), new YamlConfig());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        if (!waterWorldSize().more(new Point(0, 0, 0))) {
+            throw new DomainValidationException(getOptions().waterMapSize);
+        }
+        if (roomsQuantity() <= 0) {
+            throw new DomainValidationException(roomsQuantity());
         }
     }
 
     @Data
-    private static class YamlConfig {
-        @JsonProperty("map_size")
-        private int[] mapSize = new int[]{256, 64, 256};
+    public static class Config {
+        private Point catacombsMapSize = new Point(256, 64, 256);
 
-        @JsonProperty("rooms_quantity")
-        private Integer roomsQuantity = 100;
+        private Point waterMapSize = new Point(128, 64, 128);
+
+        private int catacombsRoomsQuantity = 200;
+
+        private int waterIslandsQuantity = 30;
     }
 }

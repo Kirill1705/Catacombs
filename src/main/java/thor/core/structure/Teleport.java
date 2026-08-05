@@ -15,9 +15,9 @@ public class Teleport extends AbstractStructurePart {
     @Getter
     private final Point direction;
 
-    public Teleport(Converter converter, TeleportInfo teleportInfo) {
-        super(converter, teleportInfo.trigger());
-        place = converter.toOld(teleportInfo.place());
+    public Teleport(StructurePartPlaceInfo placeInfo, TeleportInfo teleportInfo) {
+        super(placeInfo, teleportInfo.trigger());
+        place = placeInfo.mapPosition().add(placeInfo.converter().toOld(teleportInfo.place()));
         type = teleportInfo.signalType();
         this.direction = teleportInfo.direction();
     }

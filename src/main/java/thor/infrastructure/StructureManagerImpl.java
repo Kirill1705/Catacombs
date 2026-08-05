@@ -42,6 +42,11 @@ public class StructureManagerImpl implements StructureManager {
     }
 
     @Override
+    public String getIslandStructurePath(String textId) {
+        return getRoomStructurePath(textId);
+    }
+
+    @Override
     public List<String> getTunnelPartPaths(String textId, int size) {
         List<String> result = new ArrayList<>();
         for (int i = 0; i < size; i++) {

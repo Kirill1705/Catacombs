@@ -11,8 +11,8 @@ public class PlayerSpawnNode extends AbstractStructurePart {
     @Getter
     private final PlayerSpawnPriority priority;
 
-    public PlayerSpawnNode(Converter converter, PlayerSpawnPlaceInfo info) {
-        super(converter, info.getPosition());
+    public PlayerSpawnNode(StructurePartPlaceInfo placeInfo, PlayerSpawnPlaceInfo info) {
+        super(placeInfo, info.getPosition());
         this.priority = info.getPriority();
     }
 }

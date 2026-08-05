@@ -5,6 +5,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.type.Ladder;
+import ru.vikhrenko.serverUtils.utils.dataStructures.ImmutableLocation;
 import thor.core.generator.tunnel.convert.Converter;
 import thor.core.info.part.PartTunnelInfo;
 import thor.core.info.part.TunnelType;
@@ -29,9 +30,9 @@ public class PartTunnel extends AbstractStructure {
         return type == TunnelType.VERTICAL;
     }
 
-    public void afterPlace(WorldAccessor accessor) {
+    public void afterPlace(WorldAccessor accessor, ImmutableLocation location) {
         if (isVertical()) {
-            Block block = accessor.getBlockAt(attachmentPoint);
+            Block block = accessor.getBlockAt(attachmentPoint.add(location.position()), location.worldName());
             BlockFace[] checkFaces = {BlockFace.NORTH, BlockFace.SOUTH, BlockFace.EAST, BlockFace.WEST};
             for (BlockFace face : checkFaces) {
                 Block possibleWall = block.getRelative(face);
@@ -48,9 +49,9 @@ public class PartTunnel extends AbstractStructure {
     }
 
     @Override
-    protected void place(WorldAccessor accessor, StructureManager structureManager, boolean rotated) {
+    public void place(WorldAccessor accessor, StructureManager structureManager, ImmutableLocation location) {
         String path = structureManager.getTunnelPartPath(getTextId(), idx);
-        accessor.placeStructure(path, getPosition(), rotated);
+        accessor.placeStructure(path, getPosition().add(location.position()), isRotated(), location.worldName());
     }
 
     @Override

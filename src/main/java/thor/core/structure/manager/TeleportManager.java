@@ -2,11 +2,12 @@ package thor.core.structure.manager;
 
 import ru.vikhrenko.serverUtils.utils.dataStructures.Point;
 import thor.core.generator.tunnel.convert.Converter;
-import thor.core.info.RoomInfo;
+import thor.core.info.IslandInfo;
 import thor.core.info.SignalType;
 import thor.core.info.part.PartTunnelInfo;
 import thor.core.info.part.TeleportInfo;
 import thor.core.port.output.WorldAccessor;
+import thor.core.structure.StructurePartPlaceInfo;
 import thor.core.structure.Teleport;
 
 import java.util.*;
@@ -19,34 +20,30 @@ public class TeleportManager extends AbstractStructurePartManager<TeleportInfo, 
     }
 
     @Override
-    protected Teleport create(TeleportInfo info, Converter converter) {
+    protected Teleport create(TeleportInfo info, StructurePartPlaceInfo converter) {
         return new Teleport(converter, info);
     }
 
     @Override
-    protected Iterable<TeleportInfo> extractFromRoomInfo(RoomInfo roomInfo) {
+    protected Iterable<TeleportInfo> extractFromIslandInfo(IslandInfo roomInfo) {
         return roomInfo.getTeleport() != null ? List.of(roomInfo.getTeleport()) : List.of();
     }
 
     @Override
-    protected Iterable<TeleportInfo> extractFromPartTunnelInfo(PartTunnelInfo partTunnelInfo) {
-        return List.of();
-    }
-
-    @Override
-    public void onSignal(WorldAccessor accessor, UUID entityId, Point position, SignalType signalType) {
+    public void onSignal(WorldAccessor accessor, UUID entityId, Point position, SignalType signalType, String worldName) {
         if (getParts().size() <= 1) return;
         if (!canTeleport(entityId)) return;
         int teleportIdx = -1;
         for (int i = 0; i < getParts().size(); i++) {
-            if (getParts().get(i).getPosition().equals(position) && signalType == getParts().get(i).getType()) {
+            if (getParts().get(i).getPosition().equals(position) && getParts().get(i).getWorldName().equals(worldName) && signalType == getParts().get(i).getType()) {
                 teleportIdx = i;
                 break;
             }
         }
         if (teleportIdx == -1) return;
         teleportIdx = (teleportIdx + 1) % getParts().size();
-        accessor.teleportEntity(entityId, getParts().get(teleportIdx).getPlace(), getParts().get(teleportIdx).getDirection());
+        Teleport teleport = getParts().get(teleportIdx);
+        accessor.teleportEntity(entityId, teleport.getPlace(), teleport.getDirection(), teleport.getWorldName());
         lock.put(entityId, System.currentTimeMillis());
     }
 

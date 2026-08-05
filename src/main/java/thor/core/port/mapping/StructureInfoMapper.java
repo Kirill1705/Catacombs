@@ -1,12 +1,10 @@
 package thor.core.port.mapping;
 
+import thor.core.info.IslandInfo;
 import thor.core.info.RoomInfo;
 import thor.core.info.TunnelInfo;
 import thor.core.info.part.*;
-import thor.core.port.mapping.dto.PartTunnelDescriptionDto;
-import thor.core.port.mapping.dto.RoomInfoDto;
-import thor.core.port.mapping.dto.TeleportInfoDto;
-import thor.core.port.mapping.dto.TunnelInfoDto;
+import thor.core.port.mapping.dto.*;
 import thor.core.util.ConfUtils;
 
 import java.util.List;
@@ -63,7 +61,8 @@ public final class StructureInfoMapper {
                 dto.tunnels(),
                 PartsMapper.fromDto(dto.teleport()),
                 dto.effects() != null ? dto.effects().stream().map(PartsMapper::fromDto).toList() : List.of(),
-                dto.arenaButtons() != null ? dto.arenaButtons().stream().map(PartsMapper::fromDto).toList() : List.of()
+                dto.arenaButtons() != null ? dto.arenaButtons().stream().map(PartsMapper::fromDto).toList() : List.of(),
+                dto.portals() != null ? dto.portals().stream().map(PartsMapper::fromDto).toList() : List.of()
         );
     }
 
@@ -78,7 +77,36 @@ public final class StructureInfoMapper {
                 domain.getTunnels().stream().toList(),
                 PartsMapper.toDto(domain.getTeleport()),
                 domain.getEffects().stream().map(PartsMapper::toDto).toList(),
-                domain.getArenaButtons().stream().map(PartsMapper::toDto).toList()
+                domain.getArenaButtons().stream().map(PartsMapper::toDto).toList(),
+                domain.getPortals().stream().map(PartsMapper::toDto).toList()
+        );
+    }
+
+    public static IslandInfoDto toDto(IslandInfo domain) {
+        return new IslandInfoDto(
+                domain.getTextId(),
+                domain.getWeight().value(),
+                domain.getSize(),
+                domain.getChests().stream().map(PartsMapper::toDto).toList(),
+                domain.getPlayerSpawnPlaces().stream().map(PartsMapper::toDto).toList(),
+                PartsMapper.toDto(domain.getTeleport()),
+                domain.getEffects().stream().map(PartsMapper::toDto).toList(),
+                domain.getArenaButtons().stream().map(PartsMapper::toDto).toList(),
+                domain.getPortals().stream().map(PartsMapper::toDto).toList()
+        );
+    }
+
+    public static IslandInfo fromDto(IslandInfoDto dto) {
+        return new IslandInfo(
+                new Weight(dto.weight()),
+                dto.id(),
+                dto.playerSpawnPlaces() != null ? dto.playerSpawnPlaces().stream().map(PartsMapper::fromDto).toList() : List.of(),
+                dto.size(),
+                dto.chests() != null ? dto.chests().stream().map(PartsMapper::fromDto).toList() : List.of(),
+                PartsMapper.fromDto(dto.teleport()),
+                dto.effects() != null ? dto.effects().stream().map(PartsMapper::fromDto).toList() : List.of(),
+                dto.arenaButtons() != null ? dto.arenaButtons().stream().map(PartsMapper::fromDto).toList() : List.of(),
+                dto.portals() != null ? dto.portals().stream().map(PartsMapper::fromDto).toList() : List.of()
         );
     }
 }

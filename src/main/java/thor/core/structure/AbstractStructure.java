@@ -1,6 +1,7 @@
 package thor.core.structure;
 
 import lombok.Getter;
+import ru.vikhrenko.serverUtils.utils.dataStructures.ImmutableLocation;
 import thor.core.generator.tunnel.convert.Converter;
 import thor.core.info.StructureInfo;
 import thor.core.port.output.StructureManager;
@@ -13,6 +14,7 @@ public abstract class AbstractStructure implements Structure {
     @Getter
     private final Point position;
     private final Point size;
+    @Getter
     private final boolean rotated;
     @Getter
     private final String textId;
@@ -34,14 +36,7 @@ public abstract class AbstractStructure implements Structure {
     }
 
     @Override
-    public void place(WorldAccessor accessor, StructureManager structureManager) {
-        place(accessor, structureManager, rotated);
-    }
-
-    @Override
     public ImmutableBox toBox() {
         return Boxes.fromBeginAndSize(position, size);
     }
-
-    protected abstract void place(WorldAccessor accessor, StructureManager structureManager, boolean rotated);
 }

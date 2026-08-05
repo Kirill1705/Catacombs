@@ -14,11 +14,14 @@ import org.bukkit.block.structure.StructureRotation;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.generator.ChunkGenerator;
+import org.bukkit.generator.WorldInfo;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.structure.Structure;
+import org.jetbrains.annotations.NotNull;
 import thor.core.exception.InvalidEnchantException;
 import thor.core.exception.InvalidMaterialException;
 import thor.core.port.output.WorldAccessor;
@@ -35,18 +38,16 @@ import java.util.*;
 @Slf4j
 @RequiredArgsConstructor
 public class WorldAccessorImpl implements WorldAccessor {
-    private final BlockLocation location;
-
     private final Map<String, Structure> cache = new HashMap<>();
 
     @Override
-    public Block getBlockAt(Point position) {
-        return location.world().getBlockAt(createLocation(position));
+    public Block getBlockAt(Point position, String worldName) {
+        return createLocation(position, worldName).getBlock();
     }
 
     @Override
-    public void placeChest(Point position, List<Item> items, List<Book> books, Material material) {
-        Location location = createLocation(position);
+    public void placeChest(Point position, List<Item> items, List<Book> books, Material material, String worldName) {
+        Location location = createLocation(position, worldName);
         Block block = location.getBlock();
         block.setType(material);
         if (block.getState() instanceof Container container) {
@@ -60,16 +61,15 @@ public class WorldAccessorImpl implements WorldAccessor {
     }
 
     @Override
-    public void fill(int x0, int y0, int z0, int x, int y, int z, Material material) {
-        Point corner1 = convertPosition(new Point(x0, y0, z0));
-        Point corner2 = convertPosition(new Point(x, y, z));
-        OtherUtils.fill(Boxes.fromCorners(corner1, corner2), material, location.world(), false);
+    public void fill(int x0, int y0, int z0, int x, int y, int z, Material material, String worldName) {
+        Point corner1 = new Point(x0, y0, z0);
+        Point corner2 = new Point(x, y, z);
+        OtherUtils.fill(Boxes.fromCorners(corner1, corner2), material, getWorld(worldName), false);
     }
 
     @Override
-    public void killEntities(ImmutableBox box) {
-        box = box.shift(BlockLocations.toPoint(location));
-        location.world().getNearbyEntities(box.toBoundingBox()).forEach(entity -> {
+    public void killEntities(ImmutableBox box, String worldName) {
+        getWorld(worldName).getNearbyEntities(box.toBoundingBox()).forEach(entity -> {
             try {
                 entity.remove();
             } catch (RuntimeException e) {
@@ -79,7 +79,7 @@ public class WorldAccessorImpl implements WorldAccessor {
     }
 
     @Override
-    public void placeStructure(String path, Point position, boolean rotated) {
+    public void placeStructure(String path, Point position, boolean rotated, String worldName) {
         Structure structure;
         if (cache.containsKey(path)) {
             structure = cache.get(path);
@@ -93,14 +93,14 @@ public class WorldAccessorImpl implements WorldAccessor {
                 throw new RuntimeException(e);
             }
         }
-        structure.place(createLocation(position), true, rotated ? StructureRotation.COUNTERCLOCKWISE_90 : StructureRotation.NONE, Mirror.NONE, 0, 1, new Random());
+        structure.place(createLocation(position, worldName), true, rotated ? StructureRotation.COUNTERCLOCKWISE_90 : StructureRotation.NONE, Mirror.NONE, 0, 1, new Random());
     }
 
     @Override
-    public void teleportEntity(UUID playerId, Point position, Point direction) {
+    public void teleportEntity(UUID playerId, Point position, Point direction, String worldName) {
         Entity entity = Bukkit.getEntity(playerId);
         if (entity == null) return;
-        Location location = createLocation(position);
+        Location location = createLocation(position, worldName);
         location = location.toCenterLocation();
         location.setY(location.y() - 0.4);
         if (direction != null) {
@@ -111,9 +111,9 @@ public class WorldAccessorImpl implements WorldAccessor {
     }
 
     @Override
-    public boolean teleportEntityInRandomPlaceInBox(ImmutableBox box, UUID entityId) {
-        World world = location.world();
-        Point position = BlockLocations.toPoint(location).add(box.begin());
+    public boolean teleportEntityInRandomPlaceInBox(ImmutableBox box, UUID entityId, String worldName) {
+        World world = getWorld(worldName);
+        Point position = box.begin();
         Point size = box.size();
         final int maxAttemptCount = 10;
         for (int i = 0; i < maxAttemptCount; i++) {
@@ -147,11 +147,6 @@ public class WorldAccessorImpl implements WorldAccessor {
         }
     }
 
-    @Override
-    public String getWorldName() {
-        return location.world().getName();
-    }
-
     private List<ItemStack> getItems(List<Item> items, List<Book> books) {
         List<ItemStack> itemStacks = new ArrayList<>();
         for (Item item: items) {
@@ -170,11 +165,25 @@ public class WorldAccessorImpl implements WorldAccessor {
         return itemStacks;
     }
 
-    private Location createLocation(Point position) {
-        return convertPosition(position).toLocation(location.world());
+    private Location createLocation(Point position, String worldName) {
+        return position.toLocation(getWorld(worldName));
     }
 
-    private Point convertPosition(Point position) {
-        return BlockLocations.toPoint(location).add(position);
+    private World getWorld(String worldName) {
+        if (worldName == null) return Bukkit.getWorlds().getFirst();
+        World world = Bukkit.getWorld(worldName);
+        if (world == null) {
+            world = generateNewWorld(worldName);
+        }
+        return world;
+    }
+
+    private World generateNewWorld(String worldName) {
+        log.warn("Generating new world with name {}", worldName);
+        WorldCreator creator = new WorldCreator(worldName)
+                .type(WorldType.FLAT)
+                .generatorSettings("{\"layers\":[{\"block\":\"minecraft:air\",\"height\":1}],\"biome\":\"minecraft:the_void\",\"structures\":{\"structures\":{}}}")
+                .generateStructures(false);
+        return Bukkit.createWorld(creator);
     }
 }

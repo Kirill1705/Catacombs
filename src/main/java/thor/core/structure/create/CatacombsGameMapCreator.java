@@ -1,83 +1,56 @@
 package thor.core.structure.create;
 
 import lombok.RequiredArgsConstructor;
-import ru.vikhrenko.serverUtils.utils.dataStructures.Point;
-import thor.core.generator.GroundRoomGenerator;
-import thor.core.generator.complete.GameMap;
-import thor.core.generator.complete.GameMapImpl;
+import thor.core.generator.IslandGenerator;
+import thor.core.generator.complete.*;
 import thor.core.generator.tunnel.GroundTunnelGenerator;
-import thor.core.info.ItemInfo;
-import thor.core.info.part.FillType;
-import thor.core.port.mapping.ItemMapper;
+import thor.core.info.IslandInfo;
 import thor.core.port.mapping.StructureInfoMapper;
-import thor.core.port.mapping.dto.map.InteractiveGameMap;
-import thor.core.port.output.StructureManager;
 import thor.core.port.output.repository.InfoRepository;
-import thor.core.port.output.repository.ItemRepository;
 import thor.core.port.output.repository.MapConfigHolder;
-import thor.core.structure.AddInfoStructureVisitor;
-import thor.core.structure.CatacombsPlaceStructureVisitor;
-import thor.core.structure.chest.ItemCreator;
-import thor.core.structure.manager.*;
-import thor.core.structure.manager.config.ArenaConfig;
+import thor.core.structure.PortalCountVisitor;
+import thor.core.structure.Structure;
+import thor.core.util.RandomGeneratorImpl;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @RequiredArgsConstructor
 public class CatacombsGameMapCreator {
     private final MapConfigHolder mapConfigHolder;
     private final InfoRepository infoRepository;
-    private final ItemRepository itemRepository;
-    private final ArenaConfig arenaConfig;
-    private final StructureManager structureManager;
 
-    public InteractiveGameMap create() {
-        GameMap gameMap = new GameMapImpl(mapConfigHolder.getConfig().mapSize());
-        GroundRoomGenerator roomGenerator = new GroundRoomGenerator(infoRepository.getRooms().stream().map(StructureInfoMapper::fromDto).toList(), mapConfigHolder.getConfig().roomsQuantity(), new SimpleRoomCreator());
+    public GeneratedGameMap create() {
+        GameMap gameMap = new GameMapImpl(mapConfigHolder.catacombsMapSize());
+        IslandGenerator roomGenerator = new IslandGenerator(mapConfigHolder.roomsQuantity(), new RoomCreator(new RandomGeneratorImpl<>(infoRepository.getRooms().stream().map(StructureInfoMapper::fromDto).toList())));
         GroundTunnelGenerator tunnelGenerator = new GroundTunnelGenerator(infoRepository.getTunnels().stream().map(StructureInfoMapper::fromDto).toList(), new PartTunnelCreatorImpl());
         roomGenerator.generate(gameMap);
         tunnelGenerator.generate(gameMap);
 
-        ItemCreator itemCreator = new ItemCreator(getItems());
-        ChestManager chestManager = new ChestManager(itemCreator);
-        PlayerSpawnManager playerSpawnManager = new PlayerSpawnManager();
-        TeleportManager teleportManager = new TeleportManager();
-        ArenaButtonManager arenaButtonManager = new ArenaButtonManager(arenaConfig, mapConfigHolder.getConfig().mapSize().add(new Point(2, 2, 2)));
-        EffectNodeManager effectNodeManager = new EffectNodeManager();
+        Map<MapType, GameMap> maps = new HashMap<>();
+        maps.put(MapType.MAIN, gameMap);
 
-        AddInfoStructureVisitor structureVisitor = new AddInfoStructureVisitor(List.of(chestManager, playerSpawnManager, teleportManager, arenaButtonManager, effectNodeManager));
-        CatacombsPlaceStructureVisitor placeVisitor = new CatacombsPlaceStructureVisitor(structureManager, mapConfigHolder.getConfig().mapSize());
-        gameMap.getAllStructures().forEach(structure -> structure.accept(structureVisitor));
-        gameMap.getAllStructures().forEach(structure -> structure.accept(placeVisitor));
-
-        playerSpawnManager.addTunnels(placeVisitor.getHorizontalTunnels());
-
-        List<SignalPartManager> signalPartManagers = List.of(teleportManager, arenaButtonManager, effectNodeManager);
-        List<PlacePartManager> placePartManagers = List.of(placeVisitor, arenaButtonManager, chestManager);
-
-        return new InteractiveGameMap(
-                UUID.randomUUID(),
-                signalPartManagers,
-                playerSpawnManager,
-                arenaButtonManager,
-                placePartManagers
-        );
+        ConstraintsGameMap waterMap = createConstraintMap(gameMap.getAllStructures());
+        if (waterMap == null) {
+            return new GeneratedGameMap(maps);
+        }
+        IslandGenerator islandsGenerator = new IslandGenerator(mapConfigHolder.getWaterIslandsQuantity(), waterMap);
+        islandsGenerator.generate(waterMap);
+        maps.put(MapType.WATER, waterMap);
+        return new GeneratedGameMap(maps);
     }
 
-    private List<ItemInfo> getItems() {
-        List<ItemInfo> items = new ArrayList<>();
-        List<String> fillTypes = Arrays.stream(FillType.values())
-                .map(fillType -> fillType.name().toLowerCase())
+    private ConstraintsGameMap createConstraintMap(List<Structure> structures) {
+        PortalCountVisitor countVisitor = new PortalCountVisitor();
+        structures.forEach(structure -> structure.accept(countVisitor));
+        int portalCount = countVisitor.getCount();
+        List<IslandInfo> islandInfos = infoRepository.getWaterIslands().stream().map(StructureInfoMapper::fromDto).toList();
+        if (islandInfos.isEmpty()) return null;
+        List<IslandInfo> portals = islandInfos.stream()
+                .filter(islandInfo -> !islandInfo.getPortals().isEmpty())
                 .toList();
-        items.addAll(itemRepository.getItems(fillTypes).stream()
-                .map(ItemMapper::fromDto)
-                .toList());
-        items.addAll(itemRepository.getBooks().stream()
-                .map(ItemMapper::fromDto)
-                .toList());
-        return items;
+        List<IslandInfo> noPortals = islandInfos.stream()
+                .filter(islandInfo -> islandInfo.getPortals().isEmpty())
+                .toList();
+        return new ConstraintsGameMap(new GameMapImpl(mapConfigHolder.waterWorldSize()), Map.of(new IslandsCreator(new RandomGeneratorImpl<>(portals)), portalCount), new IslandsCreator(new RandomGeneratorImpl<>(noPortals)));
     }
 }

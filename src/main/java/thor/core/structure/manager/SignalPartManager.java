@@ -7,5 +7,5 @@ import thor.core.port.output.WorldAccessor;
 import java.util.UUID;
 
 public interface SignalPartManager {
-    void onSignal(WorldAccessor accessor, UUID entityId, Point position, SignalType signalType);
+    void onSignal(WorldAccessor accessor, UUID entityId, Point position, SignalType signalType, String worldName);
 }

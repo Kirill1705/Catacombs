@@ -1,93 +1,83 @@
 package thor.core.structure.manager;
 
 import org.bukkit.Material;
-import ru.vikhrenko.serverUtils.utils.dataStructures.Boxes;
-import ru.vikhrenko.serverUtils.utils.dataStructures.ImmutableBox;
-import ru.vikhrenko.serverUtils.utils.dataStructures.Point;
-import thor.core.generator.tunnel.convert.Converter;
-import thor.core.info.RoomInfo;
+import ru.vikhrenko.serverUtils.utils.dataStructures.*;
+import thor.core.info.IslandInfo;
 import thor.core.info.SignalType;
 import thor.core.info.part.ArenaButtonInfo;
-import thor.core.info.part.PartTunnelInfo;
 import thor.core.port.mapping.MapPlaceOptions;
 import thor.core.port.output.WorldAccessor;
-import thor.core.port.output.WorldAccessorCreator;
 import thor.core.structure.ArenaButton;
-import thor.core.structure.PlacePartResult;
+import thor.core.structure.StructurePartPlaceInfo;
 import thor.core.structure.manager.config.ArenaConfig;
 
 import java.util.*;
 
-public class ArenaButtonManager extends AbstractStructurePartManager<ArenaButtonInfo, ArenaButton> implements SignalPartManager, PlacePartManager, ArenaTeleportator {
-    private final Map<UUID, Point> originPositionMap = new HashMap<>();
+public class ArenaButtonManager extends AbstractStructurePartManager<ArenaButtonInfo, ArenaButton> implements SignalPartManager, ArenaTeleportator {
+    private final Map<UUID, ImmutableLocation> originPositionMap = new HashMap<>();
     private final ArenaConfig arenaConfig;
-    private final Point arenaPosition;
+    private final ImmutableWorldBox arenaBox;
 
-    private WorldAccessor arenaAccessor;
-
-    public ArenaButtonManager(ArenaConfig arenaConfig, Point arenaPosition) {
+    public ArenaButtonManager(ArenaConfig arenaConfig, Point relativeMapArenaPosition, ImmutableLocation location, WorldAccessor accessor, MapPlaceOptions options) {
         this.arenaConfig = arenaConfig;
-        this.arenaPosition = arenaPosition;
+        this.arenaBox = place(accessor, new ImmutableLocation(location.position().add(relativeMapArenaPosition).add(new Point(2, 2, 2)), location.worldName()), options);
     }
 
     @Override
-    protected ArenaButton create(ArenaButtonInfo info, Converter converter) {
-        return new ArenaButton(converter, info);
+    protected ArenaButton create(ArenaButtonInfo info, StructurePartPlaceInfo placeInfo) {
+        return new ArenaButton(placeInfo, info);
     }
 
     @Override
-    protected Iterable<ArenaButtonInfo> extractFromRoomInfo(RoomInfo roomInfo) {
+    protected Iterable<ArenaButtonInfo> extractFromIslandInfo(IslandInfo roomInfo) {
         return roomInfo.getArenaButtons();
     }
 
     @Override
-    protected Iterable<ArenaButtonInfo> extractFromPartTunnelInfo(PartTunnelInfo partTunnelInfo) {
-        return List.of();
-    }
-
-    @Override
-    public void onSignal(WorldAccessor accessor, UUID entityId, Point position, SignalType signalType) {
-        if (arenaConfig.getButtonPosition().equals(position) && signalType == SignalType.BUTTON && originPositionMap.containsKey(entityId)) {
-            arenaAccessor.teleportEntity(entityId, originPositionMap.get(entityId), null);
+    public void onSignal(WorldAccessor accessor, UUID entityId, Point position, SignalType signalType, String worldName) {
+        if (arenaConfig.getButtonPosition().add(arenaBox.box().begin()).equals(position) && signalType == SignalType.BUTTON && originPositionMap.containsKey(entityId)) {
+            ImmutableLocation location = originPositionMap.get(entityId);
+            accessor.teleportEntity(entityId, location.position(), null, arenaBox.worldName());
             originPositionMap.remove(entityId);
             return;
         }
-        for (ArenaButton arenaButton: getParts()) {
-            if (arenaButton.getPosition().equals(position) && arenaButton.getSignalType() == signalType) {
-                teleport(entityId);
-                originPositionMap.put(entityId, arenaButton.getBackPosition());
-            }
+        for (ArenaButton arenaButton: findPart(position, worldName, arenaButton -> arenaButton.getSignalType() == signalType)) {
+            teleport(entityId, accessor);
+            originPositionMap.put(entityId, new ImmutableLocation(arenaButton.getBackPosition(), arenaBox.worldName()));
         }
     }
 
     @Override
-    public Optional<PlacePartResult> place(WorldAccessorCreator accessorCreator, String worldName, Point position, MapPlaceOptions options) {
-        arenaAccessor = accessorCreator.create(position, worldName);
+    public void teleport(UUID entityId, WorldAccessor accessor) {
+        ImmutableBox box = arenaBox.box();
+        accessor.teleportEntityInRandomPlaceInBox(box, entityId, arenaBox.worldName());
+    }
+
+    public Point getArenaMaxOffset() {
+        return arenaConfig.getSize().add(new Point(2, 2, 2));
+    }
+
+    private ImmutableWorldBox place(WorldAccessor accessor, ImmutableLocation location, MapPlaceOptions options) {
+        ImmutableWorldBox box = new ImmutableWorldBox(Boxes.fromBeginAndSize(location.position(), arenaConfig.getSize()), location.worldName());
         if (options.isFillBedrock()) {
-            fillBedrock(getArenaBox(), arenaAccessor);
+            fillBedrock(accessor, box);
         }
-        arenaAccessor.placeStructure(arenaConfig.getArenaPath(), arenaPosition, false);
-        return Optional.of(new PlacePartResult(getArenaBox(), worldName));
+        accessor.placeStructure(arenaConfig.getArenaPath(), location.position(), false, location.worldName());
+        return box;
     }
 
-    public void teleport(UUID entityId) {
-        if (arenaAccessor == null) {
-            throw new IllegalStateException("Arena is not placed yet. Cant teleport");
-        }
-        ImmutableBox box = getArenaBox();
-        arenaAccessor.teleportEntityInRandomPlaceInBox(box, entityId);
-    }
-
-    private ImmutableBox getArenaBox() {
-        return Boxes.fromBeginAndSize(arenaPosition, arenaConfig.getSize());
-    }
-
-    private void fillBedrock(ImmutableBox arena, WorldAccessor accessor) {
-        accessor.fill(arena.begin().x() - 1, arena.begin().y() - 1, arena.begin().z() - 1, arena.end().x() - 1, arena.end().y() - 1, arena.begin().z() - 1, Material.BEDROCK);
-        accessor.fill(arena.begin().x() - 1, arena.begin().y() - 1, arena.begin().z() - 1, arena.end().x() - 1, arena.begin().y() - 1, arena.end().z() - 1, Material.BEDROCK);
-        accessor.fill(arena.begin().x() - 1, arena.begin().y() - 1, arena.begin().z() - 1, arena.begin().x() - 1, arena.end().y() - 1, arena.end().z() - 1, Material.BEDROCK);
-        accessor.fill(arena.begin().x() - 1, arena.begin().y() - 1, arena.end().z() - 1, arena.end().x() - 1, arena.end().y() - 1, arena.end().z() - 1, Material.BEDROCK);
-        accessor.fill(arena.begin().x() - 1, arena.end().y() - 1, arena.begin().z() - 1, arena.end().x() - 1, arena.end().y() - 1, arena.end().z() - 1, Material.BEDROCK);
-        accessor.fill(arena.end().x() - 1, arena.begin().y() - 1, arena.begin().z() - 1, arena.end().x() - 1, arena.end().y() - 1, arena.end().z() - 1, Material.BEDROCK);
+    private void fillBedrock(WorldAccessor accessor, ImmutableWorldBox box) {
+        int x0 = box.box().begin().x() - 1;
+        int y0 = box.box().begin().y() - 1;
+        int z0 = box.box().begin().z() - 1;
+        int y = box.box().end().y() - 1;
+        int x = box.box().end().x() - 1;
+        int z = box.box().end().z() - 1;
+        accessor.fill(x0, y0, z0, x, y, z0, Material.BEDROCK, box.worldName());
+        accessor.fill(x0, y0, z0, x, y0, z, Material.BEDROCK, box.worldName());
+        accessor.fill(x0, y0, z0, x0, y, z, Material.BEDROCK, box.worldName());
+        accessor.fill(x0, y0, z, x, y, z, Material.BEDROCK, box.worldName());
+        accessor.fill(x0, y, z0, x, y, z, Material.BEDROCK, box.worldName());
+        accessor.fill(x, y0, z0, x, y, z, Material.BEDROCK, box.worldName());
     }
 }

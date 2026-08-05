@@ -1,5 +1,6 @@
 package thor.core.structure;
 
+import ru.vikhrenko.serverUtils.utils.dataStructures.ImmutableLocation;
 import thor.core.generator.tunnel.convert.Converter;
 import thor.core.port.output.StructureManager;
 import thor.core.port.output.WorldAccessor;
@@ -11,7 +12,7 @@ public interface Structure {
     Converter getConverter();
     Point getSize();
     ImmutableBox toBox();
-    void place(WorldAccessor accessor, StructureManager structureManager);
+    void place(WorldAccessor accessor, StructureManager structureManager, ImmutableLocation location);
 
     void accept(StructureVisitor visitor);
 }
