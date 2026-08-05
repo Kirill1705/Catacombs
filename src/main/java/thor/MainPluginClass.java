@@ -7,15 +7,16 @@ import thor.core.port.input.MapEngineService;
 import thor.core.port.input.MapService;
 import thor.core.port.input.StructureInfoService;
 import thor.core.port.output.StructureManager;
-import thor.core.port.output.WorldAccessorCreator;
+import thor.core.port.output.WorldAccessor;
 import thor.core.port.output.repository.*;
 import thor.core.service.MapEngineServiceImpl;
 import thor.core.service.MapServiceImpl;
 import thor.core.service.StructureInfoServiceImpl;
 import thor.core.structure.create.CatacombsGameMapCreator;
+import thor.core.structure.create.CatacombsInteractiveMapCreator;
 import thor.core.structure.manager.config.ReloadableArenaConfig;
 import thor.infrastructure.StructureManagerImpl;
-import thor.infrastructure.WorldAccessorCreatorImpl;
+import thor.infrastructure.WorldAccessorImpl;
 import thor.infrastructure.repositories.*;
 import thor.presentation.CatacombsListener;
 import thor.presentation.CustomCommand;
@@ -39,19 +40,20 @@ public class MainPluginClass extends JavaPlugin {
         ReloadableInfoRepository reloadableInfoRepository = new ReloadableInfoRepository(infoRepository);
         ItemRepository itemRepository = itemRepository(config);
         ReloadableItemRepository reloadableItemRepository = new ReloadableItemRepository(itemRepository);
-        MapConfigHolder mapConfigHolder = mapConfigHolder(config);
-        WorldAccessorCreator gameWorldAccessor = gameWorldAccessor(config);
+        MapConfigHolderImpl mapConfigHolder = mapConfigHolder(config);
+        WorldAccessor gameWorldAccessor = new WorldAccessorImpl();
         MapRepository mapRepository = mapRepository(config);
-        MapRepository mapGeoIndex = mapRepository(config);
+        MapPlacedRepository mapPlacedRepository = new MapPlacedRepositoryImpl();
         ReloadableArenaConfig arenaConfig = new ReloadableArenaConfig(getDataPath());
         StructureManager structureManager = structureManager(config);
 
-        new CommandManager().registerReloadCommand(this, List.of(reloadableInfoRepository, reloadableItemRepository, arenaConfig));
+        new CommandManager().registerReloadCommand(this, List.of(reloadableInfoRepository, reloadableItemRepository, arenaConfig, mapConfigHolder));
 
-        CatacombsGameMapCreator catacombsCreator = new CatacombsGameMapCreator(mapConfigHolder, infoRepository, itemRepository, arenaConfig, structureManager);
+        CatacombsGameMapCreator catacombsCreator = new CatacombsGameMapCreator(mapConfigHolder, infoRepository);
+        CatacombsInteractiveMapCreator interactiveMapCreator = new CatacombsInteractiveMapCreator(itemRepository, arenaConfig, structureManager);
 
         MapServiceImpl mapService = new MapServiceImpl(mapRepository, catacombsCreator);
-        MapEngineService mapEngineService = new MapEngineServiceImpl(mapRepository, gameWorldAccessor);
+        MapEngineService mapEngineService = new MapEngineServiceImpl(mapRepository, mapPlacedRepository, interactiveMapCreator, gameWorldAccessor);
         StructureInfoService structureInfoService = new StructureInfoServiceImpl(reloadableInfoRepository, structureManager);
 
         MainCommand mainCommand = new MainCommand(commands(config, mapService, mapEngineService), this);
@@ -76,6 +78,7 @@ public class MainPluginClass extends JavaPlugin {
             saveResource("structures/example.nbt", false);
             saveResource("structures/horizontal_example/0.nbt", false);
             saveResource("structures/vertical_example/0.nbt", false);
+            saveResource("water", false);
         }
     }
 
@@ -84,7 +87,7 @@ public class MainPluginClass extends JavaPlugin {
     }
 
     private InfoRepository infoRepository(FileConfiguration config) {
-        return new InfoRepositoryImpl(toPath(config.getString("rooms_path", "rooms")), toPath(config.getString("tunnels_path", "tunnels")));
+        return new InfoRepositoryImpl(toPath(config.getString("rooms_path", "rooms")), toPath(config.getString("tunnels_path", "tunnels")), toPath(config.getString("water_islands_path", "water")));
     }
 
     private ItemRepository itemRepository(FileConfiguration config) {
@@ -98,16 +101,12 @@ public class MainPluginClass extends JavaPlugin {
         return new MapRepositoryImpl();
     }
 
-    private MapConfigHolder mapConfigHolder(FileConfiguration config) {
-        return new MapConfigHolderImpl(toPath(config.getString("map_config_path", "map.yml")));
+    private MapConfigHolderImpl mapConfigHolder(FileConfiguration config) {
+        return new MapConfigHolderImpl();
     }
 
     private StructureManager structureManager(FileConfiguration config) {
         return new StructureManagerImpl(toPath(config.getString("structures_path", "structures")));
-    }
-
-    private WorldAccessorCreator gameWorldAccessor(FileConfiguration config) {
-        return new WorldAccessorCreatorImpl();
     }
 
     private List<CustomCommand> commands(FileConfiguration config, MapService mapService, MapEngineService engineService) {

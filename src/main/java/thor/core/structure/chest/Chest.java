@@ -10,6 +10,7 @@ import thor.core.info.part.ChestInfo;
 import thor.core.info.part.Quality;
 import thor.core.port.output.WorldAccessor;
 import thor.core.structure.AbstractStructurePart;
+import thor.core.structure.StructurePartPlaceInfo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,8 +25,8 @@ public class Chest extends AbstractStructurePart {
     @Getter
     private final List<Book> books = new ArrayList<>();
 
-    public Chest(Converter converter, ChestInfo info, ItemCreator itemCreator) {
-        super(converter, info.getPosition());
+    public Chest(StructurePartPlaceInfo placeInfo, ChestInfo info, ItemCreator itemCreator) {
+        super(placeInfo, info.getPosition());
         this.material = info.getMaterial();
         this.quality = info.getQuality();
         List<ItemInfo> itemInfos = itemCreator.getItems(info.getFillType(), info.getSize().getValue(), info.getQuality().getValue());

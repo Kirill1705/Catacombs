@@ -1,9 +1,15 @@
 rooms_path: rooms
 tunnels_path: tunnels
-
 structures_path: structures
 
 chest_path: chest.yml
 barrel_path: barrel.yml
 books_path: books.yml
-map_config_path: map.yml
+
+catacombs_map_size: [256, 64, 256]
+catacombs_rooms_quantity: 200
+water_islands_quantity: 30
+water_map_size: [128, 64, 128]
+
+arena: arena.nbt
+button: [1, 3, 2]

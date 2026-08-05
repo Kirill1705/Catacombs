@@ -6,10 +6,10 @@ import java.util.List;
 import java.util.UUID;
 
 public record InteractiveGameMap(
-        UUID id,
         List<SignalPartManager> signalPartManagers,
         PlayerTeleportator playerSpawnManager,
         ArenaTeleportator arenaTeleportator,
-        List<PlacePartManager> placePartManagers
+        PortalHandler portalHandler
 ) {
+
 }

@@ -120,4 +120,20 @@ public final class PartsMapper {
                 info.signalType().name().toLowerCase()
         );
     }
+
+    public static PortalInfoDto toDto(PortalInfo info) {
+        return new PortalInfoDto(
+                info.portals(),
+                info.backPosition(),
+                info.dimension().name().toLowerCase()
+        );
+    }
+
+    public static PortalInfo fromDto(PortalInfoDto dto) {
+        return new PortalInfo(
+                dto.blocks(),
+                dto.backPosition(),
+                Dimension.valueOf(dto.dimension().toUpperCase())
+        );
+    }
 }

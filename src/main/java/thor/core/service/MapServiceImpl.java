@@ -2,8 +2,8 @@ package thor.core.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import thor.core.generator.complete.GeneratedGameMap;
 import thor.core.port.input.MapService;
-import thor.core.port.mapping.dto.map.InteractiveGameMap;
 import thor.core.port.output.repository.MapRepository;
 import thor.core.structure.create.CatacombsGameMapCreator;
 
@@ -22,8 +22,7 @@ public class MapServiceImpl implements MapService {
 
     @Override
     public UUID generateMap() {
-        InteractiveGameMap map = catacombsGameMapCreator.create();
-        mapRepository.addMap(map);
-        return map.id();
+        GeneratedGameMap maps = catacombsGameMapCreator.create();
+        return mapRepository.add(maps);
     }
 }

@@ -7,6 +7,7 @@ public interface StructureManager {
     void addTunnelStructure(List<String> structurePaths, String textId);
 
     String getRoomStructurePath(String textId);
+    String getIslandStructurePath(String textId);
     List<String> getTunnelPartPaths(String textId, int size);
     String getTunnelPartPath(String textId, int idx);
 }

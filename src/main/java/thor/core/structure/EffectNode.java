@@ -8,8 +8,8 @@ public class EffectNode extends AbstractStructurePart {
     @Getter
     private final EffectInfo effectInfo;
 
-    public EffectNode(Converter converter, EffectInfo effectInfo) {
-        super(converter, effectInfo.position());
+    public EffectNode(StructurePartPlaceInfo placeInfo, EffectInfo effectInfo) {
+        super(placeInfo, effectInfo.position());
         this.effectInfo = effectInfo;
     }
 }

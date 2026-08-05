@@ -1,5 +1,6 @@
 package thor.infrastructure.repositories;
 
+import thor.core.port.mapping.dto.IslandInfoDto;
 import thor.core.port.mapping.dto.RoomInfoDto;
 import thor.core.port.mapping.dto.TunnelInfoDto;
 import thor.core.port.output.repository.InfoRepository;
@@ -13,6 +14,7 @@ public class ReloadableInfoRepository implements InfoRepository, Reloadable {
 
     private List<RoomInfoDto> rooms;
     private List<TunnelInfoDto> tunnels;
+    private List<IslandInfoDto> waterIslands;
 
     public ReloadableInfoRepository(InfoRepository infoRepository) {
         this.infoRepository = infoRepository;
@@ -30,6 +32,11 @@ public class ReloadableInfoRepository implements InfoRepository, Reloadable {
     }
 
     @Override
+    public List<IslandInfoDto> getWaterIslands() {
+        return waterIslands;
+    }
+
+    @Override
     public boolean exportRoomInfo(RoomInfoDto roomInfo) {
         return infoRepository.exportRoomInfo(roomInfo);
     }
@@ -37,6 +44,11 @@ public class ReloadableInfoRepository implements InfoRepository, Reloadable {
     @Override
     public boolean exportTunnelInfo(TunnelInfoDto tunnelInfo) {
         return infoRepository.exportTunnelInfo(tunnelInfo);
+    }
+
+    @Override
+    public boolean exportWaterIslandInfo(IslandInfoDto islandInfoDto) {
+        return infoRepository.exportWaterIslandInfo(islandInfoDto);
     }
 
     @Override
@@ -50,8 +62,14 @@ public class ReloadableInfoRepository implements InfoRepository, Reloadable {
     }
 
     @Override
+    public boolean updateWaterIslandInfo(IslandInfoDto islandInfoDto) {
+        return infoRepository.updateWaterIslandInfo(islandInfoDto);
+    }
+
+    @Override
     public void reload(Path file) {
         rooms = infoRepository.getRooms();
         tunnels = infoRepository.getTunnels();
+        waterIslands = infoRepository.getWaterIslands();
     }
 }
